@@ -7,8 +7,8 @@ from sklearn import neighbors
 from scipy import stats
 
 # classification tests
-def precision_lower_boundary_per_class(clf, test_data, target_names, column_names, lower_boundary):
-    y = test_data[target_names]
+def precision_lower_boundary_per_class(clf, test_data, target_name, column_names, lower_boundary):
+    y = test_data[target_name]
     y_pred = clf.predict(test_data[column_names])
     
     for class_info in lower_boundary["per_class"]:
@@ -19,8 +19,8 @@ def precision_lower_boundary_per_class(clf, test_data, target_names, column_name
             return False
     return True
 
-def recall_lower_boundary_per_class(clf, test_data, target_names, column_names, lower_boundary):
-    y = test_data[target_names]
+def recall_lower_boundary_per_class(clf, test_data, target_name, column_names, lower_boundary):
+    y = test_data[target_name]
     y_pred = clf.predict(test_data[column_names])
     
     for class_info in lower_boundary["per_class"]:
@@ -31,8 +31,8 @@ def recall_lower_boundary_per_class(clf, test_data, target_names, column_names, 
             return False
     return True
 
-def f1_lower_boundary_per_class(clf, test_data, target_names, column_names, lower_boundary):
-    y = test_data[target_names]
+def f1_lower_boundary_per_class(clf, test_data, target_name, column_names, lower_boundary):
+    y = test_data[target_name]
     y_pred = clf.predict(test_data[column_names])
     
     for class_info in lower_boundary["per_class"]:
@@ -43,20 +43,47 @@ def f1_lower_boundary_per_class(clf, test_data, target_names, column_names, lowe
             return False
     return True
 
+def get_parameters(clf_name, clf_metadata, data_name):
+    clf = joblib.load(clf_name)
+    metadata = json.load(open(clf_metadata, "r"))
+    column_names = metadata["column_names"]
+    target_name = metadata["target_name"]
+    test_data = pd.read_csv(data_name)
+    return clf, metadata, colum_names, target_name, test_data
+
+def classifier_testing(clf_name, clf_metadata, data_name, precision_lower_boundary, recall_lower_boundary, f1_lower_boundary):
+    clf, metadata, colum_names, target_name, test_data = get_parameters(clf_name, clf_metadata, data_name)
+    precision_test = precision_lower_boundary_per_class(clf, test_data, target_name, column_names, precision_lower_boundary)
+    recall_test = recall_lower_boundary_per_class(clf, test_data, target_name, column_names, recall_lower_boundary)
+    f1_test = f1_lower_boundary_per_class(clf, test_data, target_name, column_names, f1_lower_boundary)
+    if precision_test and recall_test and f1_test:
+        return True
+    else:
+        return False
+    
 # regression tests
-def mse_upper_boundary(reg, test_data, target_names, column_names, upper_boundary):
-    y = test_data[target_names]
+def mse_upper_boundary(reg, test_data, target_name, column_names, upper_boundary):
+    y = test_data[target_name]
     y_pred = reg.predict(test_data[column_names])
     if metrics.mean_squared_error(y, y_pred) > upper_boundary:
         return False
     return True
 
-def mae_upper_boundary(reg, test_data, target_names, column_names, upper_boundary):
-    y = test_data[target_names]
+def mae_upper_boundary(reg, test_data, target_name, column_names, upper_boundary):
+    y = test_data[target_name]
     y_pred = reg.predict(test_data[column_names])
     if metrics.median_absolute_error(y, y_pred) > upper_boundary:
         return False
     return True
+
+def regression_testing(reg_name, reg_metadata, data_name, mse_upper_boundary, mae_upper_boundary):
+    reg, metadata, colum_names, target_name, test_data = get_parameters(reg_name, reg_metadata, data_name)
+    mse_test = mse_upper_boundary(reg, test_data, target_name, column_names, mse_upper_boundary)
+    mae_test = mae_upper_boundary(reg, test_data, target_name, column_names, mae_upper_boundary)
+    if mse_test and mae_test:
+        return True
+    else:
+        return False
 
 def prediction_run_time_stress_test(model, test_data, column_names, performance_boundary):
     X = test_data[column_names]
