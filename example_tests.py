@@ -3,10 +3,10 @@ import json
 from sklearn import metrics
 import numpy as np
 import time
+from sklearn import neighbors
+from scipy import stats
 
-def generate_test_data():
-    pass
-
+# classification tests
 def precision_lower_boundary_per_class(clf, test_data, target_names, column_names, lower_boundary):
     y = test_data[target_names]
     y_pred = clf.predict(test_data[column_names])
@@ -43,6 +43,7 @@ def f1_lower_boundary_per_class(clf, test_data, target_names, column_names, lowe
             return False
     return True
 
+# regression tests
 def mse_upper_boundary(reg, test_data, target_names, column_names, upper_boundary):
     y = test_data[target_names]
     y_pred = reg.predict(test_data[column_names])
@@ -70,6 +71,7 @@ def prediction_run_time_stress_test(model, test_data, column_names, performance_
             return False
     return True
 
+# data tests
 def is_complete(data, column):
     return data[column].isnull().sum() == 0
 
@@ -91,4 +93,42 @@ def is_non_negative(data, column):
 def is_less_than(data, column_one, column_two):
     return data[data[column_one] < data[column_two]].all()
 
+def clustering(data, columns, target):
+    X = data[columns]
+    y = data[target]
+    k_measures = []
+    for k in range(2, 12):
+        knn = neighbors.KNeighborsRegressor(n_neighbors=k)
+        knn.fit(X, y)
+        y_pred = knn.predict(X)
+        k_measures.append((k, metrics.mean_squared_error(y, y_pred)))
+    sorted_k_measures = sorted(k_measures, key=lambda t:t[1])
+    lowest_mse = sorted_k_measures[0]
+    best_k = lowest_mse[0]
+    return best_k
+        
+# memoryful tests
+def similar_clustering(absolute_distance, new_data, historical_data, column_names, target_name):
+    historical_k = clustering(historical_data, column_names, target_name)
+    new_k = clustering(new_data, column_names, target_name)
+    if abs(historical_k - new_k) > absolute_distance:
+        return False
+    else:
+        return True
+
+def similar_correlation(correlation_lower_bound, new_data, historical_data, column_names, pvalue_threshold=0.05):
+    for column_name in column_names:
+        correlation_info = stats.spearmanr(new_data[column_name], historical_data[column_name])
+        if correlation_info.pvalue > pvalue_threshold:
+            return False
+        if correlation_info.correlation < correlation_lower_bound:
+            return False
+    return True
+
+def similar_distribution(new_data, historical_data, column_names, pvalue_threshold=0.05):
+    for column_name in column_names:
+        distribution_info = stats.ks_2samp(new_data[column_name], historical_data[column_name])
+        if correlation_info.pvalue < pvalue_threshold:
+            return False
+    return True
 
