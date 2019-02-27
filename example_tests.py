@@ -5,6 +5,7 @@ import numpy as np
 import time
 from sklearn import neighbors
 from scipy import stats
+from sklearn.model_selection import cross_val_score
 
 # classification tests
 def precision_lower_boundary_per_class(clf, test_data, target_name, column_names, lower_boundary):
