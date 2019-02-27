@@ -28,5 +28,6 @@ clf.fit(X, df["target"])
 code.interact(local=locals())
 joblib.dump(clf, "model.joblib")
 json.dump({
-    "column names": ["A", "B", "C"],
+    "column_names": ["A", "B", "C"],
+    "target_name": "target"
     }, open("model_metadata.json", "w"))
