@@ -30,9 +30,15 @@ The tests will be readable enough that anyone can extend them to other framework
     * shape testing - this is about ensuring the general shape of for the given column does not
     				  change much over time.  The idea here is the same as the correlation tests.
 
+## Possible Issues
+
+Some known issues with this, any machine learning tests are going to require human interaction because of type 1 and type 2 error for statistical tests.  Additionally, one simply needs to interrogate models from a lot of angles.  It can't be from just one angle.  So I'm not even sure if the overall notion of adding ML testing into a CI pipeline is really feasible.
+
 ## Future Features
 
 * cross validation score testing
 * add custom loss function
 * add custom accuracy function
 * add these tests: https://www.datasciencecentral.com/profiles/blogs/a-plethora-of-original-underused-statistical-tests
+* clustering for classification
+
