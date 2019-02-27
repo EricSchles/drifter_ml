@@ -69,3 +69,26 @@ def prediction_run_time_stress_test(model, test_data, column_names, performance_
         if model_run_time > run_time:
             return False
     return True
+
+def is_complete(data, column):
+    return data[column].isnull().sum() == 0
+
+def has_completeness(data, column, threshold):
+    return data[column].isnull().sum()/len(data) > threshold
+
+def is_unique(data, column):
+    return len(data[column].unique())/len(df) == 1
+
+def has_uniqueness(data, column, threshold):
+    return len(data[column].unique())/len(df) > threshold
+
+def is_in_range(data, column, lower_bound, upper_bound, threshold):
+    return data[(data[column] <= upper_bound) & (data[column] >= lower_bound)]/len(data) > threshold
+
+def is_non_negative(data, column):
+    return data[data[column] > 0]
+
+def is_less_than(data, column_one, column_two):
+    return data[data[column_one] < data[column_two]].all()
+
+
