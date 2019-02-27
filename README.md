@@ -30,3 +30,9 @@ The tests will be readable enough that anyone can extend them to other framework
     * shape testing - this is about ensuring the general shape of for the given column does not
     				  change much over time.  The idea here is the same as the correlation tests.
 
+## Future Features
+
+* cross validation score testing
+* add custom loss function
+* add custom accuracy function
+* add these tests: https://www.datasciencecentral.com/profiles/blogs/a-plethora-of-original-underused-statistical-tests
