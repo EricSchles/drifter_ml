@@ -99,6 +99,104 @@ def prediction_run_time_stress_test(model, test_data, column_names, performance_
             return False
     return True
 
+# Comparing models
+def two_model_prediction_run_time_stress_test(model_one, model_two, test_data, column_names, performance_boundary):
+    X = test_data[column_names]
+    for performance_info in performance_boundary:
+        n = int(performance_info["sample_size"])
+        data = X.sample(n, replace=True)
+        start_time = time.time()
+        model_one.predict(data)
+        model_one_run_time = time.time() - start_time
+        start_time = time.time()
+        model_two.predict(data)
+        model_two_run_time = time.time() - start_time
+        # we assume model one should be faster than model two
+        if model_one_run_time > model_two_run_time:
+            return False
+    return True
+
+def mse_result(reg, test_data, target_name, column_names):
+    y = test_data[target_name]
+    y_pred = reg.predict(test_data[column_names])
+    return metrics.mean_squared_error(y, y_pred)
+
+def mae_result(reg, test_data, target_name, column_names):
+    y = test_data[target_name]
+    y_pred = reg.predict(test_data[column_names])
+    return metrics.median_absolute_error(y, y_pred)
+
+def two_model_regression_testing(reg_one_name, reg_one_metadata, reg_two_name, reg_two_metadata, data_name):
+    reg_one, metadata_one, colum_names, target_name, test_data = get_parameters(reg_one_name,
+                                                                                reg_one_metadata,
+                                                                                data_name)
+    reg_two, metadata_two, colum_names, target_name, test_data = get_parameters(reg_two_name,
+                                                                                reg_two_metadata,
+                                                                                data_name)
+    mse_one_test = mse_result(reg_one, test_data, target_name, column_names)
+    mae_one_test = mae_result(reg_one, test_data, target_name, column_names)
+    mse_two_test = mse_result(reg_two, test_data, target_name, column_names)
+    mae_two_test = mae_result(reg_two, test_data, target_name, column_names)
+    if mse_one_test < mse_two_test and mae_one_test < mae_two_test:
+        return True
+    else:
+        return False
+
+def precision_per_class(clf, test_data, target_name, column_names):
+    y = test_data[target_name]
+    classes = set(y)
+    y_pred = clf.predict(test_data[column_names])
+    precision = {}
+    for klass in classes:
+        y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
+        y_class = y[y == klass]
+        precision[klass] = metrics.precision_score(y_class, y_pred_class) 
+    return precision
+
+def recall_per_class(clf, test_data, target_name, column_names):
+    y = test_data[target_name]
+    classes = set(y)
+    y_pred = clf.predict(test_data[column_names])
+    recall = {}
+    for klass in classes:
+        y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
+        y_class = y[y == klass]
+        recall[klass] = metrics.recall_score(y_class, y_pred_class)
+    return recall
+
+def f1_per_class(clf, test_data, target_name, column_names):
+    y = test_data[target_name]
+    classes = set(y)
+    y_pred = clf.predict(test_data[column_names])
+    f1 = {}
+    for klass in classes:
+        y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
+        y_class = y[y == klass]
+        f1[klass] = metrics.f1_score(y_class, y_pred_class)
+    return f1
+
+def two_model_classifier_testing(clf_one_name, clf_one_metadata, clf_two_name, clf_two_metadata, data_name):
+    clf_one, metadata_one, colum_names, target_name, test_data = get_parameters(clf_one_name,
+                                                                                clf_one_metadata,
+                                                                                data_name)
+    clf_two, metadata_two, colum_names, target_name, test_data = get_parameters(clf_two_name,
+                                                                                clf_two_metadata,
+                                                                                data_name)
+    precision_one_test = precision_per_class(clf, test_data, target_name, column_names)
+    recall_one_test = recall_per_class(clf, test_data, target_name, column_names)
+    f1_one_test = f1_per_class(clf, test_data, target_name, column_names)
+    precision_two_test = precision_per_class(clf, test_data, target_name, column_names)
+    recall_two_test = recall_per_class(clf, test_data, target_name, column_names)
+    f1_two_test = f1_per_class(clf, test_data, target_name, column_names)
+
+    precision_result =  precision_one_test > precision_two_test
+    recall_result = recall_one_test > recall_two_test
+    f1_result = f1_one_test > f1_two_test
+    if precision_result and recall_result and f1_result:
+        return True
+    else:
+        return False
+    
 # data tests
 def is_complete(data, column):
     return data[column].isnull().sum() == 0
@@ -121,7 +219,8 @@ def is_non_negative(data, column):
 def is_less_than(data, column_one, column_two):
     return data[data[column_one] < data[column_two]].all()
 
-def clustering(data, columns, target):
+# memoryful tests
+def reg_clustering(data, columns, target):
     X = data[columns]
     y = data[target]
     k_measures = []
@@ -135,10 +234,31 @@ def clustering(data, columns, target):
     best_k = lowest_mse[0]
     return best_k
         
-# memoryful tests
-def similar_clustering(absolute_distance, new_data, historical_data, column_names, target_name):
-    historical_k = clustering(historical_data, column_names, target_name)
-    new_k = clustering(new_data, column_names, target_name)
+def reg_similar_clustering(absolute_distance, new_data, historical_data, column_names, target_name):
+    historical_k = reg_clustering(historical_data, column_names, target_name)
+    new_k = reg_clustering(new_data, column_names, target_name)
+    if abs(historical_k - new_k) > absolute_distance:
+        return False
+    else:
+        return True
+
+def cls_clustering(data, columns, target):
+    X = data[columns]
+    y = data[target]
+    k_measures = []
+    for k in range(2, 12):
+        knn = neighbors.KNeighborsRegressor(n_neighbors=k)
+        knn.fit(X, y)
+        y_pred = knn.predict(X)
+        k_measures.append((k, metrics.mean_squared_error(y, y_pred)))
+    sorted_k_measures = sorted(k_measures, key=lambda t:t[1])
+    lowest_mse = sorted_k_measures[0]
+    best_k = lowest_mse[0]
+    return best_k
+        
+def cls_similar_clustering(absolute_distance, new_data, historical_data, column_names, target_name):
+    historical_k = cls_clustering(historical_data, column_names, target_name)
+    new_k = cls_clustering(new_data, column_names, target_name)
     if abs(historical_k - new_k) > absolute_distance:
         return False
     else:

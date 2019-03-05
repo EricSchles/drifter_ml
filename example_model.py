@@ -1,4 +1,5 @@
 from sklearn import tree
+from sklearn import ensemble
 from sklearn import model_selection
 import pandas as pd
 import numpy as np
@@ -22,11 +23,14 @@ for _ in range(1000):
         "target": target
     }, ignore_index=True)
 
-clf = tree.DecisionTreeClassifier()
+clf1 = tree.DecisionTreeClassifier()
+clf2 = ensemble.RandomForestClassifier()
 X = df[["A", "B", "C"]]
-clf.fit(X, df["target"])
-code.interact(local=locals())
-joblib.dump(clf, "model.joblib")
+clf1.fit(X, df["target"])
+clf2.fit(X, df["target"])
+#code.interact(local=locals())
+joblib.dump(clf1, "model1.joblib")
+joblib.dump(clf2, "model1.joblib")
 json.dump({
     "column_names": ["A", "B", "C"],
     "target_name": "target"
