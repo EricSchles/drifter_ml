@@ -8,83 +8,123 @@ from scipy import stats
 from sklearn.model_selection import cross_val_score
 
 # classification tests
-def precision_lower_boundary_per_class(clf, test_data, target_name, column_names, lower_boundary):
-    y = test_data[target_name]
-    y_pred = clf.predict(test_data[column_names])
-    
-    for class_info in lower_boundary["per_class"]:
-        klass = class_info["class"]
-        y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
-        y_class = y[y == klass]
-        if metrics.precision_score(y_class, y_pred_class) < class_info["precision_score"]:
-            return False
-    return True
+class ClassificationTestSuite():
+    def __init__(self, clf_name, clf_metadata, data_filename):
+        clf, metadata, colum_names, target_name, test_data = self.get_parameters(
+            clf_name, clf_metadata, data_filename)
+        self.clf = clf
+        self.data_filename
+        self.metadata = metadata
+        self.column_names = column_names
+        self.target_name = target_name
+        self.test_data = test_data
+        self.y = test_data[target_name]
+        self.X = test_data[column_names]
+        self.classes = set(self.y)
+        
+    def get_parameters(self, clf_name, clf_metadata, data_filename):
+        clf = joblib.load(clf_name)
+        metadata = json.load(open(clf_metadata, "r"))
+        column_names = metadata["column_names"]
+        target_name = metadata["target_name"]
+        test_data = pd.read_csv(data_name)
+        return clf, metadata, column_names, target_name, test_data
 
-def recall_lower_boundary_per_class(clf, test_data, target_name, column_names, lower_boundary):
-    y = test_data[target_name]
-    y_pred = clf.predict(test_data[column_names])
-    
-    for class_info in lower_boundary["per_class"]:
-        klass = class_info["class"]
-        y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
-        y_class = y[y == klass]
-        if metrics.recall_score(y_class, y_pred_class) < class_info["recall_score"]:
-            return False
-    return True
-
-def f1_lower_boundary_per_class(clf, test_data, target_name, column_names, lower_boundary):
-    y = test_data[target_name]
-    y_pred = clf.predict(test_data[column_names])
-    
-    for class_info in lower_boundary["per_class"]:
-        klass = class_info["class"]
-        y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
-        y_class = y[y == klass]
-        if metrics.f1_score(y_class, y_pred_class) < class_info["f1_score"]:
-            return False
-    return True
-
-def get_parameters(clf_name, clf_metadata, data_name):
-    clf = joblib.load(clf_name)
-    metadata = json.load(open(clf_metadata, "r"))
-    column_names = metadata["column_names"]
-    target_name = metadata["target_name"]
-    test_data = pd.read_csv(data_name)
-    return clf, metadata, colum_names, target_name, test_data
-
-def classifier_testing(clf_name, clf_metadata, data_name, precision_lower_boundary, recall_lower_boundary, f1_lower_boundary):
-    clf, metadata, colum_names, target_name, test_data = get_parameters(clf_name, clf_metadata, data_name)
-    precision_test = precision_lower_boundary_per_class(clf, test_data, target_name, column_names, precision_lower_boundary)
-    recall_test = recall_lower_boundary_per_class(clf, test_data, target_name, column_names, recall_lower_boundary)
-    f1_test = f1_lower_boundary_per_class(clf, test_data, target_name, column_names, f1_lower_boundary)
-    if precision_test and recall_test and f1_test:
+    def precision_lower_boundary_per_class(self, lower_boundary):
+        y_pred = self.clf.predict(self.X)
+        for class_info in lower_boundary["per_class"]:
+            klass = class_info["class"]
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
+            if metrics.precision_score(y_class, y_pred_class) < class_info["precision_score"]:
+                return False
         return True
-    else:
-        return False
-    
+
+    def recall_lower_boundary_per_class(self, lower_boundary):
+        y_pred = self.clf.predict(self.X)
+        for class_info in lower_boundary["per_class"]:
+            klass = class_info["class"]
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
+            if metrics.recall_score(y_class, y_pred_class) < class_info["recall_score"]:
+                return False
+        return True
+
+    def f1_lower_boundary_per_class(self, clf, test_data, target_name, column_names, lower_boundary):
+        y_pred = self.clf.predict(self.X)
+        for class_info in lower_boundary["per_class"]:
+            klass = class_info["class"]
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
+            if metrics.f1_score(y_class, y_pred_class) < class_info["f1_score"]:
+                return False
+        return True
+
+    def classifier_testing(self, precision_lower_boundary, recall_lower_boundary, f1_lower_boundary):
+        precision_test = self.precision_lower_boundary_per_class(precision_lower_boundary)
+        recall_test = self.recall_lower_boundary_per_class(recall_lower_boundary)
+        f1_test = self.f1_lower_boundary_per_class(f1_lower_boundary)
+        if precision_test and recall_test and f1_test:
+            return True
+        else:
+            return False
+
+    def prediction_run_time_stress_test(performance_boundary):
+        for performance_info in performance_boundary:
+            n = int(performance_info["sample_size"])
+            max_run_time = float(performance_info["max_run_time"])
+            data = self.X.sample(n, replace=True)
+            start_time = time.time()
+            self.clf.predict(data)
+            model_run_time = time.time() - start_time
+            if model_run_time > run_time:
+                return False
+        return True
+
+
+class RegressionTestSuite():
+    def __init__(self, reg_name, reg_metadata, data_filename):
+        reg, reg_metadata, colum_names, target_name, test_data = self.get_parameters(
+            reg_name, reg_metadata, data_filename)
+        self.reg = reg
+        self.data_filename
+        self.metadata = metadata
+        self.column_names = column_names
+        self.target_name = target_name
+        self.test_data = test_data
+        self.y = test_data[target_name]
+        self.X = test_data[column_names]
+        
+    def get_parameters(self, reg_name, reg_metadata, data_filename):
+        reg = joblib.load(reg_name)
+        metadata = json.load(open(reg_metadata, "r"))
+        column_names = metadata["column_names"]
+        target_name = metadata["target_name"]
+        test_data = pd.read_csv(data_name)
+        return reg, metadata, column_names, target_name, test_data
+
+    def mse_upper_boundary(upper_boundary):
+        y_pred = self.reg.predict(self.X)
+        if metrics.mean_squared_error(self.y, y_pred) > upper_boundary:
+            return False
+        return True
+
+    def mae_upper_boundary(upper_boundary):
+        y_pred = self.reg.predict(self.X)
+        if metrics.median_absolute_error(self.y, y_pred) > upper_boundary:
+            return False
+        return True
+
+    def regression_testing(mse_upper_boundary, mae_upper_boundary):
+        mse_test = self.mse_upper_boundary(mse_upper_boundary)
+        mae_test = self.mae_upper_boundary(mae_upper_boundary)
+        if mse_test and mae_test:
+            return True
+        else:
+            return False
+
+
 # regression tests
-def mse_upper_boundary(reg, test_data, target_name, column_names, upper_boundary):
-    y = test_data[target_name]
-    y_pred = reg.predict(test_data[column_names])
-    if metrics.mean_squared_error(y, y_pred) > upper_boundary:
-        return False
-    return True
-
-def mae_upper_boundary(reg, test_data, target_name, column_names, upper_boundary):
-    y = test_data[target_name]
-    y_pred = reg.predict(test_data[column_names])
-    if metrics.median_absolute_error(y, y_pred) > upper_boundary:
-        return False
-    return True
-
-def regression_testing(reg_name, reg_metadata, data_name, mse_upper_boundary, mae_upper_boundary):
-    reg, metadata, colum_names, target_name, test_data = get_parameters(reg_name, reg_metadata, data_name)
-    mse_test = mse_upper_boundary(reg, test_data, target_name, column_names, mse_upper_boundary)
-    mae_test = mae_upper_boundary(reg, test_data, target_name, column_names, mae_upper_boundary)
-    if mse_test and mae_test:
-        return True
-    else:
-        return False
 
 def prediction_run_time_stress_test(model, test_data, column_names, performance_boundary):
     X = test_data[column_names]
