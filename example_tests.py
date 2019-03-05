@@ -69,7 +69,7 @@ class ClassificationTestSuite():
         else:
             return False
 
-    def prediction_run_time_stress_test(performance_boundary):
+    def run_time_stress_test(self, performance_boundary):
         for performance_info in performance_boundary:
             n = int(performance_info["sample_size"])
             max_run_time = float(performance_info["max_run_time"])
@@ -123,21 +123,18 @@ class RegressionTestSuite():
         else:
             return False
 
+    def run_time_stress_test(self, performance_boundary):
+        for performance_info in performance_boundary:
+            n = int(performance_info["sample_size"])
+            max_run_time = float(performance_info["max_run_time"])
+            data = self.X.sample(n, replace=True)
+            start_time = time.time()
+            self.reg.predict(data)
+            model_run_time = time.time() - start_time
+            if model_run_time > run_time:
+                return False
+        return True
 
-# regression tests
-
-def prediction_run_time_stress_test(model, test_data, column_names, performance_boundary):
-    X = test_data[column_names]
-    for performance_info in performance_boundary:
-        n = int(performance_info["sample_size"])
-        max_run_time = float(performance_info["max_run_time"])
-        data = X.sample(n, replace=True)
-        start_time = time.time()
-        model.predict(data)
-        model_run_time = time.time() - start_time
-        if model_run_time > run_time:
-            return False
-    return True
 
 # Comparing models
 def two_model_prediction_run_time_stress_test(model_one, model_two, test_data, column_names, performance_boundary):
