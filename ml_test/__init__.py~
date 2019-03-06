@@ -1,0 +1,9 @@
+__version__ = '0.1'
+
+from . import classification_test
+from . import columnar_test
+from . import regression_test
+from . import structural_test
+
+__all__ = ["classification_test", "columnar_test",
+           "regression_test", "structural_test"]
