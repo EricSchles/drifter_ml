@@ -8,7 +8,7 @@ from scipy import stats
 from sklearn.model_selection import cross_val_score
 
 # classification tests
-class ClassificationTestSuite():
+class ModelClassificationTestSuite():
     def __init__(self, clf_name, clf_metadata, data_filename):
         clf, metadata, colum_names, target_name, test_data = self.get_parameters(
             clf_name, clf_metadata, data_filename)
@@ -21,7 +21,9 @@ class ClassificationTestSuite():
         self.y = test_data[target_name]
         self.X = test_data[column_names]
         self.classes = set(self.y)
-        
+
+    # potentially include hyper parameters from the model
+    # algorithm could be stored in metadata
     def get_parameters(self, clf_name, clf_metadata, data_filename):
         clf = joblib.load(clf_name)
         metadata = json.load(open(clf_metadata, "r"))
@@ -81,7 +83,15 @@ class ClassificationTestSuite():
                 return False
         return True
 
-class RegressionTestSuite():
+# post training - 
+# todo: add model metric outside of some standard deviation
+# for many models
+# is the model non-empty
+# is the model deserializable
+
+# test against training and scoring
+
+class ModelRegressionTestSuite():
     def __init__(self, reg_name, reg_metadata, data_filename):
         reg, reg_metadata, colum_names, target_name, test_data = self.get_parameters(
             reg_name, reg_metadata, data_filename)
