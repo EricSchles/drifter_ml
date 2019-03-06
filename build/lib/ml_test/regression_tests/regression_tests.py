@@ -1,3 +1,12 @@
+import joblib
+import json
+from sklearn import metrics
+import numpy as np
+import time
+from sklearn import neighbors
+from scipy import stats
+from sklearn.model_selection import cross_val_score
+
 class ModelRegressionTestSuite():
     def __init__(self, reg_name, reg_metadata, data_filename):
         reg, reg_metadata, colum_names, target_name, test_data = self.get_parameters(

@@ -24,7 +24,8 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    packages=["ml_test"],
+    packages=["ml_test", 'ml_test.classification_tests', 'ml_test.columnar_tests',
+              'ml_test.regression_tests', 'ml_test.structural_tests'],
     include_package_data=True,
     install_requires=["sklearn", "scipy", "numpy"],
 )
