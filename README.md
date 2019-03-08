@@ -8,12 +8,21 @@ The tests will be readable enough that anyone can extend them to other framework
 
  * Testing Against Metrics
  	* Classification Tests
- 		* precision lower boundary
- 		* recall lower boundary
- 		* f1 score lower boundary
+ 		* Rule Based Testing:
+	 		* precision lower boundary
+	 		* recall lower boundary
+	 		* f1 score lower boundary
+ 		* Decision Based Testing:
+ 			* precision fold below average
+ 			* recall fold below average
+ 			* f1 fold below average
  	* Regression Tests
- 		* Mean Squared Error upper boundary
- 		* Mean Absolute Error upper boundary
+ 		* Rule Based Testing:
+ 		 	* Mean Squared Error upper boundary
+ 			* Median Absolute Error upper boundary
+ 		* Decision Based Testing:
+ 			* Mean Squared Error fold above average
+ 			* Median Absolute Error fold above average
  * Testing Against Run Time Performance
  	* prediction run time for simulated samples of size X
  * Testing Against Input Data
