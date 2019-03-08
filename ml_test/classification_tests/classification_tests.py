@@ -6,16 +6,21 @@ import time
 from sklearn import neighbors
 from scipy import stats
 from sklearn.model_selection import cross_val_score
+from sklearn import base
+from typing import Optional
 
-class ModelClassificationTestSuite():
-    def __init__(self, clf_name, clf_metadata, data_filename):
-        clf, metadata, colum_names, target_name, test_data = self.get_parameters(
-            clf_name, clf_metadata, data_filename)
+class ClassificationTests():
+    def __init__(self,
+                 clf=None: base.BaseEstimator,
+                 test_data=None: pd.DataFrame,
+                 target_name='': str,
+                 column_names='': str,
+                 clf_filename='': str,
+                 data_filename='': str):
+        if clf_filename != '' and data_filename != '': 
+            clf, test_data = self.get_parameters(
+                clf_name, data_filename)
         self.clf = clf
-        self.data_filename
-        self.metadata = metadata
-        self.column_names = column_names
-        self.target_name = target_name
         self.test_data = test_data
         self.y = test_data[target_name]
         self.X = test_data[column_names]
@@ -23,15 +28,12 @@ class ModelClassificationTestSuite():
 
     # potentially include hyper parameters from the model
     # algorithm could be stored in metadata
-    def get_parameters(self, clf_name, clf_metadata, data_filename):
+    def get_parameters(self, clf_name: str, data_filename: str):
         clf = joblib.load(clf_name)
-        metadata = json.load(open(clf_metadata, "r"))
-        column_names = metadata["column_names"]
-        target_name = metadata["target_name"]
         test_data = pd.read_csv(data_name)
-        return clf, metadata, column_names, target_name, test_data
+        return clf, test_data
 
-    def precision_lower_boundary_per_class(self, lower_boundary):
+    def precision_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
         for class_info in lower_boundary["per_class"]:
             klass = class_info["class"]
@@ -41,7 +43,7 @@ class ModelClassificationTestSuite():
                 return False
         return True
 
-    def recall_lower_boundary_per_class(self, lower_boundary):
+    def recall_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
         for class_info in lower_boundary["per_class"]:
             klass = class_info["class"]
@@ -51,7 +53,7 @@ class ModelClassificationTestSuite():
                 return False
         return True
 
-    def f1_lower_boundary_per_class(self, clf, test_data, target_name, column_names, lower_boundary):
+    def f1_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
         for class_info in lower_boundary["per_class"]:
             klass = class_info["class"]
@@ -61,7 +63,10 @@ class ModelClassificationTestSuite():
                 return False
         return True
 
-    def classifier_testing(self, precision_lower_boundary, recall_lower_boundary, f1_lower_boundary):
+    def classifier_testing(self,
+                           precision_lower_boundary: dict,
+                           recall_lower_boundary: dict,
+                           f1_lower_boundary: dict):
         precision_test = self.precision_lower_boundary_per_class(precision_lower_boundary)
         recall_test = self.recall_lower_boundary_per_class(recall_lower_boundary)
         f1_test = self.f1_lower_boundary_per_class(f1_lower_boundary)
@@ -70,7 +75,7 @@ class ModelClassificationTestSuite():
         else:
             return False
 
-    def run_time_stress_test(self, performance_boundary):
+    def run_time_stress_test(self, performance_boundary: dict):
         for performance_info in performance_boundary:
             n = int(performance_info["sample_size"])
             max_run_time = float(performance_info["max_run_time"])
@@ -83,23 +88,35 @@ class ModelClassificationTestSuite():
         return True
 
 class ClassifierComparison():
-    def __init__(self, clf_one_name, clf_one_metadata, clf_two_name, clf_two_metadata, data_filename):
-        clf_one, metadata_one, colum_names, target_name, test_data = self.get_parameters(
-            clf_one_name, clf_one_metadata, data_filename)
-        clf_two, metadata_two, colum_names, target_name, test_data = self.get_parameters(
-            clf_two_name, clf_two_metadata, data_filename)
+    def __init__(self,
+                 clf_one=None: Optional[base.BaseEstimator],
+                 clf_two=None: Optional[base.BaseEstimator],
+                 test_data=None: Optional[pd.DataFrame],
+                 target_name='': str,
+                 column_names='': str,
+                 clf_one_filename='': Optional[str],
+                 clf_two_filename='': Optional[str],
+                 data_filename='': Optional[str]):
+        if clf_one_filename != '' and clf_two_filename != '' and data_filename != '':
+            clf_one, test_data = self.get_parameters(
+                clf_one_filename, data_filename)
+            clf_two, test_data = self.get_parameters(
+                clf_two_filename, data_filename)
         self.clf_one = clf_one
         self.clf_two = clf_two
         self.data_filename
-        self.metadata_one = metadata_one
-        self.metadata_two = metadata_two
         self.column_names = column_names
         self.target_name = target_name
         self.test_data = test_data
         self.y = test_data[target_name]
         self.X = test_data[column_names]
         self.classes = set(self.y)
-        
+
+    def get_parameters(self, clf_name, data_filename):
+        clf = joblib.load(clf_name)
+        test_data = pd.read_csv(data_name)
+        return clf, test_data
+
     def two_model_prediction_run_time_stress_test(self, performance_boundary):
         for performance_info in performance_boundary:
             n = int(performance_info["sample_size"])
