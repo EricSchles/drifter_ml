@@ -16,12 +16,7 @@ class ClassificationTests():
                  clf,
                  test_data,
                  target_name,
-                 column_names,
-                 clf_filename,
-                 data_filename):
-        if clf_filename != '' and data_filename != '': 
-            clf, test_data = self.get_parameters(
-                clf_name, data_filename)
+                 column_names):
         self.clf = clf
         self.test_data = test_data
         self.y = test_data[target_name]
@@ -30,11 +25,6 @@ class ClassificationTests():
 
     # potentially include hyper parameters from the model
     # algorithm could be stored in metadata
-    def get_parameters(self, clf_name: str, data_filename: str):
-        clf = joblib.load(clf_name)
-        test_data = pd.read_csv(data_name)
-        return clf, test_data
-
     def precision_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
         for klass in self.classes:
@@ -92,29 +82,15 @@ class ClassifierComparison():
                  clf_two,
                  test_data,
                  target_name,
-                 column_names,
-                 clf_one_filename,
-                 clf_two_filename,
-                 data_filename):
-        if clf_one_filename != '' and clf_two_filename != '' and data_filename != '':
-            clf_one, test_data = self.get_parameters(
-                clf_one_filename, data_filename)
-            clf_two, test_data = self.get_parameters(
-                clf_two_filename, data_filename)
+                 column_names):
         self.clf_one = clf_one
         self.clf_two = clf_two
-        self.data_filename
         self.column_names = column_names
         self.target_name = target_name
         self.test_data = test_data
         self.y = test_data[target_name]
         self.X = test_data[column_names]
         self.classes = set(self.y)
-
-    def get_parameters(self, clf_name, data_filename):
-        clf = joblib.load(clf_name)
-        test_data = pd.read_csv(data_name)
-        return clf, test_data
 
     def two_model_prediction_run_time_stress_test(self, performance_boundary):
         for performance_info in performance_boundary:

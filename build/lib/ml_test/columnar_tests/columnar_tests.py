@@ -8,9 +8,8 @@ from scipy import stats
 from sklearn.model_selection import cross_val_score
 
 class DataSanitization(): 
-    def __init__(self, data_filename):
-        self.data_filename
-        self.data = pd.read_csv(data_filename)
+    def __init__(self, data):
+        self.data = data
         
     def is_complete(self, column):
         return self.data[column].isnull().sum() == 0
@@ -34,6 +33,14 @@ class DataSanitization():
         return self.data[self.data[column_one] < self.data[column_two]].all()
 
 class ColumnarData():
+    def __init__(self,
+                 historical_data,
+                 new_data,
+                 column_names):
+        self.new_data = new_data
+        self.historical_data = historical_data
+        
+                 
     def similiar_correlation(correlation_lower_bound, new_data, historical_data, column_names, pvalue_threshold=0.05):
         for column_name in column_names:
             correlation_info = stats.spearmanr(new_data[column_name], historical_data[column_name])

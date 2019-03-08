@@ -1,4 +1,4 @@
-from .regression_tests import ModelRegressionTestSuite
+from .regression_tests import RegressionTests
 from .regression_tests import RegressionComparison
 
-__all__ = ["ModelRegressionTestSuite", "RegressionComparison"]
+__all__ = ["RegressionTests", "RegressionComparison"]

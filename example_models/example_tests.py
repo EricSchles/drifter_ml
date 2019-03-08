@@ -12,7 +12,7 @@ def test():
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
                                                           target_name,
-                                                          column_names, '', '')
+                                                          column_names)
     classes = list(df.target.unique())
     assert test_suite.classifier_testing(
         {klass: 0.9 for klass in classes},
