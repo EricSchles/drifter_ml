@@ -35,3 +35,4 @@ json.dump({
     "column_names": ["A", "B", "C"],
     "target_name": "target"
     }, open("model_metadata.json", "w"))
+df.to_csv("data.csv")
