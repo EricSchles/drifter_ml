@@ -35,18 +35,39 @@ class ColumnarData():
     def __init__(self, historical_data, new_data):
         self.new_data = new_data
         self.historical_data = historical_data
-        
-    def similiar_correlation(self, column, correlation_lower_bound, pvalue_threshold=0.05):
-        correlation_info = stats.spearmanr(self.new_data[column_name], self.historical_data[column_name])
+
+    def is_normal(self, column):
+        new_data_result = stats.normaltest(self.new_data[column])
+        historical_data_result = stats.normaltest(self.historical_data[column])
+        if new_data_result.pvalue > 0.05 and historical_data_result.pvalue > 0.05:
+            return True
+        return False
+    
+    def pearson_similiar_correlation(self, column, correlation_lower_bound, pvalue_threshold=0.05):
+        if not self.is_normal(column):
+            raise Exception("""
+            Data is likely not normally distributed and therefore pearson is not
+            a valid test to run""")
+        correlation_info = stats.pearsonr(self.new_data[column],
+                                          self.historical_data[column])
         if correlation_info.pvalue > pvalue_threshold:
             return False
         if correlation_info.correlation < correlation_lower_bound:
             return False
         return True
 
-    def similiar_distribution(self, column, pvalue_threshold=0.05):
-        distribution_info = stats.ks_2samp(self.new_data[column_name],
-                                           self.historical_data[column_name])
+    def spearman_similiar_correlation(self, column, correlation_lower_bound, pvalue_threshold=0.05):
+        correlation_info = stats.spearmanr(self.new_data[column],
+                                           self.historical_data[column])
+        if correlation_info.pvalue > pvalue_threshold:
+            return False
+        if correlation_info.correlation < correlation_lower_bound:
+            return False
+        return True
+
+    def ks_2samp_similiar_distribution(self, column, pvalue_threshold=0.05):
+        distribution_info = stats.ks_2samp(self.new_data[column],
+                                           self.historical_data[column])
         if distribution_info.pvalue < pvalue_threshold:
             return False
         return True
