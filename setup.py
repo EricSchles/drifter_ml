@@ -9,12 +9,12 @@ README = (HERE / "README.md").read_text()
 
 # This call to setup() does all the work
 setup(
-    name="ml_testing",
+    name="drifter_ml",
     version="0.1",
     description="Testing for models confirming to the scikit-learn api",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/EricSchles/ml_testing",
+    url="https://github.com/EricSchles/drifter_ml",
     author="Eric Schles",
     author_email="ericschles@gmail.com",
     license="MIT",
@@ -24,8 +24,8 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    packages=["ml_test", 'ml_test.classification_tests', 'ml_test.columnar_tests',
-              'ml_test.regression_tests', 'ml_test.structural_tests'],
+    packages=["drifter_ml", 'drifter_ml.classification_tests', 'drifter_ml.columnar_tests',
+              'drifter_ml.regression_tests', 'drifter_ml.structural_tests'],
     include_package_data=True,
     install_requires=["sklearn", "scipy", "numpy"],
 )

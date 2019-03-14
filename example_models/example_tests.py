@@ -1,4 +1,4 @@
-from ml_test import classification_tests
+from drifter_ml import classification_tests
 import joblib
 import pandas as pd
 import code
