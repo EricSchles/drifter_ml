@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to drifter_ml's documentation!
+Welcome to Drifter ML's documentation!
 ======================================
 
 .. toctree::
