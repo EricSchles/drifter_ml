@@ -53,3 +53,10 @@ Some known issues with this, any machine learning tests are going to require hum
 * add these tests: https://www.datasciencecentral.com/profiles/blogs/a-plethora-of-original-underused-statistical-tests
 * clustering for classification
 
+## References
+
+* https://dzone.com/articles/quality-assurancetesting-the-machine-learning-mode
+* https://medium.com/datadriveninvestor/how-to-perform-quality-assurance-for-ml-models-cef77bbbcfb
+* Explaination of UAT: https://www.techopedia.com/definition/3887/user-acceptance-testing-uat
+* https://mice.cs.columbia.edu/getTechreport.php?techreportID=419&format=pdf
+* https://www.xenonstack.com/blog/unit-testing-tdd-bdd-deep-machine-learning/
