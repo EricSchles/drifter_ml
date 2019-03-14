@@ -57,5 +57,3 @@ These three classes of machine learning system evaluation form a minimal referen
 
 There is a fourth class of tests that are unclear 
 
-
-
