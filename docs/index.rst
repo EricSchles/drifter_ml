@@ -10,6 +10,12 @@ Welcome to drifter_ml's documentation!
    :maxdepth: 2
    
    introduction
+   designing-your-own-tests
+   classification-tests
+   regression-tests
+   columnar-tests
+   structural-tests
+   closing-thoughts
 
 Indices and tables
 ==================
