@@ -6,7 +6,8 @@ Welcome to Drifter, a tool to help you test your machine learning models.  This 
 
 The tests come in two general flavors, component tests, like this one that tests for a minimum precision per class:
 
-```python
+
+```
 from drifter_ml.classification_tests import ClassificationTests
 import joblib
 import pandas as pd
@@ -24,7 +25,8 @@ def test_precision():
 
 And an entire test suite that tests for precision, recall and f1 score in one test:
 
-```python
+
+```
 from drifter_ml.classification_tests import ClassificationTests
 import joblib
 import pandas as pd
@@ -48,7 +50,7 @@ def test_precision():
 
 The expectation at present is that all models follow the scikit learn api, which means there is an expectation of a `fit` and `predict` on all models.  This may appear exclusionary, but you can infact wrap keras models with scikit-learn style objects, allowing for the same api:
 
-```python
+```
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
@@ -84,4 +86,3 @@ print(results.mean())
 ```
 
 This means that traditional machine learning and deep learning are available for testing out of the box!
-
