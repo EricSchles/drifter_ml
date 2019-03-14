@@ -4,6 +4,8 @@ The goal of this module is to create a flexible and easy to use module for testi
 
 The tests will be readable enough that anyone can extend them to other frameworks and APIs with the major notions kept the same, but more or less the ideas will be extended, no work will be taken in this library to extend passed the scikit-learn API.
 
+You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more detailed explaination.
+
 ## Tests Covered
 
  * Testing Against Metrics
