@@ -55,5 +55,10 @@ These three classes of machine learning system evaluation form a minimal referen
 
 3. Make sure everything actually goes from point A (the start of your system) to point B (the end of your system).
 
-There is a fourth class of tests that are unclear 
+There is a fourth class of tests that are unclear regarding the ethical nature of the algorithm you are building.  These tests are unfortunately poorly defined at the present moment and very context specific, so all that can be offered is an example of what one might do:
 
+Suppose you worked for a bank and were writing a piece of software that determined who gets a loan.  Assuming a fair system folks from all races, genders, ages would get loans at a similar rate or would perhaps not be rejected due to race, gender, age or other factors.
+
+If when accounting for some protected variable like race, gender, or age your algorithm does something odd compared to when not accounting for race, gender, or age then your algorithm may be biased.  
+
+However, this field of research is far from complete.  There are some notions of testing for this, at the present moment they appear to be in need of further research and analysis.  However, if possible, one should account for such a set of tests if possible, to ensure your algorithm is fair, unbiased and treats all individuals equally and fairly.
