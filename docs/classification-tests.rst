@@ -52,7 +52,7 @@ Suppose you had the following model::
 	clf = tree.DecisionTreeClassifier()
 	X = df[["A", "B", "C"]]
 	clf.fit(X, df["target"])
-	joblib.dump(clf1, "model1.joblib")
+	joblib.dump(clf, "model.joblib")
 	df.to_csv("data.csv")
 
 We could write the following set of tests to ensure this model does well::
@@ -65,7 +65,7 @@ We could write the following set of tests to ensure this model does well::
 	    df = pd.read_csv("data.csv")
 	    column_names = ["A", "B", "C"]
 	    target_name = "target"
-	    clf = joblib.load("model1.joblib")
+	    clf = joblib.load("model.joblib")
 
 	    test_suite = ClassificationTests(clf, 
 	    df, target_name, column_names)
@@ -78,7 +78,7 @@ We could write the following set of tests to ensure this model does well::
 	    df = pd.read_csv("data.csv")
 	    column_names = ["A", "B", "C"]
 	    target_name = "target"
-	    clf = joblib.load("model1.joblib")
+	    clf = joblib.load("model.joblib")
 
 	    test_suite = ClassificationTests(clf, 
 	    df, target_name, column_names)
@@ -91,7 +91,7 @@ We could write the following set of tests to ensure this model does well::
 	    df = pd.read_csv("data.csv")
 	    column_names = ["A", "B", "C"]
 	    target_name = "target"
-	    clf = joblib.load("model1.joblib")
+	    clf = joblib.load("model.joblib")
 
 	    test_suite = ClassificationTests(clf, 
 	    df, target_name, column_names)
@@ -111,7 +111,7 @@ Or you could simply write one test for all three::
 	    df = pd.read_csv("data.csv")
 	    column_names = ["A", "B", "C"]
 	    target_name = "target"
-	    clf = joblib.load("model1.joblib")
+	    clf = joblib.load("model.joblib")
 
 	    test_suite = ClassificationTests(clf, 
 	    df, target_name, column_names)
@@ -154,7 +154,7 @@ Additionally, you can test to ensure your classifier performs, even under load. 
 	clf = tree.DecisionTreeClassifier()
 	X = df[["A", "B", "C"]]
 	clf.fit(X, df["target"])
-	joblib.dump(clf1, "model1.joblib")
+	joblib.dump(clf, "model.joblib")
 	df.to_csv("data.csv")
 
 Now we test to ensure the model predicts new labels within our constraints::
@@ -163,11 +163,11 @@ Now we test to ensure the model predicts new labels within our constraints::
 	import joblib
 	import pandas as pd
 
-	def test_precision_recall_f1():
+	def test_precision_recall_f1_speed():
 	    df = pd.read_csv("data.csv")
 	    column_names = ["A", "B", "C"]
 	    target_name = "target"
-	    clf = joblib.load("model1.joblib")
+	    clf = joblib.load("model.joblib")
 
 	    test_suite = ClassificationTests(clf, 
 	    df, target_name, column_names)
