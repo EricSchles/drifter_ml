@@ -91,12 +91,12 @@ class ClassificationTests():
             if score < lower_boundary:
                 return False
         return True
-    
+
     def cross_val_classifier_testing(self,
                                      precision_lower_boundary: float,
                                      recall_lower_boundary: float,
                                      f1_lower_boundary: float,
-                                     cv=cv):
+                                     cv=3):
         precision_test = self.cross_val_precision_lower_boundary(
             precision_lower_boundary, cv=cv)
         recall_test = self.cross_val_recall_lower_boundary(
@@ -107,6 +107,53 @@ class ClassificationTests():
             return True
         else:
             return False
+
+    def describe_scores(self, scores, method):
+        if method == "normal":
+            return np.mean(scores), np.std(scores)
+        elif method == "ranked":
+            return np.median(scores), stats.iqr(scores)
+        
+    def auto_cross_val_precision_anomaly_detection(self, tolerance, method="normal", cv=10):
+        scores = self.precision_cv()
+        center, spread = self.describe_scores(scores, method)
+        for score in scores:
+            if score < center-(spread*tolerance):
+                return False
+        return True
+
+    def auto_cross_val_f1_anomaly_detection(self, tolerance, method="normal", cv=10):
+        scores = self.f1_cv()
+        center, spread = self.describe_scores(scores, method)
+        for score in scores:
+            if score < center-(spread*tolerance):
+                return False
+        return True
+
+    def auto_cross_val_recall_anomaly_detection(self, tolerance, method="normal", cv=3):
+        scores = self.recall_cv()
+        center, spread = self.describe_scores(scores, method)
+        for score in scores:
+            if score < center-(spread*tolerance):
+                return False
+        return True
+
+    def auto_cross_val_classifier_testing(self,
+                                          precision_lower_boundary: int,
+                                          recall_lower_boundary: int,
+                                          f1_lower_boundary: int,
+                                          cv=10):
+        precision_test = self.auto_cross_val_precision_lower_boundary(
+            precision_lower_boundary, cv=cv)
+        recall_test = self.auto_cross_val_recall_lower_boundary(
+            recall_lower_boundary, cv=cv)
+        f1_test = self.auto_cross_val_f1_lower_boundary(
+            f1_lower_boundary, cv=cv)
+        if precision_test and recall_test and f1_test:
+            return True
+        else:
+            return False
+
 
     # potentially include hyper parameters from the model
     # algorithm could be stored in metadata
