@@ -51,6 +51,12 @@ jobs:
             . venv/bin/activate
             python -m pip install pytest --user
       - run:
+          name: Install library
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            python setup.py install --user
+      - run:
           name: run tests
           command: |
             . venv/bin/activate
