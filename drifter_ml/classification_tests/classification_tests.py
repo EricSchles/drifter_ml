@@ -6,7 +6,7 @@ import pandas as pd
 import time
 from sklearn import neighbors
 from scipy import stats
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_validate, cross_val_predict
 from sklearn import base
 from typing import Optional
 import code
@@ -22,6 +22,91 @@ class ClassificationTests():
         self.y = test_data[target_name]
         self.X = test_data[column_names]
         self.classes = set(self.y)
+
+    def precision_cv(self):
+        precision = metrics.make_scorer(metrics.precision_score)
+        return cross_validate(self.clf, self.X,
+                              self.y, cv=cv,
+                              scoring=(precision))
+
+    def cross_val_precision_anomaly_detection(self, tolerance, cv=3):
+        scores = self.precision_cv()
+        avg = st.mean(scores)
+        deviance_from_avg = [abs(score - avg)
+                             for score in scores]
+        for deviance in deviances_from_avg:
+            if deviance > tolerance:
+                return False
+        return True
+
+    def cross_val_precision_lower_boundary(self, lower_boundary, cv=3):
+        scores = self.precision_cv()
+        for score in scores:
+            if score < lower_boundary:
+                return False
+        return True
+    
+    def recall_cv(self):
+        recall = metrics.make_scorer(metrics.recall_score)
+        return cross_validate(self.clf, self.X,
+                              self.y, cv=cv,
+                              scoring=(recall))
+    
+    def cross_val_recall_anomaly_detection(self, tolerance, cv=3):
+        scores = self.recall_cv()
+        avg = st.mean(scores)
+        deviance_from_avg = [abs(score - avg)
+                             for score in scores]
+        for deviance in deviances_from_avg:
+            if deviance > tolerance:
+                return False
+        return True
+
+    def cross_val_recall_lower_boundary(self, lower_boundary, cv=3):
+        scores = self.recall_cv()
+        for score in scores:
+            if score < lower_boundary:
+                return False
+        return True
+    
+    def f1_cv(self):
+        f1 = metrics.make_scorer(metrics.f1_score)
+        return cross_validate(self.clf, self.X,
+                              self.y, cv=cv,
+                              scoring=(f1))
+    
+    def cross_val_f1_anomaly_detection(self, tolerance, cv=3):
+        scores = self.f1_cv()
+        avg = st.mean(scores)
+        deviance_from_avg = [abs(score - avg)
+                             for score in scores]
+        for deviance in deviances_from_avg:
+            if deviance > tolerance:
+                return False
+        return True
+
+    def cross_val_f1_lower_boundary(self, lower_boundary, cv=3):
+        scores = self.f1_cv()
+        for score in scores:
+            if score < lower_boundary:
+                return False
+        return True
+    
+    def cross_val_classifier_testing(self,
+                                     precision_lower_boundary: float,
+                                     recall_lower_boundary: float,
+                                     f1_lower_boundary: float,
+                                     cv=cv):
+        precision_test = self.cross_val_precision_lower_boundary(
+            precision_lower_boundary, cv=cv)
+        recall_test = self.cross_val_recall_lower_boundary(
+            recall_lower_boundary, cv=cv)
+        f1_test = self.cross_val_f1_lower_boundary(
+            f1_lower_boundary, cv=cv)
+        if precision_test and recall_test and f1_test:
+            return True
+        else:
+            return False
 
     # potentially include hyper parameters from the model
     # algorithm could be stored in metadata
@@ -51,7 +136,7 @@ class ClassificationTests():
             if metrics.f1_score(y_class, y_pred_class) < lower_boundary[klass]:
                 return False
         return True
-
+        
     def classifier_testing(self,
                            precision_lower_boundary: dict,
                            recall_lower_boundary: dict,
@@ -106,37 +191,31 @@ class ClassifierComparison():
             if model_one_run_time > model_two_run_time:
                 return False
         return True
-
-    def precision_per_class(self, clf, test_data, target_name, column_names):
-        y = test_data[target_name]
-        classes = set(y)
-        y_pred = clf.predict(test_data[column_names])
+    
+    def precision_per_class(self, clf):
+        y_pred = clf.predict(self.X)
         precision = {}
-        for klass in classes:
-            y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
-            y_class = y[y == klass]
+        for klass in self.classes:
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
             precision[klass] = metrics.precision_score(y_class, y_pred_class) 
         return precision
 
-    def recall_per_class(self, clf, test_data, target_name, column_names):
-        y = test_data[target_name]
-        classes = set(y)
-        y_pred = clf.predict(test_data[column_names])
+    def recall_per_class(self, clf):
+        y_pred = clf.predict(self.X)
         recall = {}
-        for klass in classes:
-            y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
-            y_class = y[y == klass]
+        for klass in self.classes:
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
             recall[klass] = metrics.recall_score(y_class, y_pred_class)
         return recall
 
-    def f1_per_class(self, clf, test_data, target_name, column_names):
-        y = test_data[target_name]
-        classes = set(y)
-        y_pred = clf.predict(test_data[column_names])
+    def f1_per_class(self, clf):
+        y_pred = clf.predict(self.X)
         f1 = {}
-        for klass in classes:
-            y_pred_class = np.take(y_pred, y[y == klass].index, axis=0)
-            y_class = y[y == klass]
+        for klass in self.classes:
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
             f1[klass] = metrics.f1_score(y_class, y_pred_class)
         return f1
 
@@ -144,10 +223,80 @@ class ClassifierComparison():
         precision_one_test = self.precision_per_class(self.clf_one)
         recall_one_test = self.recall_per_class(self.clf_one)
         f1_one_test = self.f1_per_class(self.clf_one)
-        precision_two_test = precision_per_class(self.clf_two)
-        recall_two_test = recall_per_class(self.clf_two)
-        f1_two_test = f1_per_class(self.clf_two)
+        precision_two_test = self.precision_per_class(self.clf_two)
+        recall_two_test = self.recall_per_class(self.clf_two)
+        f1_two_test = self.f1_per_class(self.clf_two)
 
+        for klass in precision_one_test:
+            precision_result =  precision_one_test[klass] < precision_two_test[klass]
+            recall_result = recall_one_test[klass] < recall_two_test[klass]
+            f1_result = f1_one_test[klass] < f1_two_test[klass]
+            if precision_result or recall_result or f1_result:
+                return False
+        return True
+        
+    def cross_val_precision_per_class(self, clf, cv=3):
+        y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
+        precision = {}
+        for klass in self.classes:
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
+            precision[klass] = metrics.precision_score(y_class, y_pred_class) 
+        return precision
+
+    def cross_val_recall_per_class(self, clf, cv=3):
+        y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
+        recall = {}
+        for klass in self.classes:
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
+            recall[klass] = metrics.recall_score(y_class, y_pred_class)
+        return recall
+
+    def cross_val_f1_per_class(self, clf, cv=3):
+        y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
+        f1 = {}
+        for klass in self.classes:
+            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
+            y_class = self.y[self.y == klass]
+            f1[klass] = metrics.f1_score(y_class, y_pred_class)
+        return f1
+
+    def cross_val_two_model_classifier_testing(self, cv=3):
+        precision_one_test = self.cross_val_precision_per_class(self.clf_one, cv=cv)
+        recall_one_test = self.cross_val_recall_per_class(self.clf_one, cv=cv)
+        f1_one_test = self.cross_val_f1_per_class(self.clf_one, cv=cv)
+        precision_two_test = self.cross_val_precision_per_class(self.clf_two, cv=cv)
+        recall_two_test = self.cross_val_recall_per_class(self.clf_two, cv=cv)
+        f1_two_test = self.cross_val_f1_per_class(self.clf_two, cv=cv)
+
+        for klass in precision_one_test:
+            precision_result =  precision_one_test[klass] < precision_two_test[klass]
+            recall_result = recall_one_test[klass] < recall_two_test[klass]
+            f1_result = f1_one_test[klass] < f1_two_test[klass]
+            if precision_result or recall_result or f1_result:
+                return False
+        return True
+
+    def cross_val_precision(self, clf, cv=3):
+        y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
+        return metrics.precision_score(self.y, y_pred) 
+
+    def cross_val_recall(self, clf, cv=3):
+        y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
+        return metrics.recall_score(self.y, y_pred)
+
+    def cross_val_f1(self, clf, cv=3):
+        y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
+        return metrics.f1_score(self.y, y_pred)
+        
+    def cross_val_two_model_classifier_testing(self, cv=3):
+        precision_one_test = self.cross_val_precision(self.clf_one, cv=cv)
+        recall_one_test = self.cross_val_recall(self.clf_one, cv=cv)
+        f1_one_test = self.cross_val_f1(self.clf_one, cv=cv)
+        precision_two_test = self.cross_val_precision(self.clf_two, cv=cv)
+        recall_two_test = self.cross_val_recall(self.clf_two, cv=cv)
+        f1_two_test = self.cross_val_f1(self.clf_two, cv=cv)
         precision_result =  precision_one_test > precision_two_test
         recall_result = recall_one_test > recall_two_test
         f1_result = f1_one_test > f1_two_test

@@ -14,10 +14,25 @@ You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more
 	 		* precision lower boundary
 	 		* recall lower boundary
 	 		* f1 score lower boundary
+	 		* AUC lower boundary
+	 		* precision lower boundary per class
+	 		* recall lower boundary per class
+	 		* f1 score lower boundary per class
+	 		* AUC lower boundary per class
  		* Decision Based Testing:
  			* precision fold below average
  			* recall fold below average
  			* f1 fold below average
+ 			* AUC fold below average
+ 			* precision fold below average per class
+ 			* recall fold below average per class
+ 			* f1 fold below average per class
+ 			* AUC fold below average per class
+ 		* Against New Predictions
+ 			* proportion of predictions per class
+ 			* class imbalance tests
+ 			* probability distribution similarity tests
+ 			* calibration tests
  	* Regression Tests
  		* Rule Based Testing:
  		 	* Mean Squared Error upper boundary
@@ -35,11 +50,8 @@ You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more
  		If the number of clusters increases or decreases substantially that 
  		should be an indicator that the data has changed enough that things
  		should possibly be rerun
- 	* correlation testing - this is about ensuring that the correlation for a given column
- 							with previous data collected in the past does not change very much.
- 							If the data does change then the model should possibly be rerun.
-    * shape testing - this is about ensuring the general shape of for the given column does not
-    				  change much over time.  The idea here is the same as the correlation tests.
+ 	* correlation testing - this is about ensuring that the correlation for a given column with previous data collected in the past does not change very much. If the data does change then the model should possibly be rerun.
+    * shape testing - this is about ensuring the general shape of for the given column does not change much over time.  The idea here is the same as the correlation tests.
 
 ## Possible Issues
 

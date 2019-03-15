@@ -5,7 +5,8 @@ import numpy as np
 import time
 from sklearn import neighbors
 from scipy import stats
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_validate, cross_val_predict
+import statistics as st
 
 class RegressionTests():
     def __init__(self,
@@ -19,11 +20,57 @@ class RegressionTests():
         self.test_data = test_data
         self.y = test_data[target_name]
         self.X = test_data[column_names]
+
+    def mse_cv(self):
+        mse = metrics.make_scorer(metrics.mean_squared_error)
+        return cross_validate(self.reg, self.X,
+                              self.y, cv=cv,
+                              scoring=(mse))
         
+    def cross_val_mse_anomaly_detection(self, tolerance, cv=3):
+        scores = self.mse_cv()
+        avg = st.mean(scores)
+        deviances_from_avg = [abs(score - avg)
+                                for score in scores]
+        for deviance in deviances_from_avg:
+            if deviance > tolerance:
+                return False
+        return True
+    
+    def cross_val_mse_upper_boundary(self, upper_boundary, cv=3):
+        scores = self.mse_cv()
+        for score in scores:
+            if score > upper_boundary:
+                return False
+        return True
+    
     def mse_upper_boundary(self, upper_boundary):
         y_pred = self.reg.predict(self.X)
         if metrics.mean_squared_error(self.y, y_pred) > upper_boundary:
             return False
+        return True
+
+    def mae_cv(self):
+        mse = metrics.make_scorer(metrics.median_absolute_error)
+        return cross_validate(self.reg, self.X,
+                              self.y, cv=cv,
+                              scoring=(mae))
+    
+    def cross_val_mae_anomaly_detection(self, tolerance, cv=3):
+        scores = self.mae_cv()
+        avg = st.mean(scores)
+        deviances_from_avg = [abs(score - avg)
+                                for score in scores]
+        for deviance in deviances_from_avg:
+            if deviance > tolerance:
+                return False
+        return True
+
+    def cross_val_mae_upper_boundary(self, upper_boundary, cv=3):
+        scores = self.mae_cv()
+        for score in scores:
+            if score > upper_boundary:
+                return False
         return True
 
     def mae_upper_boundary(self, upper_boundary):
@@ -82,6 +129,14 @@ class RegressionComparison():
                 return False
         return True
 
+    def cross_val_mse_result(self, reg, cv=3):
+        y_pred = cross_val_predict(self.reg, self.X, self.y)
+        return metrics.mean_squared_error(self.y, y_pred)
+        
+    def cross_val_mae_result(self, reg, cv=3):
+        y_pred = cross_val_predict(self.reg, self.X, self.y)
+        return metrics.median_absolute_error(self.y, y_pred)
+
     def mse_result(self, reg):
         y_pred = reg.predict(self.X)
         return metrics.mean_squared_error(self.y, y_pred)
@@ -89,6 +144,16 @@ class RegressionComparison():
     def mae_result(self, reg):
         y_pred = reg.predict(self.X)
         return metrics.median_absolute_error(self.y, y_pred)
+
+    def cv_two_model_regression_testing(self):
+        mse_one_test = self.cross_val_mse_result(self.reg_one)
+        mae_one_test = self.cross_val_mae_result(self.reg_one)
+        mse_two_test = self.cross_val_mse_result(self.reg_two)
+        mae_two_test = self.cross_val_mae_result(self.reg_two)
+        if mse_one_test < mse_two_test and mae_one_test < mae_two_test:
+            return True
+        else:
+            return False
 
     def two_model_regression_testing(self):
         mse_one_test = self.mse_result(self.reg_one)
