@@ -24,7 +24,7 @@ class ClassificationTests():
         self.classes = set(self.y)
 
     def metric_wrapper(self, measure, y_true, y_pred,
-                       labels=None, pos_label=1, average=’binary’, sample_weight=None):
+                       labels=None, pos_label=1, average='binary', sample_weight=None):
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
         if (y_true == y_pred).all() == True:
@@ -254,7 +254,7 @@ class ClassifierComparison():
         self.classes = set(self.y)
 
     def metric_wrapper(self, measure, y_true, y_pred,
-                       labels=None, pos_label=1, average=’binary’, sample_weight=None):
+                       labels=None, pos_label=1, average='binary', sample_weight=None):
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
         if (y_true == y_pred).all() == True:
