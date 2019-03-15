@@ -12,9 +12,9 @@ The goal of the following set of tests is to accomplish some monitoring goals:
 
 Let's look at each of these classes of tests now.
 
-###################################
+
 Lower Bound Classification Measures
-###################################
+===================================
 
 Each of the following examples ensures that your classifier meets a minimum criteria, which should be decided based on the need of your use-case.  One simple way to do this is to define failure by how many dollars it will cost you.  
 
@@ -22,9 +22,9 @@ Precision, Recall and F1 score are great tools for ensuring your classifier opti
 
 That is why they are basis of the set of tests found below.
 
-##############################
+
 Classifier Test Example - Model Metrics
-##############################
+=======================================
 
 Suppose you had the following model::
 
@@ -124,9 +124,9 @@ Or you could simply write one test for all three::
 
 Regardless of which test you choose, you get complete flexibility to ensure your model always meets the minimum criteria so that your costs are minimized, given constraints.
 
-#####################################
+
 Classifier Test Example - Model Speed
-#####################################
+=====================================
 
 Additionally, you can test to ensure your classifier performs, even under load.  Assume we have the same model as before::
 
@@ -181,5 +181,5 @@ Now we test to ensure the model predicts new labels within our constraints::
 	        performance_boundary
 	    )
 
-This test ensures that from 1, 100000 elements, the model never takes longer than 10 seconds.  
+This test ensures that from 1 to 100000 elements, the model never takes longer than 10 seconds.  
 
