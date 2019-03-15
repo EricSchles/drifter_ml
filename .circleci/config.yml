@@ -45,8 +45,15 @@ jobs:
       # https://pytest.org
       # https://nose.readthedocs.io
       - run:
+          name: Install python
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            python -m pip install pytest --user
+      - run:
           name: run tests
           command: |
+            . venv/bin/activate
             python -m pytest tests
 
       - store_artifacts:
