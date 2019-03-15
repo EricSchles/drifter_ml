@@ -9,7 +9,7 @@ from scipy import stats
 from sklearn.model_selection import cross_validate, cross_val_predict
 from sklearn import base
 from typing import Optional
-from functools import partialx
+from functools import partial
 
 class ClassificationTests():
     def __init__(self,
