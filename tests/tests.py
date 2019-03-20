@@ -57,4 +57,5 @@ def test_f1_metric():
     fixed_metrics = classification_tests.FixedClassificationMetrics()
     assert 1.0 == fixed_metrics.f1_score([0,0,0], [0,0,0])
 
+
     
