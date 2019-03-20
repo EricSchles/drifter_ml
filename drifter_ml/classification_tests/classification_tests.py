@@ -69,7 +69,7 @@ class ClassificationTests(FixedClassificationMetrics):
         self.X = test_data[column_names]
         self.classes = set(self.y)
 
-    def precision_cv(self):
+    def precision_cv(self, cv):
         precision_score = self.precision_score()
         precision = metrics.make_scorer(precision_score)
         return cross_validate(self.clf, self.X,
@@ -78,7 +78,7 @@ class ClassificationTests(FixedClassificationMetrics):
 
 
     def cross_val_precision_anomaly_detection(self, tolerance, cv=3):
-        scores = self.precision_cv()
+        scores = self.precision_cv(cv)
         avg = st.mean(scores)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
@@ -88,13 +88,13 @@ class ClassificationTests(FixedClassificationMetrics):
         return True
 
     def cross_val_precision_lower_boundary(self, lower_boundary, cv=3):
-        scores = self.precision_cv()
+        scores = self.precision_cv(cv)
         for score in scores:
             if score < lower_boundary:
                 return False
         return True
     
-    def recall_cv(self):
+    def recall_cv(self, cv):
         recall_score = self.recall_score()
         recall = metrics.make_scorer(recall_score)
         return cross_validate(self.clf, self.X,
@@ -102,7 +102,7 @@ class ClassificationTests(FixedClassificationMetrics):
                               scoring=(recall))
     
     def cross_val_recall_anomaly_detection(self, tolerance, cv=3):
-        scores = self.recall_cv()
+        scores = self.recall_cv(cv)
         avg = st.mean(scores)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
@@ -112,14 +112,14 @@ class ClassificationTests(FixedClassificationMetrics):
         return True
 
     def cross_val_recall_lower_boundary(self, lower_boundary, cv=3):
-        scores = self.recall_cv()
+        scores = self.recall_cv(cv)
         for score in scores:
             if score < lower_boundary:
                 return False
         return True
 
 
-    def f1_cv(self):
+    def f1_cv(self, cv):
         f1_score = self.f1_score()
         f1 = metrics.make_scorer(f1_score)
         return cross_validate(self.clf, self.X,
@@ -127,7 +127,7 @@ class ClassificationTests(FixedClassificationMetrics):
                               scoring=(f1))
     
     def cross_val_f1_anomaly_detection(self, tolerance, cv=3):
-        scores = self.f1_cv()
+        scores = self.f1_cv(cv)
         avg = st.mean(scores)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
@@ -137,7 +137,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return True
 
     def cross_val_f1_lower_boundary(self, lower_boundary, cv=3):
-        scores = self.f1_cv()
+        scores = self.f1_cv(cv)
         for score in scores:
             if score < lower_boundary:
                 return False
@@ -166,7 +166,7 @@ class ClassificationTests(FixedClassificationMetrics):
             return np.median(scores), stats.iqr(scores)
         
     def auto_cross_val_precision_anomaly_detection(self, tolerance, method="normal", cv=10):
-        scores = self.precision_cv()
+        scores = self.precision_cv(cv)
         center, spread = self.describe_scores(scores, method)
         for score in scores:
             if score < center-(spread*tolerance):
@@ -174,7 +174,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return True
 
     def auto_cross_val_f1_anomaly_detection(self, tolerance, method="normal", cv=10):
-        scores = self.f1_cv()
+        scores = self.f1_cv(cv)
         center, spread = self.describe_scores(scores, method)
         for score in scores:
             if score < center-(spread*tolerance):
@@ -182,7 +182,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return True
 
     def auto_cross_val_recall_anomaly_detection(self, tolerance, method="normal", cv=3):
-        scores = self.recall_cv()
+        scores = self.recall_cv(cv)
         center, spread = self.describe_scores(scores, method)
         for score in scores:
             if score < center-(spread*tolerance):
