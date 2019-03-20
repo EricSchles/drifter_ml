@@ -118,7 +118,6 @@ class ClassificationTests(FixedClassificationMetrics):
                 return False
         return True
 
-
     def f1_cv(self, cv):
         f1_score = self.f1_score()
         f1 = metrics.make_scorer(f1_score)
