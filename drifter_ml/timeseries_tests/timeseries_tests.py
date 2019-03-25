@@ -2,85 +2,38 @@
 from statsmodels.tsa import stattools
 from statsmodels.stats import diagnstic
 import warnings
+from collections import namedtuple
 warnings.filterwarnings("ignore")
 
 class TimeSeriesTests:
-    def __init__(self, data):
-        self.data = data
+    def __init__(self):
+        pass
 
-    def unit_root(self, column, pvalue_tolerance=0.05):
-        """
-        Unit root test, tests whether or not your time series is
-        stationary.  The null hypothesis is that it is not.
-        The alternative hypothesis is that it is.  So if the pvalue is
-        less than the threshold, the series is stationary
-        
-        if True then stationary
-        if False than not stationary
-        """
-        result = stattools.adfuller(self.data[column])
-        if result[1] < pvalue_tolerance:
-            return True
-        return False
+    def ad_fuller_test(self, timeseries):
+        result = stattools.adfuller(timeseries)
+        AdFullerResult = namedtuple('AdFullerResult', 'statistic pvalue')
+        return AdFullerResult(result[0], result[1])
+    
+    def kpss(self, timeseries):
+        result = stattools.kpss(timeseries)
+        KPSSResult = namedtuple('KPSSResult', 'statistic pvalue')
+        return KPSSResult(result[0], result[1])
 
-    def kpss(self, column, pvalue_tolerance=0.05):
-        """
-        KPSS also tests for stationarity, here the null hypothesis
-        is that the series is stationary, so a pvalue above the tolerance level
-        means it's stationary.  A pvalue below means the alternative hypothesis
-        is true and it is not.
+    def cointegration(self, timeseries_one, timeseries_two):
+        result = stattools.coint(timeseries_one, timeseries_two)
+        CointegrationResult = namedtuple('CointegrationResult', 'statistic pvalue')
+        return CointegrationResult(result[0], result[1])
 
-        if True then stationary
-        if False than not stationary
-        """
-        result = stattools.kpss(self.data[column])
-        if result[1] > pvalue_tolerance:
-            return True
-        return False
-
-    def coint(self, column_one, column_two, pvalue_tolerance=0.05):
-        """
-        tests whether or not two series are cointegrated.
-        Cointegration is similar to correlation, because there
-        is a dependence relationship in two random series
+    def bds(self, timeseries):
+        result = stattools.bds(timeseries)
+        BdsResult = namedtuple('BdsResult', 'statistic pvalue')
+        return BdsResult(result[0], result[1])
         
-        if True than column_one not cointegrated with column_two
-        if False than column_one cointegrated with column_two
-        """
-        result = stattools.coint(self.data[column_one], self.data[column_two])
-        if result[1] > pvalue_tolerance:
-            return True
-        return False
-        
-    def bds(self, column_one, pvalue_tolerance=0.05):
-        """
-        tests if the column is independent and identically distributed
-        
-        if True variable is iid
-        if False variable is not
-        """
-        result = stattools.bds(self.data[column_one])
-        if result[1] > pvalue_tolerance:
-            return True
-        return False
-
-    def q_stat(self, column_one, pvalue_tolerance=0.05):
-        """
-        tests for auto correlation in the series, this is similiar to
-        serial correlation, as outlied here: 
-        http://gauss.stat.su.se/gu/e/slides/Lectures%208-13/Autocorrelation.pdf
-        
-        the null hypothesis is no autocorrelation
-        the alternative hypothesis is autocorrelation exists.
-        
-        if True variable is not autocorrelated
-        if False variable is autocorrelated
-        """
-        autocorrelation_coefs = stattools.acf(self.data[column_one])
+    def q_stat(self, timeseries):
+        autocorrelation_coefs = stattools.acf(timeseries)
         result = stattools.q_stat(autocorrelation_coefs)
-        if result[1] > pvalue_tolerance:
-            return True
-        return False
+        QstatResult = namedtuple('QstatResult', 'statistic pvalue')
+        return QstatResult(result[0], result[1])
 
     
 # ToDo:
