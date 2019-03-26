@@ -81,7 +81,7 @@ class ClassificationTests(FixedClassificationMetrics):
                               scoring=(recall))
 
     def _cross_val_anomaly_detection(scores, tolerance):
-        avg = st.mean(scores)
+        avg = np.mean(scores)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
         for deviance in deviances_from_avg:
@@ -100,7 +100,25 @@ class ClassificationTests(FixedClassificationMetrics):
     def cross_val_f1_anomaly_detection(self, tolerance, cv=3):
         scores = self.f1_cv(cv)
         return self._cross_val_anomaly_detection(scores, tolerance)
-    
+
+    def _cross_val_avg(self, scores, minimum_center_tolerance):
+        avg = np.mean(scores)
+        if avg < minimum_center_tolerance:
+            return False
+        return True
+
+    def cross_val_precision_avg(self, minimum_center_tolerance, cv=3):
+        scores = self.precision_cv(cv)
+        return self._cross_val_avg(scores, minimum_center_tolerance)
+
+    def cross_val_recall_avg(self, minimum_center_tolerance, cv=3):
+        scores = self.recall_cv(cv)
+        return self._cross_val_avg(scores, minimum_center_tolerance)
+
+    def cross_val_f1_avg(self, minimum_center_tolerance, cv=3):
+        scores = self.f1_cv(cv)
+        return self._cross_val_avg(scores, minimum_center_tolerance)
+
     def _cross_val_lower_boundary(self, scores, lower_boundary):
         for score in scores:
             if score < lower_boundary:
