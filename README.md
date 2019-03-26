@@ -6,6 +6,8 @@ The tests will be readable enough that anyone can extend them to other framework
 
 You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more detailed explaination.
 
+[![Documentation Status](https://readthedocs.org/projects/drifter-ml/badge/?version=latest)](https://drifter-ml.readthedocs.io/en/latest/?badge=latest)
+
 ## Tests Covered
 
  * Testing Against Metrics
