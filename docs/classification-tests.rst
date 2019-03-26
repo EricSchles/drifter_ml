@@ -186,7 +186,7 @@ This test ensures that from 1 to 100000 elements, the model never takes longer t
 Cross Validation Based Testing
 ==============================
 
-In the last section we asked questions of our model with respect to a lower boundary, both of various model measures as well as speed measurement in seconds.  Now armed with cross validation we can ask questions about sections of our dataset, to ensure that the measures we found were an accurate representation across the dataset, rather than one global metric across the entire dataset.  Just to make sure we are all on the same page, cross validation breaks the dataset into unique samples and then each sample is used as the test sample, all other samples are used as training, the score for each validation sample is recorded and then the model is discarded.  For more information and a detailed introduction see [this explaination](https://machinelearningmastery.com/k-fold-cross-validation/).  
+In the last section we asked questions of our model with respect to a lower boundary, both of various model measures as well as speed measurement in seconds.  Now armed with cross validation we can ask questions about sections of our dataset, to ensure that the measures we found were an accurate representation across the dataset, rather than one global metric across the entire dataset.  Just to make sure we are all on the same page, cross validation breaks the dataset into unique samples and then each sample is used as the test sample, all other samples are used as training, the score for each validation sample is recorded and then the model is discarded.  For more information and a detailed introduction see https://machinelearningmastery.com/k-fold-cross-validation/.  
 
 The advantage of checking our model in this way is now it is less likely that the model is just memorizing the training data and will actually scale to other examples.  This happens because the model scores are tested on a more limited dataset and also because "k" samples, the tuning parameter in cross validation, are tested to ensure the model performance is consistent.  
 
@@ -249,7 +249,7 @@ Now that we have the model and data saved, let's write the test::
 	import joblib
 	import pandas as pd
 
-	def test_cv_precision_lower_boundary_speed():
+	def test_cv_precision_lower_boundary():
 	    df = pd.read_csv("data.csv")
 	    column_names = ["A", "B", "C"]
 	    target_name = "target"
@@ -271,4 +271,88 @@ There are a few things to notice here:
 Classifier Test Example - Cross Validation Anamoly Detection
 ============================================================
 
+In the above example we test to ensure that none of the folds fall below a precision of 0.9 per fold.  But what if we only care if one of the folds does significantly worse than the others?  But don't actually care if all the folds meet the minimum criteria?  After all, some level of any model measure is defined by how much data you train it on.  It could be the case that we are right on the edge of having enough labeled data to train the model for all the imperative cases, but not enough to really ensure 90% percision, recall or some other meeasure.  If that is the case, then we could simply look to see if any of the folds does significantly worse than some notion of centrality, which could be a red flag on its own.  
+
+Here we can set some deviance from the center for precision, recall or f1 score.  If a given fold falls below some deviance from centrality then we believe some intervention needs to be taken.  Let's look at an example::
+
+	from sklearn import tree
+	import pandas as pd
+	import numpy as np
+	import joblib
+
+	df = pd.DataFrame()
+	for _ in range(1000):
+	    a = np.random.normal(0, 1)
+	    b = np.random.normal(0, 3)
+	    c = np.random.normal(12, 4)
+	    if a + b + c > 11:
+	        target = 1
+	    else:
+	        target = 0
+	    df = df.append({
+	        "A": a,
+	        "B": b,
+	        "C": c,
+	        "target": target
+	    }, ignore_index=True)
+
+	clf = tree.DecisionTreeClassifier()
+	X = df[["A", "B", "C"]]
+	clf.fit(X, df["target"])
+	joblib.dump(clf, "model.joblib")
+	df.to_csv("data.csv")
+
+
+Let's see the test::
+
+	from drifter_ml.classification_tests import ClassificationTests
+	import joblib
+	import pandas as pd
+
+	def test_cv_precision_anomaly_detection():
+	    df = pd.read_csv("data.csv")
+	    column_names = ["A", "B", "C"]
+	    target_name = "target"
+	    clf = joblib.load("model.joblib")
+
+	    test_suite = ClassificationTests(clf, 
+	    df, target_name, column_names)
+	    precision_tolerance = 0.2
+	    test_suite.cross_val_precision_anomaly_detection(
+	    	precision_tolerance
+	    )
+
+Here instead of setting an expectation of the precision, we set an expectation of the deviance from average precision.  So if the average is 0.7 and one of the folds scores 0.49 or below then the test fails.  So it's important to have some lower boundary in place as well.  However we can be less stringent if we include this test.  A more complete test suite would likely be something like this::
+
+	from drifter_ml.classification_tests import ClassificationTests
+	import joblib
+	import pandas as pd
+
+	def test_cv_precision_anomaly_detection():
+	    df = pd.read_csv("data.csv")
+	    column_names = ["A", "B", "C"]
+	    target_name = "target"
+	    clf = joblib.load("model.joblib")
+
+	    test_suite = ClassificationTests(clf, 
+	    df, target_name, column_names)
+	    precision_tolerance = 0.2
+	    test_suite.cross_val_precision_anomaly_detection(
+	    	precision_tolerance
+	    )
+
+	def test_cv_precision_lower_boundary():
+	    df = pd.read_csv("data.csv")
+	    column_names = ["A", "B", "C"]
+	    target_name = "target"
+	    clf = joblib.load("model.joblib")
+
+	    test_suite = ClassificationTests(clf, 
+	    df, target_name, column_names)
+	    min_averange = 0.7
+	    test_suite.cross_val_precision_avg(
+	    	min_average
+	    )
+
+Now we can say for sure, the precision should be at least 0.7 on average but can fall below up to 0.2 of that before we raise an error.
 
