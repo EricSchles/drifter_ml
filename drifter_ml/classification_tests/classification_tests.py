@@ -5,6 +5,8 @@ from sklearn import neighbors
 from scipy import stats
 from sklearn.model_selection import cross_validate, cross_val_predict
 from functools import partial
+from sklearn.model_selection import KFold
+from sklearn.base import clone
 
 class FixedClassificationMetrics():
     def __init__(self):
@@ -66,6 +68,25 @@ class ClassificationTests(FixedClassificationMetrics):
         self.X = test_data[column_names]
         self.classes = set(self.y)
 
+    def _get_per_class(self, y_true, y_pred, metric):
+        class_measures = {klass: None for klass in self.classes}
+        for klass in self.classes:
+            y_pred_class = np.take(y_pred, y_true[y_true == klass].index, axis=0)
+            y_class = y_true[y_true == klass]
+            class_measures[klass] = metric(y_class, y_pred_class)
+        return class_measures
+
+    def _per_class_cross_val(self, metric, cv, random_state=42):
+        kfold = KFold(n_splits=cv, shuffle=True, random_state=random_state)
+        clf = clone(self.clf)
+        scores = []
+        for train, test in kfold.split(self.test_data):
+            clf.fit(train[self.column_names], train[self.target_name])
+            y_pred = clf.predict(test[self.column_names])
+            y_true = test[self.target_name]
+            scores.append(self._get_per_class(y_true, y_pred, metric))
+        return scores
+            
     def get_test_score(self, cross_val_dict):
         return list(cross_val_dict["test_score"])
     
@@ -102,7 +123,33 @@ class ClassificationTests(FixedClassificationMetrics):
             if deviance > tolerance:
                 return False
         return True
-        
+
+    def _cross_val_per_class_anomaly_detection(self, metric, tolerance, cv):
+        scores_per_fold = self._per_class_cross_val(metric, cv)
+        results = [] 
+        for klass in self.classes:
+            scores = [score[klass] for score in scores_per_fold]
+            results.append(_cross_val_anomaly_detection(scores, tolerance))
+        return all(results)
+
+    def cross_val_per_class_precision_anomaly_detection(self, tolerance,
+                                                        cv=3, average='binary'):
+        precision_score = partial(self.precision_score, average=average)
+        return self._cross_val_per_class_anomaly_detection(precision_score,
+                                                           tolerance, cv)
+
+    def cross_val_per_class_recall_anomaly_detection(self, tolerance,
+                                                     cv=3, average='binary'):
+        recall_score = partial(self.recall_score, average=average)
+        return self._cross_val_per_class_anomaly_detection(recall_score,
+                                                           tolerance, cv)
+
+    def cross_val_per_class_f1_anomaly_detection(self, tolerance,
+                                                 cv=3, average='binary'):
+        f1_score = partial(self.f1_score, average=average)
+        return self._cross_val_per_class_anomaly_detection(f1_score,
+                                                           tolerance, cv)
+
     def cross_val_precision_anomaly_detection(self, tolerance, cv=3, average='binary'):
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
