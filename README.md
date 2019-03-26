@@ -8,6 +8,7 @@ You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more
 
 [![Documentation Status](https://readthedocs.org/projects/drifter-ml/badge/?version=latest)](https://drifter-ml.readthedocs.io/en/latest/?badge=latest)
 
+[![CircleCI](https://circleci.com/gh/EricSchles/drifter_ml.svg?style=svg)](https://circleci.com/gh/EricSchles/drifter_ml)
 ## Tests Covered
 
  * Testing Against Metrics
