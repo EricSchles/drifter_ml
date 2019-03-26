@@ -136,6 +136,7 @@ class ForecastMetrics:
                        for idx, elem in enumerate(series_one)]
         return mstats.gmean([numerator[i]/denominator[i] for i in range(len(numerator))])
 
+
 class TimeSeriesTests:
     def __init__(self, timeseries):
         self.timeseries = timeseries
