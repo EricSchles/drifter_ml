@@ -188,19 +188,19 @@ class ClassificationTests(FixedClassificationMetrics):
                 return False
         return True
 
-    def auto_cross_val_precision_anomaly_detection(self, tolerance, method="mean", cv=10):
+    def spread_cross_val_precision_anomaly_detection(self, tolerance, method="mean", cv=10):
         scores = self.precision_cv(cv)
         return self._anamoly_detection(scores, tolerance, method)
         
-    def auto_cross_val_f1_anomaly_detection(self, tolerance, method="mean", cv=10):
+    def spread_cross_val_f1_anomaly_detection(self, tolerance, method="mean", cv=10):
         scores = self.f1_cv(cv)
         return self._anamoly_detection(scores, tolerance, method)
     
-    def auto_cross_val_recall_anomaly_detection(self, tolerance, method="mean", cv=3):
+    def spread_cross_val_recall_anomaly_detection(self, tolerance, method="mean", cv=3):
         scores = self.recall_cv(cv)
         return self._anamoly_detection(scores, tolerance, method)
         
-    def auto_cross_val_classifier_testing(self,
+    def spread_cross_val_classifier_testing(self,
                                           precision_lower_boundary: int,
                                           recall_lower_boundary: int,
                                           f1_lower_boundary: int,
