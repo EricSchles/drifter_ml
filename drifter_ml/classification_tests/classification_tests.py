@@ -198,7 +198,7 @@ class ClassificationTests(FixedClassificationMetrics):
         else:
             return False
 
-    def _per_class(self, metric, lower_boundary):
+    def _per_class(self, y_pred, metric, lower_boundary):
         for klass in self.classes:
             y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
             y_class = self.y[self.y == klass]
@@ -211,15 +211,15 @@ class ClassificationTests(FixedClassificationMetrics):
     # Todo: determine if still relevant ^
     def precision_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
-        return self._per_class(self.precision_score, lower_boundary)
+        return self._per_class(y_pred, self.precision_score, lower_boundary)
 
     def recall_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
-        return self._per_class(self.recall_score, lower_boundary)
+        return self._per_class(y_pred, self.recall_score, lower_boundary)
     
     def f1_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
-        return self._per_class(self.f1_score, lower_boundary)
+        return self._per_class(y_pred, self.f1_score, lower_boundary)
     
     def classifier_testing(self,
                            precision_lower_boundary: dict,
