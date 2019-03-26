@@ -2,7 +2,7 @@ import numpy as np
 from sklearn import metrics
 from scipy.stats import mstats
 
-class forecast_metrics:
+class ForecastMetrics:
     def __init__(self):
         pass
     

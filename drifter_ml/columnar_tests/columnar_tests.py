@@ -36,6 +36,52 @@ class ColumnarData():
         self.new_data = new_data
         self.historical_data = historical_data
 
+    def mean_similarity(self, column, tolerance=2):
+        new_mean = np.mean(self.new_data)
+        old_mean = np.mean(self.historical_data)
+        std = np.std(self.historical_data)
+        upper_bound = old_mean + (std*tolerance)
+        lower_bound = old_mean - (std*tolerance)
+        if new_mean < lower_bound:
+            return False
+        elif new_mean > upper_bound:
+            return False
+        else:
+            return True
+
+    def median_similarity(self, column, tolerance=2):
+        new_median = np.median(self.new_data)
+        old_median = np.median(self.historical_data)
+        iqr = stats.iqr(self.historical_data)
+        upper_bound = old_median + (iqr*tolerance)
+        lower_bound = old_median - (iqr*tolerance)
+        if new_median < lower_bound:
+            return False
+        elif new_median > upper_bound:
+            return False
+        else:
+            return True
+
+    def trimean(self, data):
+        q1 = np.quantile(data, 0.25)
+        q3 = np.quantile(data, 0.75)
+        median = np.median(data)
+        return (q1 + 2*median + q3)/4
+
+    def trimean_similarity(self, column, tolerance=2):
+        new_trimean = self.trimean(self.new_data)
+        old_trimean = self.trimean(self.historical_data)
+        numerator = [abs(elem - trimean) for elem in self.historical_data]
+        trimean_absolute_deviation = sum(numerator)/len(self.historical_data)
+        upper_bound = old_trimean + (trimean_absolute_deviation*tolerance)
+        lower_bound = old_trimean - (trimean_absolute_deviation*tolerance)
+        if new_trimean < lower_bound:
+            return False
+        if new_trimean > upper_bound:
+            return False
+        else:
+            return True
+    
     def is_normal(self, column):
         new_data_result = stats.normaltest(self.new_data[column])
         historical_data_result = stats.normaltest(self.historical_data[column])
@@ -65,9 +111,30 @@ class ColumnarData():
             return False
         return True
 
+    def wilcoxon_similiar_distribution(self, column, pvalue_threshold=0.05):
+        distribution_info = stats.wilcoxon(self.new_data[column],
+                                           self.historical_data[column])
+        if distribution_info.pvalue < pvalue_threshold:
+            return False
+        return True
+        
     def ks_2samp_similiar_distribution(self, column, pvalue_threshold=0.05):
         distribution_info = stats.ks_2samp(self.new_data[column],
                                            self.historical_data[column])
+        if distribution_info.pvalue < pvalue_threshold:
+            return False
+        return True
+
+    def kruskal_similiar_distribution(self, column, pvalue_threshold=0.05):
+        distribution_info = stats.kruskal(self.new_data[column],
+                                          self.historical_data[column])
+        if distribution_info.pvalue < pvalue_threshold:
+            return False
+        return True
+
+    def mann_whitney_u_similar_distribution(self, column, pvalue_threshold=0.05):
+        distribution_info = stats.mannwhitneyu(self.new_data[column],
+                                               self.historical_data[column])
         if distribution_info.pvalue < pvalue_threshold:
             return False
         return True

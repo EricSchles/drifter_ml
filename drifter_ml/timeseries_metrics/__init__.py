@@ -1,3 +1,3 @@
-from .timeseries_metrics import forecast_metrics
+from .timeseries_metrics import ForecastMetrics
 
-__all__ = ["forecast_metrics"]
+__all__ = ["ForecastMetrics"]
