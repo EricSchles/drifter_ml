@@ -1,9 +1,6 @@
-import joblib
-import json
 from sklearn import metrics
 import numpy as np
 import time
-from sklearn import neighbors
 from scipy import stats
 
 class DataSanitization(): 
@@ -40,8 +37,8 @@ class ColumnarData():
         new_mean = np.mean(self.new_data)
         old_mean = np.mean(self.historical_data)
         std = np.std(self.historical_data)
-        upper_bound = old_mean + (std*tolerance)
-        lower_bound = old_mean - (std*tolerance)
+        upper_bound = old_mean + (std * tolerance)
+        lower_bound = old_mean - (std * tolerance)
         if new_mean < lower_bound:
             return False
         elif new_mean > upper_bound:
@@ -53,8 +50,8 @@ class ColumnarData():
         new_median = np.median(self.new_data)
         old_median = np.median(self.historical_data)
         iqr = stats.iqr(self.historical_data)
-        upper_bound = old_median + (iqr*tolerance)
-        lower_bound = old_median - (iqr*tolerance)
+        upper_bound = old_median + (iqr * tolerance)
+        lower_bound = old_median - (iqr * tolerance)
         if new_median < lower_bound:
             return False
         elif new_median > upper_bound:
@@ -68,13 +65,17 @@ class ColumnarData():
         median = np.median(data)
         return (q1 + 2*median + q3)/4
 
+    def trimean_absolute_deviation(self, data):
+        trimean = self.trimean(data)
+        numerator = [abs(elem - trimean) for elem in data]
+        return sum(numerator)/len(data)
+
     def trimean_similarity(self, column, tolerance=2):
         new_trimean = self.trimean(self.new_data)
         old_trimean = self.trimean(self.historical_data)
-        numerator = [abs(elem - trimean) for elem in self.historical_data]
-        trimean_absolute_deviation = sum(numerator)/len(self.historical_data)
-        upper_bound = old_trimean + (trimean_absolute_deviation*tolerance)
-        lower_bound = old_trimean - (trimean_absolute_deviation*tolerance)
+        tad = self.trimean_absolute_deviation(self.historical_data)
+        upper_bound = old_trimean + (tad * tolerance)
+        lower_bound = old_trimean - (tad * tolerance)
         if new_trimean < lower_bound:
             return False
         if new_trimean > upper_bound:

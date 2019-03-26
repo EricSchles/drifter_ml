@@ -1,7 +1,4 @@
-import joblib
-import json
 from sklearn import metrics
-import numpy as np
 import time
 from sklearn import neighbors
 from scipy import stats

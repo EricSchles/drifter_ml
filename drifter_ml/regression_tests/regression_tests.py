@@ -1,12 +1,8 @@
-import joblib
-import json
 from sklearn import metrics
 import numpy as np
 import time
-from sklearn import neighbors
 from scipy import stats
 from sklearn.model_selection import cross_validate, cross_val_predict
-import statistics as st
 
 class RegressionTests():
     def __init__(self,
@@ -29,7 +25,7 @@ class RegressionTests():
         
     def cross_val_mse_anomaly_detection(self, tolerance, cv=3):
         scores = self.mse_cv()
-        avg = st.mean(scores)
+        avg = np.mean(scores)
         deviances_from_avg = [abs(score - avg)
                                 for score in scores]
         for deviance in deviances_from_avg:
@@ -58,7 +54,7 @@ class RegressionTests():
     
     def cross_val_mae_anomaly_detection(self, tolerance, cv=3):
         scores = self.mae_cv()
-        avg = st.mean(scores)
+        avg = np.mean(scores)
         deviances_from_avg = [abs(score - avg)
                                 for score in scores]
         for deviance in deviances_from_avg:

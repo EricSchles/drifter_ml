@@ -1,15 +1,9 @@
-import joblib
-import json
 from sklearn import metrics
 import numpy as np
-import pandas as pd
 import time
 from sklearn import neighbors
 from scipy import stats
 from sklearn.model_selection import cross_validate, cross_val_predict
-from sklearn import base
-from typing import Optional
-from functools import partial
 
 class FixedClassificationMetrics():
     def __init__(self):
@@ -57,6 +51,7 @@ class FixedClassificationMetrics():
                                     average=average,
                                     sample_weight=sample_weight)
 
+# ToDo: reorganize this class into a bunch of smaller classes that inherit into a main class
 class ClassificationTests(FixedClassificationMetrics):
     def __init__(self,
                  clf,
@@ -69,30 +64,14 @@ class ClassificationTests(FixedClassificationMetrics):
         self.X = test_data[column_names]
         self.classes = set(self.y)
 
+    
+    # add cross validation per class tests
     def precision_cv(self, cv):
         precision_score = self.precision_score()
         precision = metrics.make_scorer(precision_score)
         return cross_validate(self.clf, self.X,
                               self.y, cv=cv,
                               scoring=(precision))
-
-
-    def cross_val_precision_anomaly_detection(self, tolerance, cv=3):
-        scores = self.precision_cv(cv)
-        avg = st.mean(scores)
-        deviance_from_avg = [abs(score - avg)
-                             for score in scores]
-        for deviance in deviances_from_avg:
-            if deviance > tolerance:
-                return False
-        return True
-
-    def cross_val_precision_lower_boundary(self, lower_boundary, cv=3):
-        scores = self.precision_cv(cv)
-        for score in scores:
-            if score < lower_boundary:
-                return False
-        return True
     
     def recall_cv(self, cv):
         recall_score = self.recall_score()
@@ -100,9 +79,8 @@ class ClassificationTests(FixedClassificationMetrics):
         return cross_validate(self.clf, self.X,
                               self.y, cv=cv,
                               scoring=(recall))
-    
-    def cross_val_recall_anomaly_detection(self, tolerance, cv=3):
-        scores = self.recall_cv(cv)
+
+    def _cross_val_anomaly_detection(scores, tolerance):
         avg = st.mean(scores)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
@@ -110,14 +88,37 @@ class ClassificationTests(FixedClassificationMetrics):
             if deviance > tolerance:
                 return False
         return True
-
-    def cross_val_recall_lower_boundary(self, lower_boundary, cv=3):
+        
+    def cross_val_precision_anomaly_detection(self, tolerance, cv=3):
+        scores = self.precision_cv(cv)
+        return self._cross_val_anomaly_detection(scores, tolerance)
+    
+    def cross_val_recall_anomaly_detection(self, tolerance, cv=3):
         scores = self.recall_cv(cv)
+        return self._cross_val_anomaly_detection(scores, tolerance)
+    
+    def cross_val_f1_anomaly_detection(self, tolerance, cv=3):
+        scores = self.f1_cv(cv)
+        return self._cross_val_anomaly_detection(scores, tolerance)
+    
+    def _cross_val_lower_boundary(self, scores, lower_boundary):
         for score in scores:
             if score < lower_boundary:
                 return False
         return True
-
+                      
+    def cross_val_precision_lower_boundary(self, lower_boundary, cv=3):
+        scores = self.precision_cv(cv)
+        return self._cross_val_lower_boundary(scores, lower_boundary)
+        
+    def cross_val_recall_lower_boundary(self, lower_boundary, cv=3):
+        scores = self.recall_cv(cv)
+        return self._cross_val_lower_boundary(scores, lower_boundary)
+        
+    def cross_val_f1_lower_boundary(self, lower_boundary, cv=3):
+        scores = self.f1_cv(cv)
+        return self._cross_val_lower_boundary(scores, lower_boundary)
+    
     def f1_cv(self, cv):
         f1_score = self.f1_score()
         f1 = metrics.make_scorer(f1_score)
@@ -125,22 +126,7 @@ class ClassificationTests(FixedClassificationMetrics):
                               self.y, cv=cv,
                               scoring=(f1))
     
-    def cross_val_f1_anomaly_detection(self, tolerance, cv=3):
-        scores = self.f1_cv(cv)
-        avg = st.mean(scores)
-        deviance_from_avg = [abs(score - avg)
-                             for score in scores]
-        for deviance in deviances_from_avg:
-            if deviance > tolerance:
-                return False
-        return True
 
-    def cross_val_f1_lower_boundary(self, lower_boundary, cv=3):
-        scores = self.f1_cv(cv)
-        for score in scores:
-            if score < lower_boundary:
-                return False
-        return True
 
     def cross_val_classifier_testing(self,
                                      precision_lower_boundary: float,
@@ -158,36 +144,44 @@ class ClassificationTests(FixedClassificationMetrics):
         else:
             return False
 
-    def describe_scores(self, scores, method):
-        if method == "normal":
-            return np.mean(scores), np.std(scores)
-        elif method == "ranked":
-            return np.median(scores), stats.iqr(scores)
+    def trimean(self, data):
+        q1 = np.quantile(data, 0.25)
+        q3 = np.quantile(data, 0.75)
+        median = np.median(data)
+        return (q1 + 2*median + q3)/4
+
+    def trimean_absolute_deviation(self, data):
+        trimean = self.trimean(data)
+        numerator = [abs(elem - trimean) for elem in data]
+        return sum(numerator)/len(data)
         
-    def auto_cross_val_precision_anomaly_detection(self, tolerance, method="normal", cv=10):
+    def describe_scores(self, scores, method):
+        if method == "mean":
+            return np.mean(scores), np.std(scores)
+        elif method == "median":
+            return np.median(scores), stats.iqr(scores)
+        elif method == "trimean":
+            return self.trimean(scores), self.trimean_absolute_deviation(scores)
+
+    def _anomaly_detection(self, scores, tolerance, method):
+        center, spread = self.describe_scores(scores, method)
+        for score in scores:
+            if score < center - (spread * tolerance):
+                return False
+        return True
+
+    def auto_cross_val_precision_anomaly_detection(self, tolerance, method="mean", cv=10):
         scores = self.precision_cv(cv)
-        center, spread = self.describe_scores(scores, method)
-        for score in scores:
-            if score < center-(spread*tolerance):
-                return False
-        return True
-
-    def auto_cross_val_f1_anomaly_detection(self, tolerance, method="normal", cv=10):
+        return self._anamoly_detection(scores, tolerance, method)
+        
+    def auto_cross_val_f1_anomaly_detection(self, tolerance, method="mean", cv=10):
         scores = self.f1_cv(cv)
-        center, spread = self.describe_scores(scores, method)
-        for score in scores:
-            if score < center-(spread*tolerance):
-                return False
-        return True
-
-    def auto_cross_val_recall_anomaly_detection(self, tolerance, method="normal", cv=3):
+        return self._anamoly_detection(scores, tolerance, method)
+    
+    def auto_cross_val_recall_anomaly_detection(self, tolerance, method="mean", cv=3):
         scores = self.recall_cv(cv)
-        center, spread = self.describe_scores(scores, method)
-        for score in scores:
-            if score < center-(spread*tolerance):
-                return False
-        return True
-
+        return self._anamoly_detection(scores, tolerance, method)
+        
     def auto_cross_val_classifier_testing(self,
                                           precision_lower_boundary: int,
                                           recall_lower_boundary: int,
@@ -204,35 +198,29 @@ class ClassificationTests(FixedClassificationMetrics):
         else:
             return False
 
-    # potentially include hyper parameters from the model
-    # algorithm could be stored in metadata
-    def precision_lower_boundary_per_class(self, lower_boundary: dict):
-        y_pred = self.clf.predict(self.X)
+    def _per_class(self, metric, lower_boundary):
         for klass in self.classes:
             y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
             y_class = self.y[self.y == klass]
-            if self.precision_score(y_class, y_pred_class) < lower_boundary[klass]:
+            if metric(y_class, y_pred_class) < lower_boundary[klass]:
                 return False
         return True
+
+    # potentially include hyper parameters from the model
+    # algorithm could be stored in metadata
+    # Todo: determine if still relevant ^
+    def precision_lower_boundary_per_class(self, lower_boundary: dict):
+        y_pred = self.clf.predict(self.X)
+        return self._per_class(self.precision_score, lower_boundary)
 
     def recall_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
-        for klass in self.classes:
-            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
-            y_class = self.y[self.y == klass]
-            if self.recall_score(y_class, y_pred_class) < lower_boundary[klass]:
-                return False
-        return True
-
+        return self._per_class(self.recall_score, lower_boundary)
+    
     def f1_lower_boundary_per_class(self, lower_boundary: dict):
         y_pred = self.clf.predict(self.X)
-        for klass in self.classes:
-            y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
-            y_class = self.y[self.y == klass]
-            if self.f1_score(y_class, y_pred_class) < lower_boundary[klass]:
-                return False
-        return True
-        
+        return self._per_class(self.f1_score, lower_boundary)
+    
     def classifier_testing(self,
                            precision_lower_boundary: dict,
                            recall_lower_boundary: dict,
