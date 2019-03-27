@@ -40,11 +40,44 @@ def test_precision_recall_f1_basic():
                                                           column_names)
     classes = list(df.target.unique())
     assert test_suite.classifier_testing(
-        {klass: 0.000000001 for klass in classes},
-        {klass: 0.00000001 for klass in classes},
-        {klass: 0.00000001 for klass in classes}
+        {klass: 0.1 for klass in classes},
+        {klass: 0.1 for klass in classes},
+        {klass: 0.1 for klass in classes}
     )
-    
+
+def test_f1_cv():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    f1_scores = test_suite.f1_cv(3)
+    assert isinstance(f1_scores, list)
+    assert isinstance(f1_scores[0], float)
+    assert len(f1_scores) == 3
+
+def test_recall_cv():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    recall_scores = test_suite.recall_cv(3)
+    assert isinstance(recall_scores, list)
+    assert isinstance(recall_scores[0], float)
+    assert len(recall_scores) == 3
+
+def test_precision_cv():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    precision_scores = test_suite.precision_cv(3)
+    assert isinstance(precision_scores, list)
+    assert isinstance(precision_scores[0], float)
+    assert len(precision_scores) == 3
+
 def test_precision_metric():
     fixed_metrics = classification_tests.FixedClassificationMetrics()
     assert 1.0 == fixed_metrics.precision_score([0,0,0], [0,0,0])
