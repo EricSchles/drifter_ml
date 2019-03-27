@@ -17,58 +17,74 @@ class RegressionTests():
         self.y = test_data[target_name]
         self.X = test_data[column_names]
 
-    def mse_cv(self):
+    def get_test_score(self, cross_val_dict):
+        return list(cross_val_dict["test_score"])
+
+    def mse_cv(self, cv):
         mse = metrics.make_scorer(metrics.mean_squared_error)
-        return cross_validate(self.reg, self.X,
-                              self.y, cv=cv,
-                              scoring=(mse))
-        
-    def cross_val_mse_anomaly_detection(self, tolerance, cv=3):
-        scores = self.mse_cv()
+        result = cross_validate(self.reg, self.X,
+                                self.y, cv=cv,
+                                scoring=(mse))
+        return self.get_test_score(result)
+
+    def _cross_val_anomaly_detection(scores, tolerance):
         avg = np.mean(scores)
-        deviances_from_avg = [abs(score - avg)
-                                for score in scores]
+        deviance_from_avg = [abs(score - avg)
+                             for score in scores]
         for deviance in deviances_from_avg:
             if deviance > tolerance:
                 return False
         return True
-    
-    def cross_val_mse_upper_boundary(self, upper_boundary, cv=3):
-        scores = self.mse_cv()
+
+    def _cross_val_avg(self, scores, minimum_center_tolerance):
+        avg = np.mean(scores)
+        if avg < minimum_center_tolerance:
+            return False
+        return True
+
+    def _cross_val_upper_boundary(self, scores, upper_boundary, cv=3):
         for score in scores:
             if score > upper_boundary:
                 return False
         return True
-    
+
+    def cross_val_mse_anomaly_detection(self, tolerance, cv=3):
+        scores = self.mse_cv(cv)
+        return self._cross_val_anomaly_detection(scores, tolerance)
+
+    def cross_val_mse_avg(self, minimum_center_tolerance, cv=3):
+        scores = self.mse_cv(cv)
+        return self._cross_val_avg(scores, minimum_center_tolerance)
+
+    def cross_val_mse_upper_boundary(self, upper_boundary, cv=3):
+        scores = self.mse_cv(cv)
+        return self._cross_val_upper_boundary(scores, upper_boundary)
+        
     def mse_upper_boundary(self, upper_boundary):
         y_pred = self.reg.predict(self.X)
         if metrics.mean_squared_error(self.y, y_pred) > upper_boundary:
             return False
         return True
 
-    def mae_cv(self):
+    def mae_cv(self, cv):
         mse = metrics.make_scorer(metrics.median_absolute_error)
-        return cross_validate(self.reg, self.X,
-                              self.y, cv=cv,
-                              scoring=(mae))
+        result = cross_validate(self.reg, self.X,
+                                self.y, cv=cv,
+                                scoring=(mae))
+        return self.get_test_score(result)
     
     def cross_val_mae_anomaly_detection(self, tolerance, cv=3):
-        scores = self.mae_cv()
-        avg = np.mean(scores)
-        deviances_from_avg = [abs(score - avg)
-                                for score in scores]
-        for deviance in deviances_from_avg:
-            if deviance > tolerance:
-                return False
-        return True
+        scores = self.mae_cv(cv)
+        return self._cross_val_anomaly_detection(scores, tolerance)
+
+    def cross_val_mae_avg(self, minimum_center_tolerance, cv=3):
+        scores = self.mae_cv(cv)
+        return self._cross_val_avg(scores, minimum_center_tolerance)
 
     def cross_val_mae_upper_boundary(self, upper_boundary, cv=3):
-        scores = self.mae_cv()
-        for score in scores:
-            if score > upper_boundary:
-                return False
-        return True
-
+        scores = self.mae_cv(cv)
+        return self._cross_val_upper_boundary(scores, upper_boundary)
+    
     def mae_upper_boundary(self, upper_boundary):
         y_pred = self.reg.predict(self.X)
         if metrics.median_absolute_error(self.y, y_pred) > upper_boundary:
