@@ -66,8 +66,17 @@ jobs:
           command: |
             . venv/bin/activate
             python -m pip install codecov pytest-cov 
-            cd tests && pytest --cov=drifter_ml ./*
-  
+            cd tests && pytest --cov-report html --cov=drifter_ml ./*
+              
       - store_artifacts:
           path: ./test-reports
           destination: ./test-reports
+
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.2
+jobs:
+  build:
+    steps:
+      - codecov/upload:
+          file: {{ "./tests/htmlcov" }}
