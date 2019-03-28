@@ -90,5 +90,86 @@ def test_f1_metric():
     fixed_metrics = classification_tests.FixedClassificationMetrics()
     assert 1.0 == fixed_metrics.f1_score([0,0,0], [0,0,0])
 
+def test_cross_val_per_class_percision_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance = 1
+    assert test_suite.cross_val_per_class_precision_anomaly_detection(tolerance)
+
+def test_cross_val_per_class_recall_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance = 1
+    assert test_suite.cross_val_per_class_recall_anomaly_detection(tolerance)
+
+def test_cross_val_per_class_f1_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance = 1
+    assert test_suite.cross_val_per_class_f1_anomaly_detection(tolerance)
+
+def test_cross_val_precision_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance = 1
+    assert test_suite.cross_val_precision_anomaly_detection(tolerance)
+
+def test_cross_val_recall_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance = 1
+    assert test_suite.cross_val_recall_anomaly_detection(tolerance)
+
+def test_cross_val_f1_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance = 1
+    assert test_suite.cross_val_f1_anomaly_detection(tolerance)
+
+def test_cross_val_precision_avg():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    avg = 0.1
+    assert test_suite.cross_val_precision_avg(avg)
+
+def test_cross_val_recall_avg():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    avg = 0.1
+    assert test_suite.cross_val_recall_avg(avg)
+
+def test_cross_val_f1_avg():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    avg = 0.1
+    assert test_suite.cross_val_f1_avg(avg)
+
 
     
