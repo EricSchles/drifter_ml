@@ -64,6 +64,8 @@ class ClassificationTests(FixedClassificationMetrics):
                  column_names):
         self.clf = clf
         self.test_data = test_data
+        self.column_names = column_names
+        self.target_name = target_name
         self.y = test_data[target_name]
         self.X = test_data[column_names]
         self.classes = set(self.y)
@@ -81,9 +83,12 @@ class ClassificationTests(FixedClassificationMetrics):
         clf = clone(self.clf)
         scores = []
         for train, test in kfold.split(self.test_data):
-            clf.fit(train[self.column_names], train[self.target_name])
-            y_pred = clf.predict(test[self.column_names])
-            y_true = test[self.target_name]
+            train_data = self.test_data.loc[train]
+            test_data = self.test_data.loc[test]
+            clf.fit(train_data[self.column_names], train_data[self.target_name])
+            y_pred = clf.predict(test_data[self.column_names])
+            y_true = test_data[self.target_name]
+            y_true.index = list(range(len(y_true)))
             scores.append(self._get_per_class(y_true, y_pred, metric))
         return scores
             
@@ -115,11 +120,11 @@ class ClassificationTests(FixedClassificationMetrics):
                               scoring=(f1))
         return self.get_test_score(result)
         
-    def _cross_val_anomaly_detection(scores, tolerance):
+    def _cross_val_anomaly_detection(self, scores, tolerance):
         avg = np.mean(scores)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
-        for deviance in deviances_from_avg:
+        for deviance in deviance_from_avg:
             if deviance > tolerance:
                 return False
         return True
@@ -129,7 +134,7 @@ class ClassificationTests(FixedClassificationMetrics):
         results = [] 
         for klass in self.classes:
             scores = [score[klass] for score in scores_per_fold]
-            results.append(_cross_val_anomaly_detection(scores, tolerance))
+            results.append(self._cross_val_anomaly_detection(scores, tolerance))
         return all(results)
 
     def cross_val_per_class_precision_anomaly_detection(self, tolerance,
