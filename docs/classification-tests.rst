@@ -356,3 +356,7 @@ Here instead of setting an expectation of the precision, we set an expectation o
 
 Now we can say for sure, the precision should be at least 0.7 on average but can fall below up to 0.2 of that before we raise an error.
 
+Classifier Test Example - Cross Validation Anamoly Detection With Spread
+========================================================================
+
+
