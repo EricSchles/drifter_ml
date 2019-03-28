@@ -2,6 +2,7 @@ from sklearn import metrics
 import numpy as np
 import time
 from scipy import stats
+from mlxtend.evalutate import permutation_test
 
 class DataSanitization(): 
     def __init__(self, data):
@@ -90,52 +91,101 @@ class ColumnarData():
             return True
         return False
     
-    def pearson_similiar_correlation(self, column, correlation_lower_bound, pvalue_threshold=0.05):
+    def pearson_similiar_correlation(self, column,
+                                     correlation_lower_bound,
+                                     pvalue_threshold=0.05,
+                                     num_rounds=10000):
         if not self.is_normal(column):
             raise Exception("""
             Data is likely not normally distributed and therefore pearson is not
             a valid test to run""")
         correlation_info = stats.pearsonr(self.new_data[column],
                                           self.historical_data[column])
-        if correlation_info.pvalue > pvalue_threshold:
+        p_value = permutation_test(
+            self.new_data[column],
+            self.historical_data[column],
+            method="exact",
+            num_rounds=num_rounds,
+            func=lambda x, y: stats.pearsonr(x, y)[0],
+            seed=0)
+        if p_value > pvalue_threshold:
             return False
         if correlation_info.correlation < correlation_lower_bound:
             return False
         return True
 
-    def spearman_similiar_correlation(self, column, correlation_lower_bound, pvalue_threshold=0.05):
+    def spearman_similiar_correlation(self, column,
+                                      correlation_lower_bound,
+                                      pvalue_threshold=0.05,
+                                      num_rounds=10000):
         correlation_info = stats.spearmanr(self.new_data[column],
                                            self.historical_data[column])
-        if correlation_info.pvalue > pvalue_threshold:
+        p_value = permutation_test(
+            self.new_data[column],
+            self.historical_data[column],
+            method="exact",
+            num_rounds=num_rounds,
+            func=lambda x, y: stats.spearmanr(x, y).correlation,
+            seed=0)
+        if p_value > pvalue_threshold:
             return False
         if correlation_info.correlation < correlation_lower_bound:
             return False
         return True
 
-    def wilcoxon_similiar_distribution(self, column, pvalue_threshold=0.05):
-        distribution_info = stats.wilcoxon(self.new_data[column],
-                                           self.historical_data[column])
-        if distribution_info.pvalue < pvalue_threshold:
+    def wilcoxon_similiar_distribution(self, column,
+                                       pvalue_threshold=0.05,
+                                       num_rounds=10000):
+        p_value = permutation_test(
+            self.new_data[column],
+            self.historical_data[column],
+            method="exact",
+            num_rounds=num_rounds,
+            func=lambda x, y: stats.wilcoxon(x, y).statistic,
+            seed=0)
+        if p_value < pvalue_threshold:
             return False
         return True
         
-    def ks_2samp_similiar_distribution(self, column, pvalue_threshold=0.05):
-        distribution_info = stats.ks_2samp(self.new_data[column],
-                                           self.historical_data[column])
-        if distribution_info.pvalue < pvalue_threshold:
+    def ks_2samp_similiar_distribution(self, column,
+                                       pvalue_threshold=0.05,
+                                       num_rounds=10000):
+        p_value = permutation_test(
+            self.new_data[column],
+            self.historical_data[column],
+            method="exact",
+            num_rounds=num_rounds,
+            func=lambda x, y: stats.ks_2samp(x, y).statistic,
+            seed=0)
+        if p_value < pvalue_threshold:
             return False
         return True
 
-    def kruskal_similiar_distribution(self, column, pvalue_threshold=0.05):
-        distribution_info = stats.kruskal(self.new_data[column],
-                                          self.historical_data[column])
-        if distribution_info.pvalue < pvalue_threshold:
+    def kruskal_similiar_distribution(self, column,
+                                      pvalue_threshold=0.05,
+                                      num_rounds=10000):
+        p_value = permutation_test(
+            self.new_data[column],
+            self.historical_data[column],
+            method="exact",
+            num_rounds=num_rounds,
+            func=lambda x, y: stats.kruskal(x, y).statistic,
+            seed=0)
+        if p_value < pvalue_threshold:
             return False
         return True
 
-    def mann_whitney_u_similar_distribution(self, column, pvalue_threshold=0.05):
-        distribution_info = stats.mannwhitneyu(self.new_data[column],
-                                               self.historical_data[column])
-        if distribution_info.pvalue < pvalue_threshold:
+    def mann_whitney_u_similar_distribution(self, column,
+                                            pvalue_threshold=0.05,
+                                            num_rounds=10000):
+        p_value = permutation_test(
+            self.new_data[column],
+            self.historical_data[column],
+            method="exact",
+            num_rounds=num_rounds,
+            func=lambda x, y: stats.mannwhitneyu(x, y).statistic,
+            seed=0)
+
+        if p_value < pvalue_threshold:
             return False
         return True
