@@ -2,7 +2,7 @@ from sklearn import metrics
 import numpy as np
 import time
 from scipy import stats
-from mlxtend.evalutate import permutation_test
+from mlxtend.evaluate import permutation_test
 
 class DataSanitization(): 
     def __init__(self, data):
