@@ -35,9 +35,9 @@ class ColumnarData():
         self.historical_data = historical_data
 
     def mean_similarity(self, column, tolerance=2):
-        new_mean = np.mean(self.new_data)
-        old_mean = np.mean(self.historical_data)
-        std = np.std(self.historical_data)
+        new_mean = float(np.mean(self.new_data[column]))
+        old_mean = float(np.mean(self.historical_data[column]))
+        std = float(np.std(self.historical_data[column]))
         upper_bound = old_mean + (std * tolerance)
         lower_bound = old_mean - (std * tolerance)
         if new_mean < lower_bound:
@@ -48,9 +48,9 @@ class ColumnarData():
             return True
 
     def median_similarity(self, column, tolerance=2):
-        new_median = np.median(self.new_data)
-        old_median = np.median(self.historical_data)
-        iqr = stats.iqr(self.historical_data)
+        new_median = float(np.median(self.new_data[column]))
+        old_median = float(np.median(self.historical_data[column]))
+        iqr = float(stats.iqr(self.historical_data[column]))
         upper_bound = old_median + (iqr * tolerance)
         lower_bound = old_median - (iqr * tolerance)
         if new_median < lower_bound:
@@ -61,9 +61,9 @@ class ColumnarData():
             return True
 
     def trimean(self, data):
-        q1 = np.quantile(data, 0.25)
-        q3 = np.quantile(data, 0.75)
-        median = np.median(data)
+        q1 = float(np.quantile(data, 0.25))
+        q3 = float(np.quantile(data, 0.75))
+        median = float(np.median(data))
         return (q1 + 2*median + q3)/4
 
     def trimean_absolute_deviation(self, data):
@@ -72,9 +72,9 @@ class ColumnarData():
         return sum(numerator)/len(data)
 
     def trimean_similarity(self, column, tolerance=2):
-        new_trimean = self.trimean(self.new_data)
-        old_trimean = self.trimean(self.historical_data)
-        tad = self.trimean_absolute_deviation(self.historical_data)
+        new_trimean = self.trimean(self.new_data[column])
+        old_trimean = self.trimean(self.historical_data[column])
+        tad = self.trimean_absolute_deviation(self.historical_data[column])
         upper_bound = old_trimean + (tad * tolerance)
         lower_bound = old_trimean - (tad * tolerance)
         if new_trimean < lower_bound:
@@ -91,10 +91,10 @@ class ColumnarData():
             return True
         return False
     
-    def pearson_similiar_correlation(self, column,
+    def pearson_similar_correlation(self, column,
                                      correlation_lower_bound,
                                      pvalue_threshold=0.05,
-                                     num_rounds=10000):
+                                     num_rounds=3):
         if not self.is_normal(column):
             raise Exception("""
             Data is likely not normally distributed and therefore pearson is not
@@ -104,26 +104,26 @@ class ColumnarData():
         p_value = permutation_test(
             self.new_data[column],
             self.historical_data[column],
-            method="exact",
+            method="approximate",
             num_rounds=num_rounds,
             func=lambda x, y: stats.pearsonr(x, y)[0],
             seed=0)
         if p_value > pvalue_threshold:
             return False
-        if correlation_info.correlation < correlation_lower_bound:
+        if correlation_info[0] < correlation_lower_bound:
             return False
         return True
 
-    def spearman_similiar_correlation(self, column,
+    def spearman_similar_correlation(self, column,
                                       correlation_lower_bound,
                                       pvalue_threshold=0.05,
-                                      num_rounds=10000):
+                                      num_rounds=3):
         correlation_info = stats.spearmanr(self.new_data[column],
                                            self.historical_data[column])
         p_value = permutation_test(
             self.new_data[column],
             self.historical_data[column],
-            method="exact",
+            method="approximate",
             num_rounds=num_rounds,
             func=lambda x, y: stats.spearmanr(x, y).correlation,
             seed=0)
@@ -133,13 +133,13 @@ class ColumnarData():
             return False
         return True
 
-    def wilcoxon_similiar_distribution(self, column,
+    def wilcoxon_similar_distribution(self, column,
                                        pvalue_threshold=0.05,
-                                       num_rounds=10000):
+                                       num_rounds=3):
         p_value = permutation_test(
             self.new_data[column],
             self.historical_data[column],
-            method="exact",
+            method="approximate",
             num_rounds=num_rounds,
             func=lambda x, y: stats.wilcoxon(x, y).statistic,
             seed=0)
@@ -147,13 +147,13 @@ class ColumnarData():
             return False
         return True
         
-    def ks_2samp_similiar_distribution(self, column,
+    def ks_2samp_similar_distribution(self, column,
                                        pvalue_threshold=0.05,
-                                       num_rounds=10000):
+                                       num_rounds=3):
         p_value = permutation_test(
             self.new_data[column],
             self.historical_data[column],
-            method="exact",
+            method="approximate",
             num_rounds=num_rounds,
             func=lambda x, y: stats.ks_2samp(x, y).statistic,
             seed=0)
@@ -161,13 +161,13 @@ class ColumnarData():
             return False
         return True
 
-    def kruskal_similiar_distribution(self, column,
+    def kruskal_similar_distribution(self, column,
                                       pvalue_threshold=0.05,
-                                      num_rounds=10000):
+                                      num_rounds=3):
         p_value = permutation_test(
             self.new_data[column],
             self.historical_data[column],
-            method="exact",
+            method="approximate",
             num_rounds=num_rounds,
             func=lambda x, y: stats.kruskal(x, y).statistic,
             seed=0)
@@ -177,11 +177,11 @@ class ColumnarData():
 
     def mann_whitney_u_similar_distribution(self, column,
                                             pvalue_threshold=0.05,
-                                            num_rounds=10000):
+                                            num_rounds=3):
         p_value = permutation_test(
             self.new_data[column],
             self.historical_data[column],
-            method="exact",
+            method="approximate",
             num_rounds=num_rounds,
             func=lambda x, y: stats.mannwhitneyu(x, y).statistic,
             seed=0)
