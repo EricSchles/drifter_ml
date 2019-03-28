@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="drifter_ml",
-    version="0.9",
+    version="0.14",
     description="Testing for models confirming to the scikit-learn api",
     long_description=README,
     long_description_content_type="text/markdown",
