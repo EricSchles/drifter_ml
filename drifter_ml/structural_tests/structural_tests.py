@@ -26,7 +26,7 @@ class KmeansClustering():
             new_data = self.new_data[self.column_names]
             historical_data = self.historical_data[self.column_names]
             new_data_clusters = self.kmeans_clusters(k, new_data)
-            historical_clusters = self.kmeans_clusters(k, historical_data)
+            historical_data_clusters = self.kmeans_clusters(k, historical_data)
             score = metric(
                 new_data_clusters, historical_data_clusters)
             if score < min_similarity:
@@ -99,7 +99,7 @@ class DBscanClustering():
             new_data = self.new_data[self.column_names]
             historical_data = self.historical_data[self.column_names]
             new_data_clusters = self.dbscan_clusters(new_data)
-            historical_clusters = self.dbscan_clusters(historical_data)
+            historical_data_clusters = self.dbscan_clusters(historical_data)
             score = metric(
                 new_data_clusters, historical_data_clusters)
             if score < min_similarity:
@@ -178,8 +178,8 @@ class KnnClustering():
         return best_k
 
     def reg_supervised_similar_clustering(self, absolute_distance):
-        historical_k = reg_clustering(self.historical_data)
-        new_k = reg_clustering(self.new_data)
+        historical_k = self.reg_supervised_clustering(self.historical_data)
+        new_k = self.reg_supervised_clustering(self.new_data)
         if abs(historical_k - new_k) > absolute_distance:
             return False
         else:
@@ -199,9 +199,9 @@ class KnnClustering():
         best_k = lowest_mse[0]
         return best_k
 
-    def cls_supervised_similiar_clustering(self, absolute_distance):
-        historical_k = cls_clustering(self.historical_data)
-        new_k = cls_clustering(self.new_data)
+    def cls_supervised_similar_clustering(self, absolute_distance):
+        historical_k = self.cls_supervised_clustering(self.historical_data)
+        new_k = self.cls_supervised_clustering(self.new_data)
         if abs(historical_k - new_k) > absolute_distance:
             return False
         else:
