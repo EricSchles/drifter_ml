@@ -9,6 +9,7 @@ You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more
 [![Documentation Status](https://readthedocs.org/projects/drifter-ml/badge/?version=latest)](https://drifter-ml.readthedocs.io/en/latest/?badge=latest)
 [![CircleCI](https://circleci.com/gh/EricSchles/drifter_ml.svg?style=svg)](https://circleci.com/gh/EricSchles/drifter_ml)
 [![Version Number](https://img.shields.io/pypi/v/drifter-ml.svg)](https://pypi.org/project/drifter-ml/)
+[![Downloads Per Month](https://img.shields.io/pypi/dm/drifter-ml.svg)](https://pypi.org/project/drifter-ml/)
 
 ## Tests Covered
 
