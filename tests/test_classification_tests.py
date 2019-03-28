@@ -171,5 +171,109 @@ def test_cross_val_f1_avg():
     avg = 0.1
     assert test_suite.cross_val_f1_avg(avg)
 
+def test_spread_cross_val_precision_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance =  1
+    assert test_suite.spread_cross_val_precision_anomaly_detection(tolerance)
+    assert test_suite.spread_cross_val_precision_anomaly_detection(tolerance, method="median")
+    assert test_suite.spread_cross_val_precision_anomaly_detection(tolerance, method="trimean")
 
-    
+def test_spread_cross_val_recall_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance =  1
+    assert test_suite.spread_cross_val_recall_anomaly_detection(tolerance)
+    assert test_suite.spread_cross_val_recall_anomaly_detection(tolerance, method="median")
+    assert test_suite.spread_cross_val_recall_anomaly_detection(tolerance, method="trimean")
+
+def test_spread_cross_val_f1_anomaly_detection():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    tolerance =  1
+    assert test_suite.spread_cross_val_f1_anomaly_detection(tolerance)
+    assert test_suite.spread_cross_val_f1_anomaly_detection(tolerance, method="median")
+    assert test_suite.spread_cross_val_f1_anomaly_detection(tolerance, method="trimean")
+
+def test_run_time_stress_test():
+    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    performance_boundary = []
+    for i in range(100, 1000, 100):
+        performance_boundary.append({
+            "sample_size": i,
+            "max_run_time": 100})
+    try:
+        test_suite.run_time_stress_test(performance_boundary)
+        assert True
+    except:
+        assert False
+
+def test_two_model_prediction_run_time_stress_test():
+    df, column_names, target_name, clf1, clf2 = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassifierComparison(clf1,
+                                                           clf2,
+                                                           df,
+                                                           target_name,
+                                                           column_names)
+    performance_boundary = []
+    for i in range(100, 1000, 100):
+        performance_boundary.append({
+            "sample_size": i,
+            "max_run_time": 100})
+    try:
+        test_suite.two_model_prediction_run_time_stress_test(performance_boundary)
+        assert True
+    except:
+        assert False
+
+def test_two_model_classifier_testing():
+    df, column_names, target_name, clf1, clf2 = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassifierComparison(clf1,
+                                                           clf2,
+                                                           df,
+                                                           target_name,
+                                                           column_names)
+    try:
+        test_suite.two_model_classifier_testing()
+        assert True
+    except:
+        assert False
+
+def test_cross_val_two_model_classifier_testing():
+    df, column_names, target_name, clf1, clf2 = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassifierComparison(clf1,
+                                                           clf2,
+                                                           df,
+                                                           target_name,
+                                                           column_names)
+    try:
+        test_suite.cross_val_two_model_classifier_testing()
+        assert True
+    except:
+        assert False
+
+def test_cross_val_two_model_classifier_testing():
+    df, column_names, target_name, clf1, clf2 = generate_classification_data_and_models()
+    test_suite = classification_tests.ClassifierComparison(clf1,
+                                                           clf2,
+                                                           df,
+                                                           target_name,
+                                                           column_names)
+    try:
+        test_suite.cross_val_two_model_classifier_testing()
+        assert True
+    except:
+        assert False
