@@ -61,7 +61,15 @@ jobs:
           command: |
             . venv/bin/activate
             python -m pytest tests
-
+	  
       - store_artifacts:
           path: ./test-reports
           destination: ./test-reports
+test:
+   post:
+      - run:
+      	  name: Install codecov
+	  command: |
+	  python3 -m venv venv
+	  . venv/bin/activate
+	  python -m pip install codecov && codecov
