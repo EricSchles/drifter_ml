@@ -248,17 +248,17 @@ class ClassificationTests(FixedClassificationMetrics):
     def spread_cross_val_precision_anomaly_detection(self, tolerance,
                                                      method="mean", cv=10, average='binary'):
         scores = self.precision_cv(cv, average=average)
-        return self._anamoly_detection(scores, tolerance, method)
+        return self._anomaly_detection(scores, tolerance, method)
         
     def spread_cross_val_f1_anomaly_detection(self, tolerance,
                                               method="mean", cv=10, average='binary'):
         scores = self.f1_cv(cv, average=average)
-        return self._anamoly_detection(scores, tolerance, method)
+        return self._anomaly_detection(scores, tolerance, method)
     
     def spread_cross_val_recall_anomaly_detection(self, tolerance,
                                                   method="mean", cv=3, average='binary'):
         scores = self.recall_cv(cv, average=average)
-        return self._anamoly_detection(scores, tolerance, method)
+        return self._anomaly_detection(scores, tolerance, method)
         
     def spread_cross_val_classifier_testing(self,
                                             precision_lower_boundary: int,
@@ -319,7 +319,7 @@ class ClassificationTests(FixedClassificationMetrics):
             start_time = time.time()
             self.clf.predict(data)
             model_run_time = time.time() - start_time
-            if model_run_time > run_time:
+            if model_run_time > max_run_time:
                 return False
         return True
 
