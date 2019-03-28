@@ -27,11 +27,11 @@ class RegressionTests():
                                 scoring=(mse))
         return self.get_test_score(result)
 
-    def _cross_val_anomaly_detection(scores, tolerance):
+    def _cross_val_anomaly_detection(self, scores, tolerance):
         avg = np.mean(scores)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
-        for deviance in deviances_from_avg:
+        for deviance in deviance_from_avg:
             if deviance > tolerance:
                 return False
         return True
@@ -67,7 +67,7 @@ class RegressionTests():
         return True
 
     def mae_cv(self, cv):
-        mse = metrics.make_scorer(metrics.median_absolute_error)
+        mae = metrics.make_scorer(metrics.median_absolute_error)
         result = cross_validate(self.reg, self.X,
                                 self.y, cv=cv,
                                 scoring=(mae))
@@ -107,7 +107,7 @@ class RegressionTests():
             start_time = time.time()
             self.reg.predict(data)
             model_run_time = time.time() - start_time
-            if model_run_time > run_time:
+            if model_run_time > max_run_time:
                 return False
         return True
 
@@ -142,11 +142,11 @@ class RegressionComparison():
         return True
 
     def cross_val_mse_result(self, reg, cv=3):
-        y_pred = cross_val_predict(self.reg, self.X, self.y)
+        y_pred = cross_val_predict(reg, self.X, self.y)
         return metrics.mean_squared_error(self.y, y_pred)
         
     def cross_val_mae_result(self, reg, cv=3):
-        y_pred = cross_val_predict(self.reg, self.X, self.y)
+        y_pred = cross_val_predict(reg, self.X, self.y)
         return metrics.median_absolute_error(self.y, y_pred)
 
     def mse_result(self, reg):
@@ -157,11 +157,11 @@ class RegressionComparison():
         y_pred = reg.predict(self.X)
         return metrics.median_absolute_error(self.y, y_pred)
 
-    def cv_two_model_regression_testing(self):
-        mse_one_test = self.cross_val_mse_result(self.reg_one)
-        mae_one_test = self.cross_val_mae_result(self.reg_one)
-        mse_two_test = self.cross_val_mse_result(self.reg_two)
-        mae_two_test = self.cross_val_mae_result(self.reg_two)
+    def cv_two_model_regression_testing(self, cv=3):
+        mse_one_test = self.cross_val_mse_result(self.reg_one, cv=cv)
+        mae_one_test = self.cross_val_mae_result(self.reg_one, cv=cv)
+        mse_two_test = self.cross_val_mse_result(self.reg_two, cv=cv)
+        mae_two_test = self.cross_val_mae_result(self.reg_two, cv=cv)
         if mse_one_test < mse_two_test and mae_one_test < mae_two_test:
             return True
         else:
