@@ -65,7 +65,8 @@ jobs:
           name: Install codecov
           command: |
             . venv/bin/activate
-            python -m pip install codecov && codecov
+            python -m pip install codecov
+            cd tests && pytest --cov --cov-report html
   
       - store_artifacts:
           path: ./test-reports
