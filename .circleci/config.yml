@@ -72,7 +72,6 @@ jobs:
           path: ./test-reports
           destination: ./test-reports
 
-version: 2.1
 orbs:
   codecov: codecov/codecov@1.0.2
 jobs:
