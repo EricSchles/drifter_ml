@@ -393,7 +393,7 @@ def test_spread_cross_val_f1_anomaly_detection_multiclass():
     assert test_suite.spread_cross_val_f1_anomaly_detection(tolerance, method="trimean")
 
 def test_run_time_stress_test():
-    df, column_names, target_name, clf, _ = generate_classification_data_and_models()
+    df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
                                                           target_name,
