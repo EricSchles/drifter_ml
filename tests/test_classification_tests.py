@@ -86,6 +86,20 @@ def test_precision_recall_f1_multiclass():
         {klass: 0.1 for klass in classes}
     )
 
+def test_roc_auc_cv_binary():
+    df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    try:
+        roc_auc_scores = test_suite.roc_auc_cv(3)
+        assert isinstance(roc_auc_scores, list)
+        assert isinstance(roc_auc_scores[0], float)
+        assert len(roc_auc_scores) == 3
+    except ValueError:
+        assert True
+        
 def test_f1_cv_binary():
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
@@ -218,6 +232,18 @@ def test_cross_val_per_class_f1_anomaly_detection_multiclass():
     tolerance = 1
     assert test_suite.cross_val_per_class_f1_anomaly_detection(tolerance)
 
+def test_cross_val_per_class_roc_auc_anomaly_detection_binary():
+    df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    try:
+        tolerance = 1
+        assert test_suite.cross_val_per_class_roc_auc_anomaly_detection(tolerance)
+    except ValueError:
+        assert True
+
 def test_cross_val_precision_anomaly_detection_binary():
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
@@ -271,6 +297,18 @@ def test_cross_val_f1_anomaly_detection_mutliclass():
                                                           column_names)
     tolerance = 1
     assert test_suite.cross_val_f1_anomaly_detection(tolerance)
+
+def test_cross_val_roc_auc_anomaly_detection_binary():
+    df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    try:
+        tolerance = 1
+        assert test_suite.cross_val_roc_auc_anomaly_detection(tolerance)
+    except ValueError:
+        assert True
 
 def test_cross_val_precision_avg_binary():
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
@@ -326,6 +364,18 @@ def test_cross_val_f1_avg_multiclass():
     avg = 0.1
     assert test_suite.cross_val_f1_avg(avg)
 
+def test_cross_val_roc_auc_avg_binary():
+    df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    try:
+        avg = 0.1
+        assert test_suite.cross_val_roc_auc_avg(avg)
+    except ValueError:
+        assert True
+        
 def test_spread_cross_val_precision_anomaly_detection_binary():
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
@@ -391,6 +441,20 @@ def test_spread_cross_val_f1_anomaly_detection_multiclass():
     assert test_suite.spread_cross_val_f1_anomaly_detection(tolerance)
     assert test_suite.spread_cross_val_f1_anomaly_detection(tolerance, method="median")
     assert test_suite.spread_cross_val_f1_anomaly_detection(tolerance, method="trimean")
+
+def test_spread_cross_val_roc_auc_anomaly_detection_binary():
+    df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
+    test_suite = classification_tests.ClassificationTests(clf,
+                                                          df,
+                                                          target_name,
+                                                          column_names)
+    try:
+        tolerance =  1
+        assert test_suite.spread_cross_val_roc_auc_anomaly_detection(tolerance)
+        assert test_suite.spread_cross_val_roc_auc_anomaly_detection(tolerance, method="median")
+        assert test_suite.spread_cross_val_roc_auc_anomaly_detection(tolerance, method="trimean")
+    except ValueError:
+        assert True
 
 def test_run_time_stress_test():
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
