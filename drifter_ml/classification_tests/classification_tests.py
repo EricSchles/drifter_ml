@@ -101,7 +101,7 @@ class ClassificationTests(FixedClassificationMetrics):
                                 scoring=(f1))
         return self.get_test_score(result)
 
-    def roc_auc_cv(self, cv, average="binary"):
+    def roc_auc_cv(self, cv, average="micro"):
         roc_auc_score = partial(metrics.roc_auc_score, average=average)
         roc_auc = metrics.make_scorer(roc_auc_score)
         result = cross_validate(self.clf, self.X,
@@ -212,7 +212,7 @@ class ClassificationTests(FixedClassificationMetrics):
                                                            tolerance, cv)
 
     def cross_val_per_class_roc_auc_anomaly_detection(self, tolerance,
-                                                      cv=3, average="binary"):
+                                                      cv=3, average="micro"):
         self.roc_auc_exception()
         roc_auc_score = partial(metrics.roc_auc_score, average=average)
         return self._cross_val_per_class_anomaly_detection(roc_auc_score,
@@ -233,7 +233,7 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
 
-    def cross_val_roc_auc_anomaly_detection(self, tolerance, cv=3, average="binary"):
+    def cross_val_roc_auc_anomaly_detection(self, tolerance, cv=3, average="micro"):
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
@@ -253,7 +253,7 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
-    def cross_val_roc_auc_avg(self, minimum_center_tolerance, cv=3, average='binary'):
+    def cross_val_roc_auc_avg(self, minimum_center_tolerance, cv=3, average='micro'):
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
         return self._cross_val_avg(score, minimum_center_tolerance)
@@ -273,7 +273,7 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
 
-    def cross_val_roc_auc_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+    def cross_val_roc_auc_lower_boundary(self, lower_boundary, cv=3, average='micro'):
         self.roc_auc_exception()
         scores = self.roc_auc(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
@@ -333,7 +333,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return self._anomaly_detection(scores, tolerance, method)
 
     def spread_cross_val_roc_auc_anomaly_detection(self, tolerance,
-                                                   method="mean", cv=10, average='binary'):
+                                                   method="mean", cv=10, average='micro'):
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
         return self._anomaly_detection(scores, tolerance, method)
@@ -376,7 +376,7 @@ class ClassificationTests(FixedClassificationMetrics):
         y_pred = self.clf.predict(self.X)
         return self._per_class(y_pred, f1_score, lower_boundary)
 
-    def roc_auc_lower_boundary_per_class(self, lower_boundary: dict, average='binary'):
+    def roc_auc_lower_boundary_per_class(self, lower_boundary: dict, average='micro'):
         self.roc_auc_exception()
         roc_auc_score = partial(self.roc_auc_score, average=average)
         y_pred = self.clf.predict(self.X)
@@ -486,7 +486,7 @@ class ClassifierComparison(FixedClassificationMetrics):
             f1[klass] = f1_score(y_class, y_pred_class)
         return f1
 
-    def roc_auc_per_class(self, clf, average="binary"):
+    def roc_auc_per_class(self, clf, average="micro"):
         self.roc_auc_exception()
         roc_auc_score = partial(metrics.roc_auc_score, average=average)
         y_pred = clf.predict(self.X)
@@ -539,6 +539,8 @@ class ClassifierComparison(FixedClassificationMetrics):
         recall_two_test = self.recall_per_class(self.clf_two, average=average)
         f1_two_test = self.f1_per_class(self.clf_two, average=average)
         if self.is_binary():
+            if average == 'binary':
+                average = 'micro'
             roc_auc_one_test = self.roc_auc_per_class(self.clf_one, average=average)
             roc_auc_two_test = self.roc_auc_per_class(self.clf_two, average=average)
             return self._precision_recall_f1_roc_auc_result(precision_one_test,
@@ -590,7 +592,7 @@ class ClassifierComparison(FixedClassificationMetrics):
             f1[klass] = f1_score(y_class, y_pred_class)
         return f1
 
-    def cross_val_roc_auc_per_class(self, clf, cv=3, average="binary"):
+    def cross_val_roc_auc_per_class(self, clf, cv=3, average="micro"):
         self.roc_auc_exception()
         roc_auc_score = partial(metrics.roc_auc_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
@@ -616,6 +618,8 @@ class ClassifierComparison(FixedClassificationMetrics):
         f1_two_test = self.cross_val_f1_per_class(self.clf_two,
                                                   cv=cv, average=average)
         if self.is_binary():
+            if average == 'binary':
+                average = 'micro'
             roc_auc_one_test = self.roc_auc_per_class(self.clf_one, average=average)
             roc_auc_two_test = self.roc_auc_per_class(self.clf_two, average=average)
             return self._precision_recall_f1_roc_auc_result(precision_one_test,
@@ -652,7 +656,7 @@ class ClassifierComparison(FixedClassificationMetrics):
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
         return f1_score(self.y, y_pred)
 
-    def cross_val_roc_auc(self, clf, cv=3, average="binary"):
+    def cross_val_roc_auc(self, clf, cv=3, average="micro"):
         self.roc_auc_exception()
         roc_auc_score = partial(metrics.roc_auc_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
@@ -676,6 +680,8 @@ class ClassifierComparison(FixedClassificationMetrics):
         recall_result = recall_one_test < recall_two_test
         f1_result = f1_one_test < f1_two_test
         if self.is_binary():
+            if average == 'binary':
+                average = 'micro'
             roc_auc_one_test = self.cross_val_roc_auc(self.clf_one,
                                                       cv=cv, average=average)
             roc_auc_two_test = self.cross_val_roc_auc(self.clf_two,
