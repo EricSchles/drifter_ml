@@ -182,7 +182,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return False
     
     def roc_auc_exception(self):
-        if self.is_binary()
+        if self.is_binary():
             raise Exception("roc_auc is only defined for binary classifiers")
 
     def reset_average(self, average):
@@ -430,7 +430,7 @@ class ClassifierComparison(FixedClassificationMetrics):
         return False
     
     def roc_auc_exception(self):
-        if self.is_binary()
+        if self.is_binary():
             raise Exception("roc_auc is only defined for binary classifiers")
 
     def reset_average(self, average):
