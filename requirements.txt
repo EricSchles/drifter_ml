@@ -4,3 +4,4 @@ scipy
 numpy
 pandas
 mlxtend
+drifter-ml
