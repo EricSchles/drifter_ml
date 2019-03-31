@@ -95,10 +95,6 @@ class ColumnarData():
                                      correlation_lower_bound,
                                      pvalue_threshold=0.05,
                                      num_rounds=3):
-        if not self.is_normal(column):
-            raise Warning("""
-            Data is likely not normally distributed and therefore pearson is not
-            a valid test to run""")
         correlation_info = stats.pearsonr(self.new_data[column],
                                           self.historical_data[column])
         p_value = permutation_test(
