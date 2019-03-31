@@ -5,8 +5,8 @@ import pandas as pd
 def generate_data():
     new_data = pd.DataFrame()
     historical_data = pd.DataFrame()
-    new_data["similar_normal"] = np.random.normal(0, 10, size=10000)
-    historical_data["similar_normal"] = np.random.normal(0, 10, size=10000)
+    new_data["similar_normal"] = np.random.normal(0, 10, size=1000)
+    historical_data["similar_normal"] = np.random.normal(0, 10, size=1000)
     new_data["different_normal"] = np.random.normal(1000, 250, size=1000)
     historical_data["different_normal"] = np.random.normal(5, 17, size=1000)
     new_data["random"] = np.random.random(size=1000)
@@ -61,7 +61,9 @@ def test_pearson_similar_correlation():
     try:
         test_suite.pearson_similar_correlation("similar_normal", correlation_lower_bound)
         assert True
-    except:
+    except ValueError:
+        assert True
+    else:
         assert False
 
 def test_spearman_similar_correlation():
