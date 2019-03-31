@@ -5,8 +5,8 @@ import pandas as pd
 def generate_data():
     new_data = pd.DataFrame()
     historical_data = pd.DataFrame()
-    new_data["similar_normal"] = np.random.normal(0, 10, size=1000)
-    historical_data["similar_normal"] = np.random.normal(0, 10, size=1000)
+    new_data["similar_normal"] = np.random.normal(0, 10, size=100000)
+    historical_data["similar_normal"] = np.random.normal(0, 10, size=100000)
     new_data["different_normal"] = np.random.normal(1000, 250, size=1000)
     historical_data["different_normal"] = np.random.normal(5, 17, size=1000)
     new_data["random"] = np.random.random(size=1000)
