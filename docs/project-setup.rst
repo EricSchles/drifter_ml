@@ -111,7 +111,7 @@ So the above description is a bit terse so let's break it down with some example
 	joblib.dump(clf, "model.joblib")
 	df.to_csv("data.csv")
 	test_data = pd.DataFrame()
-	test_data[["A", "B", "C"]]
+	test_data[["A", "B", "C"]] = df[["A", "B", "C"]]
 	test_data["target"] = y_test
 	test_data.to_csv("test_data.csv")
 
