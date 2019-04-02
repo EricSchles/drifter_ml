@@ -70,6 +70,10 @@ Some known issues with this, any machine learning tests are going to require hum
 * add custom accuracy function
 * add these tests: https://www.datasciencecentral.com/profiles/blogs/a-plethora-of-original-underused-statistical-tests
 * clustering for classification
+* Unsupervised and semi supervised tests
+	* verify similarity in clusters to similarity in labels
+	* generate a small representative set of labels and then propagate other labels
+
 
 ## References
 

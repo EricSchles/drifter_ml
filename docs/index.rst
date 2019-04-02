@@ -10,6 +10,7 @@ Welcome to Drifter ML's documentation!
    :maxdepth: 2
    
    introduction
+   project-setup
    designing-your-own-tests
    classification-tests
    regression-tests
