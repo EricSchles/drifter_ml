@@ -92,13 +92,12 @@ Or you could simply write one test for all three::
 	    target_name = "target"
 	    reg = joblib.load("model.joblib")
 
-	    test_suite = ClassificationTests(reg, 
+	    test_suite = RegressionTests(reg, 
 	    df, target_name, column_names)
 	    mse_boundary = 15
 	    mae_boundary = 10
-	    assert test_suite.regression_testing(
-	    							mse_boundary,
-	    							mae_boundary)
+	    assert test_suite.regression_testing(mse_boundary,
+	    					 mae_boundary)
 
 Regression Test Example - Model Speed
 =====================================
