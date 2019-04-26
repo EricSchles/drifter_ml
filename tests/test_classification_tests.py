@@ -15,12 +15,12 @@ def generate_binary_classification_data_and_models():
             target = 1
         else:
             target = 0
-            df = df.append({
-                "A": a,
-                "B": b,
-                "C": c,
-                "target": target
-            }, ignore_index=True)
+        df = df.append({
+            "A": a,
+            "B": b,
+            "C": c,
+            "target": target
+        }, ignore_index=True)
 
     clf1 = tree.DecisionTreeClassifier()
     clf2 = ensemble.RandomForestClassifier()
@@ -43,12 +43,12 @@ def generate_multiclass_classification_data_and_models():
             target = 0
         else:
             target = 2
-            df = df.append({
-                "A": a,
-                "B": b,
-                "C": c,
-                "target": target
-            }, ignore_index=True)
+        df = df.append({
+            "A": a,
+            "B": b,
+            "C": c,
+            "target": target
+        }, ignore_index=True)
 
     clf1 = tree.DecisionTreeClassifier()
     clf2 = ensemble.RandomForestClassifier()

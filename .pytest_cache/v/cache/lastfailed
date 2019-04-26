@@ -1,0 +1,7 @@
+{
+  "tests/test_columnar_tests.py::test_kruskal_similiar_distribution": true,
+  "tests/test_columnar_tests.py::test_ks_2samp_similiar_distribution": true,
+  "tests/test_columnar_tests.py::test_pearson_similiar_correlation": true,
+  "tests/test_columnar_tests.py::test_spearman_similiar_correlation": true,
+  "tests/test_columnar_tests.py::test_wilcoxon_similiar_distribution": true
+}

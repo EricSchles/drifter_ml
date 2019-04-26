@@ -359,4 +359,4 @@ Now we can say for sure, the precision should be at least 0.7 on average but can
 Classifier Test Example - Cross Validation Anamoly Detection With Spread
 ========================================================================
 
-
+In the previous example, we looked for a specific deviance now we'll make use of some properties of statistics to define what exactly we mean by an anamolous fold.  In order to do this, we'll look at deviance with respect to spread.  To make this concrete, let's walk through what that means.  Let's say you had 30 folds in your test.  

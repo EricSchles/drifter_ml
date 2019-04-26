@@ -1,0 +1,17 @@
+MANIFEST.in
+README.md
+setup.py
+drifter_ml/__init__.py
+drifter_ml.egg-info/PKG-INFO
+drifter_ml.egg-info/SOURCES.txt
+drifter_ml.egg-info/dependency_links.txt
+drifter_ml.egg-info/requires.txt
+drifter_ml.egg-info/top_level.txt
+drifter_ml/classification_tests/__init__.py
+drifter_ml/classification_tests/classification_tests.py
+drifter_ml/columnar_tests/__init__.py
+drifter_ml/columnar_tests/columnar_tests.py
+drifter_ml/regression_tests/__init__.py
+drifter_ml/regression_tests/regression_tests.py
+drifter_ml/structural_tests/__init__.py
+drifter_ml/structural_tests/structural_tests.py
