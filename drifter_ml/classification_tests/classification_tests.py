@@ -53,13 +53,26 @@ class FixedClassificationMetrics():
                                     pos_label=pos_label,
                                     average=average,
                                     sample_weight=sample_weight)
+
+    def _prepare_for_per_class_comparison(self, y_true, y_pred):
+        # this means the per class roc curve can never be zero
+        # but allows us to do per class classification
+        if (np.unique(y_true) == 0).all():
+            y_true = np.append(y_true, [1])
+            y_pred = np.append(y_pred, [1])
+        if (np.unique(y_true) == 1).all():
+            y_true = np.append(y_true, [0])
+            y_pred = np.append(y_pred, [0])
+        return y_true, y_pred
+                
     def roc_auc_score(self, y_true, y_pred,
-                      labels=None, pos_label=1, average='binary', sample_weight=None):
+                      labels=None, pos_label=1, average='micro', sample_weight=None):
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
         if (y_true == y_pred).all() == True:
             return 1.0
         else:
+            y_true, y_pred = self._prepare_for_per_class_comparison(y_true, y_pred)
             return metrics.roc_auc_score(y_true,
                                          y_pred,
                                          average=average,
