@@ -30,6 +30,9 @@ jobs:
   - script: python -m pip install --upgrade pip && pip install -r requirements.txt
     displayName: 'Install dependencies'
 
+  - script: python setup.py install
+    displayName: 'Install library'
+
   - script: |
       pip install pytest
       pytest tests --doctest-modules --junitxml=junit/test-results.xml
