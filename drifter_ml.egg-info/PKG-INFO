@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: drifter-ml
-Version: 0.18
+Version: 0.19
 Summary: Testing for models confirming to the scikit-learn api
 Home-page: https://github.com/EricSchles/drifter_ml
 Author: Eric Schles
@@ -78,6 +78,10 @@ Description: # ML Testing
         * add custom accuracy function
         * add these tests: https://www.datasciencecentral.com/profiles/blogs/a-plethora-of-original-underused-statistical-tests
         * clustering for classification
+        * Unsupervised and semi supervised tests
+        	* verify similarity in clusters to similarity in labels
+        	* generate a small representative set of labels and then propagate other labels
+        
         
         ## References
         
