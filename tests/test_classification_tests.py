@@ -7,13 +7,23 @@ import pandas as pd
 import random
 
 def generate_binary_classification_data_and_models():
-    df = pd.read_csv("housepricedata.csv")
-    X = df.values[:,0:10]
-    y = df.values[:,10]
+    df = pd.DataFrame()
+    for _ in range(1000):
+        a = np.random.normal(0, 1)
+        b = np.random.normal(0, 3)
+        c = np.random.normal(12, 4)
+        target = random.choice([0, 1])
+        df = df.append({
+            "A": a,
+            "B": b,
+            "C": c,
+            "target": target
+        }, ignore_index=True)
+
     clf1 = tree.DecisionTreeClassifier()
     clf2 = ensemble.RandomForestClassifier()
-    column_names = df.columns.tolist()[:10]
-    target_name = df.columns.tolist()[10]
+    column_names = ["A", "B", "C"]
+    target_name = "target"
     X = df[column_names]
     clf1.fit(X, df[target_name])
     clf2.fit(X, df[target_name])
