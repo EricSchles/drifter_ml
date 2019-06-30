@@ -241,6 +241,64 @@ class FixedClassificationMetrics():
                 
     def roc_auc_score(self, y_true, y_pred,
                       labels=None, pos_label=1, average='micro', sample_weight=None):
+        """
+        The Scikit-Learn precision score, see the full documentation here:
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html
+        
+        The difference between this roc_auc score and the one in scikit-learn,
+        is we fix a small bug.  When all the values in y_true are zero and
+        y_pred are zero the roc_auc_score returns one. (Which Scikit-learn
+        does not do at present).
+        
+        Parameters:
+        * y_true - 1d array-like, or label indicator array / sparse matrix
+          Ground truth (correct) target values.
+        * y_pred - 1d array-like, or label indicator array / sparse matrix
+          Estimated targets as returned by a classifier
+        * labels: list, optional
+          The set of labels to include when average != binary, and their order
+          if average is None.  Labels present in the data can be excluded, for
+          example to calculate a multiclass average ignoring a majority negative
+          class, while labels not present in the data will result in 0 components
+          in a macro average. For multilabel targets, labels are column indices.
+          By default, all labels in y_true and y_pred are used in sorted order.
+        * pos_label - str or int, 1 by default
+          The class to report if average='binary' and the data is binary.  If
+          the data are multiclass or multilabel, this will be ignored; setting
+          labels=[pos_label] and average != 'binary' will report scores for
+          that label only.
+        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        'weighted']
+          This parameter is required for multiclass/multilabel targets.  If None,
+          the scores for each class are returned.  Otherwise, this determines the
+          type of averaging performed on the data.
+          
+          'binary':
+             Only report results for the class specified by pos_label.  This is
+             applicable only if targets (y_{true, pred}) are binary.
+          'micro':
+             Calculate metrics globally by counting the total true positives, 
+             false negatives and false positives.
+          'macro':
+             Calculate metrics for each label, and find their unweighted mean. 
+             This does not take label imbalance into account.
+           'weighted':
+             Calculate metrics for each label, and find their average weighted by
+             support (the number of true instances for each label).  This alters 
+             'macro' to account for label imbalance; it can result in an F-score 
+             that isnot between precision and recall.
+           'samples':
+             Calculate metrics for each instance, and find their average (only
+             meaningful for multilabel classification where this differs from 
+             accuracy_score).
+        * sample_weight: array-like of shape = [n_samples], optional
+             Sample weights.
+        Returns:
+         * roc_auc: float (if average is not None) or array of float, shape =
+           [n_unique_labels]
+             Roc_auc score of the positive class in binary classification or weighted
+             average of the roc_auc scores of each class for the multiclass task.        
+        """
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
         if (y_true == y_pred).all() == True:
