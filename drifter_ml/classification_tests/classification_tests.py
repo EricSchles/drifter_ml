@@ -564,16 +564,30 @@ class ClassificationTests(FixedClassificationMetrics):
         return True
 
     def is_binary(self):
+        """
+        If number of classes == 2 returns True
+        False otherwise
+        """
         num_classes = len(set(self.classes))
         if num_classes == 2:
             return True
         return False
     
     def roc_auc_exception(self):
+        """
+        Ensures roc_auc score is used correctly.
+        ROC AUC is only defined for binary classification.
+        """
         if not self.is_binary():
             raise Exception("roc_auc is only defined for binary classifiers")
 
     def reset_average(self, average):
+        """
+        Resets the average to the correct thing.
+        If the number of classes are not binary,
+        Then average is changed to micro.
+        Otherwise, return the current average.
+        """
         if not self.is_binary() and average == 'binary':
             return 'micro'
         return average
