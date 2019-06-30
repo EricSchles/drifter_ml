@@ -331,6 +331,39 @@ class ClassificationTests(FixedClassificationMetrics):
     
     # add cross validation per class tests
     def precision_cv(self, cv, average='binary'):
+        """
+        This method performs cross-validation over precision.
+        
+        Parameters:
+        * cv - integer
+          The number of cross validation folds to perform
+        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        'weighted']
+          This parameter is required for multiclass/multilabel targets.  If None,
+          the scores for each class are returned.  Otherwise, this determines the
+          type of averaging performed on the data.
+          
+          'binary':
+             Only report results for the class specified by pos_label.  This is
+             applicable only if targets (y_{true, pred}) are binary.
+          'micro':
+             Calculate metrics globally by counting the total true positives, 
+             false negatives and false positives.
+          'macro':
+             Calculate metrics for each label, and find their unweighted mean. 
+             This does not take label imbalance into account.
+           'weighted':
+             Calculate metrics for each label, and find their average weighted by
+             support (the number of true instances for each label).  This alters 
+             'macro' to account for label imbalance; it can result in an F-score 
+             that isnot between precision and recall.
+           'samples':
+             Calculate metrics for each instance, and find their average (only
+             meaningful for multilabel classification where this differs from 
+             accuracy_score).
+        Returns:
+        Returns a scores of the k-fold precision.
+        """
         average = self.reset_average(average)
         precision_score = partial(self.precision_score, average=average)
         precision = metrics.make_scorer(precision_score)
@@ -340,6 +373,39 @@ class ClassificationTests(FixedClassificationMetrics):
         return self.get_test_score(result)
     
     def recall_cv(self, cv, average='binary'):
+        """
+        This method performs cross-validation over recall.
+        
+        Parameters:
+        * cv - integer
+          The number of cross validation folds to perform
+        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        'weighted']
+          This parameter is required for multiclass/multilabel targets.  If None,
+          the scores for each class are returned.  Otherwise, this determines the
+          type of averaging performed on the data.
+          
+          'binary':
+             Only report results for the class specified by pos_label.  This is
+             applicable only if targets (y_{true, pred}) are binary.
+          'micro':
+             Calculate metrics globally by counting the total true positives, 
+             false negatives and false positives.
+          'macro':
+             Calculate metrics for each label, and find their unweighted mean. 
+             This does not take label imbalance into account.
+           'weighted':
+             Calculate metrics for each label, and find their average weighted by
+             support (the number of true instances for each label).  This alters 
+             'macro' to account for label imbalance; it can result in an F-score 
+             that isnot between precision and recall.
+           'samples':
+             Calculate metrics for each instance, and find their average (only
+             meaningful for multilabel classification where this differs from 
+             accuracy_score).
+        Returns:
+        Returns a scores of the k-fold recall.
+        """
         average = self.reset_average(average)
         recall_score = partial(self.recall_score, average=average)
         recall = metrics.make_scorer(recall_score)
@@ -349,6 +415,39 @@ class ClassificationTests(FixedClassificationMetrics):
         return self.get_test_score(result)
     
     def f1_cv(self, cv, average='binary'):
+        """
+        This method performs cross-validation over f1-score.
+        
+        Parameters:
+        * cv - integer
+          The number of cross validation folds to perform
+        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        'weighted']
+          This parameter is required for multiclass/multilabel targets.  If None,
+          the scores for each class are returned.  Otherwise, this determines the
+          type of averaging performed on the data.
+          
+          'binary':
+             Only report results for the class specified by pos_label.  This is
+             applicable only if targets (y_{true, pred}) are binary.
+          'micro':
+             Calculate metrics globally by counting the total true positives, 
+             false negatives and false positives.
+          'macro':
+             Calculate metrics for each label, and find their unweighted mean. 
+             This does not take label imbalance into account.
+           'weighted':
+             Calculate metrics for each label, and find their average weighted by
+             support (the number of true instances for each label).  This alters 
+             'macro' to account for label imbalance; it can result in an F-score 
+             that isnot between precision and recall.
+           'samples':
+             Calculate metrics for each instance, and find their average (only
+             meaningful for multilabel classification where this differs from 
+             accuracy_score).
+        Returns:
+        Returns a scores of the k-fold f1-score.
+        """
         average = self.reset_average(average)
         f1_score = partial(self.f1_score, average=average)
         f1 = metrics.make_scorer(f1_score)
@@ -358,6 +457,39 @@ class ClassificationTests(FixedClassificationMetrics):
         return self.get_test_score(result)
 
     def roc_auc_cv(self, cv, average="micro"):
+        """
+        This method performs cross-validation over roc_auc.
+        
+        Parameters:
+        * cv - integer
+          The number of cross validation folds to perform
+        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        'weighted']
+          This parameter is required for multiclass/multilabel targets.  If None,
+          the scores for each class are returned.  Otherwise, this determines the
+          type of averaging performed on the data.
+          
+          'binary':
+             Only report results for the class specified by pos_label.  This is
+             applicable only if targets (y_{true, pred}) are binary.
+          'micro':
+             Calculate metrics globally by counting the total true positives, 
+             false negatives and false positives.
+          'macro':
+             Calculate metrics for each label, and find their unweighted mean. 
+             This does not take label imbalance into account.
+           'weighted':
+             Calculate metrics for each label, and find their average weighted by
+             support (the number of true instances for each label).  This alters 
+             'macro' to account for label imbalance; it can result in an F-score 
+             that isnot between precision and recall.
+           'samples':
+             Calculate metrics for each instance, and find their average (only
+             meaningful for multilabel classification where this differs from 
+             accuracy_score).
+        Returns:
+        Returns a scores of the k-fold roc_auc.
+        """
         roc_auc_score = partial(self.roc_auc_score, average=average)
         roc_auc = metrics.make_scorer(roc_auc_score)
         result = cross_validate(self.clf, self.X,
