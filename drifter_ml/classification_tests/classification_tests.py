@@ -594,6 +594,22 @@ class ClassificationTests(FixedClassificationMetrics):
 
     def cross_val_per_class_precision_anomaly_detection(self, tolerance,
                                                         cv=3, average='binary'):
+        """
+        This checks the cross validated per class percision score, based on 
+        anolamies.  The way the anomaly detection scheme works is a tolerance
+        is set.  If the per class, fold of the model is outside the precision
+        tolerance for any of the folds, then false is returned, otherwise True
+        is returned.  
+        
+        Parameters:
+        * tolerance - the tolerance of precision
+        * cv - the number of folds to consider
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the folds are above tolerance for precision
+        False if any of the folds are below the tolerance for precision
+        """
         average = self.reset_average(average)
         precision_score = partial(self.precision_score, average=average)
         return self._cross_val_per_class_anomaly_detection(precision_score,
@@ -601,6 +617,22 @@ class ClassificationTests(FixedClassificationMetrics):
 
     def cross_val_per_class_recall_anomaly_detection(self, tolerance,
                                                      cv=3, average='binary'):
+        """
+        This checks the cross validated per class recall score, based on 
+        anolamies.  The way the anomaly detection scheme works is a tolerance
+        is set.  If the per class, fold of the model is outside the recall
+        tolerance for any of the folds, then false is returned, otherwise True
+        is returned.  
+        
+        Parameters:
+        * tolerance - the tolerance of recall
+        * cv - the number of folds to consider
+        * average - how to calculate the recall
+        
+        Returns:
+        True if all the folds are above tolerance for recall
+        False if any of the folds are below the tolerance for recall
+        """
         average = self.reset_average(average)
         recall_score = partial(self.recall_score, average=average)
         return self._cross_val_per_class_anomaly_detection(recall_score,
@@ -608,6 +640,22 @@ class ClassificationTests(FixedClassificationMetrics):
 
     def cross_val_per_class_f1_anomaly_detection(self, tolerance,
                                                  cv=3, average='binary'):
+        """
+        This checks the cross validated per class f1 score, based on 
+        anolamies.  The way the anomaly detection scheme works is a tolerance
+        is set.  If the per class, fold of the model is outside the f1 score
+        tolerance for any of the folds, then false is returned, otherwise True
+        is returned.  
+        
+        Parameters:
+        * tolerance - the tolerance of f1 score
+        * cv - the number of folds to consider
+        * average - how to calculate the f1 score
+        
+        Returns:
+        True if all the folds are above tolerance for f1 score
+        False if any of the folds are below the tolerance for f1 score
+        """
         average = self.reset_average(average)
         f1_score = partial(self.f1_score, average=average)
         return self._cross_val_per_class_anomaly_detection(f1_score,
@@ -615,6 +663,22 @@ class ClassificationTests(FixedClassificationMetrics):
 
     def cross_val_per_class_roc_auc_anomaly_detection(self, tolerance,
                                                       cv=3, average="micro"):
+        """
+        This checks the cross validated per class roc auc score, based on 
+        anolamies.  The way the anomaly detection scheme works is a tolerance
+        is set.  If the per class, fold of the model is outside the roc auc
+        tolerance for any of the folds, then false is returned, otherwise True
+        is returned.  
+        
+        Parameters:
+        * tolerance - the tolerance of roc auc
+        * cv - the number of folds to consider
+        * average - how to calculate the roc auc
+        
+        Returns:
+        True if all the folds are above tolerance for roc auc
+        False if any of the folds are below the tolerance for roc auc
+        """
         self.roc_auc_exception()
         roc_auc_score = partial(self.roc_auc_score, average=average)
         return self._cross_val_per_class_anomaly_detection(roc_auc_score,
