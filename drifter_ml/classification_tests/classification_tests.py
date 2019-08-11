@@ -689,47 +689,193 @@ class ClassificationTests(FixedClassificationMetrics):
                                                            tolerance, cv)
     
     def cross_val_precision_anomaly_detection(self, tolerance, cv=3, average='binary'):
+        """
+        This checks the k fold (cross validation) precision score, based on 
+        anolamies.  The way the anomaly detection scheme works is, an 
+        average is calculated and then if the deviance from the average is 
+        greater than the set tolerance, then False is returned.
         
+        Parameters:
+        * tolerance - the tolerance from the average precision
+        * cv - the number of folds to consider
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the deviances from average for all the folds 
+        are above tolerance for precision
+        False if any of the deviances from the average for any of 
+        the folds are below the tolerance for precision
+        """
         average = self.reset_average(average)
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
     
     def cross_val_recall_anomaly_detection(self, tolerance, cv=3, average='binary'):
+        """
+        This checks the k fold (cross validation) recall score, based on 
+        anolamies.  The way the anomaly detection scheme works is, an 
+        average is calculated and then if the deviance from the average is 
+        greater than the set tolerance, then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance from the average recall
+        * cv - the number of folds to consider
+        * average - how to calculate the recall
+        
+        Returns:
+        True if all the deviances from average for all the folds 
+        are above tolerance for recall
+        False if any of the deviances from the average for any of 
+        the folds are below the tolerance for recall
+        """
         average = self.reset_average(average)
         scores = self.recall_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
     
     def cross_val_f1_anomaly_detection(self, tolerance, cv=3, average='binary'):
+        """
+        This checks the k fold (cross validation) f1 score, based on 
+        anolamies.  The way the anomaly detection scheme works is, an 
+        average is calculated and then if the deviance from the average is 
+        greater than the set tolerance, then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance from the average f1 score
+        * cv - the number of folds to consider
+        * average - how to calculate the f1 score
+        
+        Returns:
+        True if all the deviances from average for all the folds 
+        are above tolerance for f1 score
+        False if any of the deviances from the average for any of 
+        the folds are below the tolerance for f1 score
+        """
         average = self.reset_average(average)
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
 
     def cross_val_roc_auc_anomaly_detection(self, tolerance, cv=3, average="micro"):
+        """
+        This checks the k fold (cross validation) roc auc score, based on 
+        anolamies.  The way the anomaly detection scheme works is, an 
+        average is calculated and then if the deviance from the average is 
+        greater than the set tolerance, then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance from the average roc auc
+        * cv - the number of folds to consider
+        * average - how to calculate the roc auc
+        
+        Returns:
+        True if all the deviances from average for all the folds 
+        are above tolerance for roc auc
+        False if any of the deviances from the average for any of 
+        the folds are below the tolerance for roc auc
+        """
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
         
     def cross_val_precision_avg(self, minimum_center_tolerance, cv=3, average='binary'):
+        """
+        This generates the k fold (cross validation) precision scores, 
+        then based on computes the average of those scores.  
+        The way the average scheme works is, an average is 
+        calculated and then if the average is less 
+        than the minimum tolerance, then False is returned.
+        
+        Parameters:
+        * minimum_center_tolerance - the average precision
+        must be greater than this number
+        * cv - the number of folds to consider
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the folds of the precision are greater than
+        the minimum_center_tolerance
+        False if the average folds for the precision are less than
+        the minimum_center_tolerance
+        """
         average = self.reset_average(average)
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
     def cross_val_recall_avg(self, minimum_center_tolerance, cv=3, average='binary'):
+        """
+        This generates the k fold (cross validation) recall scores, 
+        then based on computes the average of those scores.  
+        The way the average scheme works is, an average is 
+        calculated and then if the average is less 
+        than the minimum tolerance, then False is returned.
+        
+        Parameters:
+        * minimum_center_tolerance - the average recall
+        must be greater than this number
+        * cv - the number of folds to consider
+        * average - how to calculate the recall
+        
+        Returns:
+        True if all the folds of the recall are greater than
+        the minimum_center_tolerance
+        False if the average folds for the recall are less than
+        the minimum_center_tolerance
+        """
+
         average = self.reset_average(average)
         scores = self.recall_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
     def cross_val_f1_avg(self, minimum_center_tolerance, cv=3, average='binary'):
+        """
+        This generates the k fold (cross validation) f1 scores, 
+        then based on computes the average of those scores.  
+        The way the average scheme works is, an average is 
+        calculated and then if the average is less 
+        than the minimum tolerance, then False is returned.
+        
+        Parameters:
+        * minimum_center_tolerance - the average f1 score
+        must be greater than this number
+        * cv - the number of folds to consider
+        * average - how to calculate the f1 score
+        
+        Returns:
+        True if all the folds of the f1 score are greater than
+        the minimum_center_tolerance
+        False if the average folds for the f1 score are less than
+        the minimum_center_tolerance
+        """
+
         average = self.reset_average(average)
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
     def cross_val_roc_auc_avg(self, minimum_center_tolerance, cv=3, average='micro'):
+        """
+        This generates the k fold (cross validation) roc auc scores, 
+        then based on computes the average of those scores.  
+        The way the average scheme works is, an average is 
+        calculated and then if the average is less 
+        than the minimum tolerance, then False is returned.
+        
+        Parameters:
+        * minimum_center_tolerance - the average roc auc
+        must be greater than this number
+        * cv - the number of folds to consider
+        * average - how to calculate the roc auc
+        
+        Returns:
+        True if all the folds of the roc auc are greater than
+        the minimum_center_tolerance
+        False if the average folds for the roc auc are less than
+        the minimum_center_tolerance
+        """
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
     
     def cross_val_precision_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+        
         average = self.reset_average(average)
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
