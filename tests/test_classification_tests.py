@@ -583,7 +583,7 @@ def test_run_time_stress_test():
                                                           target_name,
                                                           column_names)
     sample_sizes = [i for i in range(100, 1000, 100)]
-    max_run_times = [100 for _ in range(sample_sizes)]
+    max_run_times = [100 for _ in range(len(sample_sizes))]
     try:
         test_suite.run_time_stress_test(sample_sizes, max_run_times)
         assert True
