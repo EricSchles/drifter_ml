@@ -60,7 +60,7 @@ def test_precision_recall_f1_binary():
                                                           column_names)
     try:
         classes = list(df[target_name].unique())
-        test_suite.classifier_testing(
+        test_suite.classifier_testing_per_class(
             {klass: 0.1 for klass in classes},
             {klass: 0.1 for klass in classes},
             {klass: 0.1 for klass in classes}
@@ -77,7 +77,7 @@ def test_precision_recall_f1_multiclass():
                                                           column_names)
     try:
         classes = list(df[target_name].unique())
-        test_suite.classifier_testing(
+        test_suite.classifier_testing_per_class(
             {klass: 0.1 for klass in classes},
             {klass: 0.1 for klass in classes},
             {klass: 0.1 for klass in classes},
@@ -582,13 +582,10 @@ def test_run_time_stress_test():
                                                           df,
                                                           target_name,
                                                           column_names)
-    performance_boundary = []
-    for i in range(100, 1000, 100):
-        performance_boundary.append({
-            "sample_size": i,
-            "max_run_time": 100})
+    sample_sizes = [i for i in range(100, 1000, 100)]
+    max_run_times = [100 for _ in range(sample_sizes)]
     try:
-        test_suite.run_time_stress_test(performance_boundary)
+        test_suite.run_time_stress_test(sample_sizes, max_run_times)
         assert True
     except:
         assert False

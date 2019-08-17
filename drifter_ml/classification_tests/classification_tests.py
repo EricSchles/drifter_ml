@@ -1251,6 +1251,8 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This is a slightly less naive stragey,
         it checks the precision score, 
+        Each class is boundary is mapped to the class via a dictionary
+        allowing for different lower boundaries, per class.
         if any of the classes are less than the lower boundary,
         then False is returned.
         
@@ -1276,6 +1278,8 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This is a slightly less naive stragey,
         it checks the recall score, 
+        Each class is boundary is mapped to the class via a dictionary
+        allowing for different lower boundaries, per class.
         if any of the classes are less than the lower boundary,
         then False is returned.
         
@@ -1301,6 +1305,8 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This is a slightly less naive stragey,
         it checks the f1 score, 
+        Each class is boundary is mapped to the class via a dictionary
+        allowing for different lower boundaries, per class.
         if any of the classes are less than the lower boundary,
         then False is returned.
         
@@ -1326,6 +1332,8 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This is a slightly less naive stragey,
         it checks the roc auc score, 
+        Each class is boundary is mapped to the class via a dictionary
+        allowing for different lower boundaries, per class.
         if any of the classes are less than the lower boundary,
         then False is returned.
         
@@ -1346,16 +1354,18 @@ class ClassificationTests(FixedClassificationMetrics):
         return self._per_class(y_pred, roc_auc_score, lower_boundary)
 
     def classifier_testing_per_class(self,
-                                     precision_lower_boundary: float,
-                                     recall_lower_boundary: float,
-                                     f1_lower_boundary: float,
+                                     precision_lower_boundary: dict,
+                                     recall_lower_boundary: dict,
+                                     f1_lower_boundary: dict,
                                      average='binary'):
         """
         This is a slightly less naive stragey,
         it checks the:
-        * precision score, 
-        * recall score,
-        * f1 score
+        * precision score per class, 
+        * recall score per class,
+        * f1 score per class
+        Each class is boundary is mapped to the class via a dictionary
+        allowing for different lower boundaries, per class.
         if any of the classes are less than the lower boundary,
         then False is returned.
         
