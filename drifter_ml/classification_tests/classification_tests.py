@@ -875,22 +875,95 @@ class ClassificationTests(FixedClassificationMetrics):
         return self._cross_val_avg(scores, minimum_center_tolerance)
     
     def cross_val_precision_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+        """
+        This is possibly the most naive stragey,
+        it generates the k fold (cross validation) precision scores, 
+        if any of the k folds are less than the lower boundary,
+        then False is returned.
         
+        Parameters:
+        * lower_boundary - the lower boundary for a given 
+        precision score
+        * cv - the number of folds to consider
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the folds of the precision scores are 
+        greater than the lower_boundary
+        False if the folds for the precision scores are 
+        less than the lower_boundary
+        """
         average = self.reset_average(average)
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
         
     def cross_val_recall_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+        """
+        This is possibly the most naive stragey,
+        it generates the k fold (cross validation) recall scores, 
+        if any of the k folds are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * lower_boundary - the lower boundary for a given 
+        recall score
+        * cv - the number of folds to consider
+        * average - how to calculate the recall
+        
+        Returns:
+        True if all the folds of the recall scores are greater than
+        the lower_boundary
+        False if the folds for the recall scores are less than
+        the lower_boundary
+        """
         average = self.reset_average(average)
         scores = self.recall_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
         
     def cross_val_f1_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+        """
+        This is possibly the most naive stragey,
+        it generates the k fold (cross validation) f1 scores, 
+        if any of the k folds are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * lower_boundary - the lower boundary for a given 
+        f1 score
+        * cv - the number of folds to consider
+        * average - how to calculate the f1 score
+        
+        Returns:
+        True if all the folds of the f1 scores are greater than
+        the lower_boundary
+        False if the folds for the f1 scores are less than
+        the lower_boundary
+        """
+
         average = self.reset_average(average)
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
 
     def cross_val_roc_auc_lower_boundary(self, lower_boundary, cv=3, average='micro'):
+        """
+        This is possibly the most naive stragey,
+        it generates the k fold (cross validation) roc auc scores, 
+        if any of the k folds are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * lower_boundary - the lower boundary for a given 
+        roc auc score
+        * cv - the number of folds to consider
+        * average - how to calculate the roc auc
+        
+        Returns:
+        True if all the folds of the roc auc scores are greater than
+        the lower_boundary
+        False if the folds for the roc auc scores are less than
+        the lower_boundary
+        """
+
         self.roc_auc_exception()
         scores = self.roc_auc(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
@@ -900,6 +973,28 @@ class ClassificationTests(FixedClassificationMetrics):
                                      recall_lower_boundary: float,
                                      f1_lower_boundary: float,
                                      cv=3, average='binary'):
+        """
+        runs the cross validated lower boundary methods 
+        for:
+        * precision, 
+        * recall, 
+        * f1 score
+        The basic idea for these three methods is to check if
+        the accuracy metric stays above a given lower bound.
+        We can set the same precision, recall, or f1 score lower boundary
+        or specify each depending on necessary criteria.
+        
+        Parameters:
+        * precision_lower_boundary - the lower boundary 
+        for a given precision score
+        * recall_lower_boundary - the lower boundary
+        for a given recall score
+        * f1_lower_boundary - the lower boundary
+        for a given f1 score
+        * cv - the number of folds to consider
+        * average - how to calculate the metrics 
+        (precision, recall, f1)
+        """
         average = self.reset_average(average)
         precision_test = self.cross_val_precision_lower_boundary(
             precision_lower_boundary, cv=cv, average=average)
@@ -913,17 +1008,63 @@ class ClassificationTests(FixedClassificationMetrics):
             return False
 
     def trimean(self, data):
+        """
+        I'm exposing this as a public method because
+        the trimean is not implemented in enough packages.
+        
+        Formula:
+        (25th percentile + 2*50th percentile + 75th percentile)/4
+        
+        Parameters:
+        * data - an iterable, either a list or a numpy array
+
+        Returns:
+        the trimean
+        """
         q1 = np.quantile(data, 0.25)
         q3 = np.quantile(data, 0.75)
         median = np.median(data)
         return (q1 + 2*median + q3)/4
 
     def trimean_absolute_deviation(self, data):
+        """
+        The trimean absolute deviation is the
+        the average distance from the trimean.
+        
+        Parameters:
+        * data - an iterable, either a list or a numpy array
+
+        Returns:
+        the average distance to the trimean
+        """
         trimean = self.trimean(data)
         numerator = [abs(elem - trimean) for elem in data]
         return sum(numerator)/len(data)
         
     def describe_scores(self, scores, method):
+        """
+        returns the central tendency, and spread
+        by method.
+        
+        Methods:
+        mean:
+        * central tendency: mean
+        * spread: standard deviation
+        
+        median:
+        * central tendency: median
+        * spread: interquartile range
+        
+        trimean:
+        * central tendency: trimean
+        * spread: trimean absolute deviation
+        
+        Parameters:
+        * scores - the scores from the model, 
+        as a list or numpy array
+        * method - the method to use to calculate 
+        central tendency and spread
+        """
         if method == "mean":
             return np.mean(scores), np.std(scores)
         elif method == "median":
@@ -932,95 +1073,345 @@ class ClassificationTests(FixedClassificationMetrics):
             return self.trimean(scores), self.trimean_absolute_deviation(scores)
 
     def spread_cross_val_precision_anomaly_detection(self, tolerance,
-                                                     method="mean", cv=10, average='binary'):
+                                                     method="mean",
+                                                     cv=10,
+                                                     average='binary'):
+        """
+        This is a somewhat intelligent stragey,
+        it generates the k fold (cross validation) precision scores, 
+        if any of the k folds score less than the center - (spread * tolerance),
+        then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance modifier for how far below the 
+        center the score can be before a false is returned
+        * method - see describe for more details.
+          * mean - the center is the mean, the spread is standard
+                   deviation.
+          * median - the center is the median, the spread is
+                     the interquartile range.
+          * trimean - the center is the trimean, the spread is
+                      trimean absolute deviation.
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the folds of the precision scores are greater than
+        the center - (spread * tolerance)
+        False if the folds for the precision scores are less than
+        the center - (spread * tolerance)
+        """
         average = self.reset_average(average)
         scores = self.precision_cv(cv, average=average)
         return self._anomaly_detection(scores, tolerance, method)
     
     def spread_cross_val_recall_anomaly_detection(self, tolerance,
-                                                  method="mean", cv=3, average='binary'):
+                                                  method="mean",
+                                                  cv=3,
+                                                  average='binary'):
+        """
+        This is a somewhat intelligent stragey,
+        it generates the k fold (cross validation) recall scores, 
+        if any of the k folds score less than the center - (spread * tolerance),
+        then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance modifier for how far below the 
+        center the score can be before a false is returned
+        * method - see describe for more details.
+          * mean - the center is the mean, the spread is standard
+                   deviation.
+          * median - the center is the median, the spread is
+                     the interquartile range.
+          * trimean - the center is the trimean, the spread is
+                      trimean absolute deviation.
+        * average - how to calculate the recall
+        
+        Returns:
+        True if all the folds of the recall scores are greater than
+        the center - (spread * tolerance)
+        False if the folds for the recall scores are less than
+        the center - (spread * tolerance)
+        """
         average = self.reset_average(average)
         scores = self.recall_cv(cv, average=average)
         return self._anomaly_detection(scores, tolerance, method)
 
     def spread_cross_val_f1_anomaly_detection(self, tolerance,
-                                              method="mean", cv=10, average='binary'):
+                                              method="mean",
+                                              cv=10,
+                                              average='binary'):
+        """
+        This is a somewhat intelligent stragey,
+        it generates the k fold (cross validation) f1 scores, 
+        if any of the k folds score less than the center - (spread * tolerance),
+        then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance modifier for how far below the 
+        center the score can be before a false is returned
+        * method - see describe for more details.
+          * mean - the center is the mean, the spread is standard
+                   deviation.
+          * median - the center is the median, the spread is
+                     the interquartile range.
+          * trimean - the center is the trimean, the spread is
+                      trimean absolute deviation.
+        * average - how to calculate the f1 score
+        
+        Returns:
+        True if all the folds of the f1 scores are greater than
+        the center - (spread * tolerance)
+        False if the folds for the f1 scores are less than
+        the center - (spread * tolerance)
+        """
         average = self.reset_average(average)
         scores = self.f1_cv(cv, average=average)
         return self._anomaly_detection(scores, tolerance, method)
 
     def spread_cross_val_roc_auc_anomaly_detection(self, tolerance,
-                                                   method="mean", cv=10, average='micro'):
+                                                   method="mean",
+                                                   cv=10,
+                                                   average='micro'):
+        """
+        This is a somewhat intelligent stragey,
+        it generates the k fold (cross validation) roc auc scores, 
+        if any of the k folds score less than the center - (spread * tolerance),
+        then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance modifier for how far below the 
+        center the score can be before a false is returned
+        * method - see describe for more details.
+          * mean - the center is the mean, the spread is standard
+                   deviation.
+          * median - the center is the median, the spread is
+                     the interquartile range.
+          * trimean - the center is the trimean, the spread is
+                      trimean absolute deviation.
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the folds of the roc auc scores are greater than
+        the center - (spread * tolerance)
+        False if the folds for the roc auc scores are less than
+        the center - (spread * tolerance)
+        """
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
         return self._anomaly_detection(scores, tolerance, method)
 
     def spread_cross_val_classifier_testing(self,
-                                            precision_lower_boundary: int,
-                                            recall_lower_boundary: int,
-                                            f1_lower_boundary: int,
+                                            precision_tolerance: float,
+                                            recall_tolerance: float,
+                                            f1_tolerance: float,
+                                            method="mean",
                                             cv=10, average='binary'):
+        """
+        This is a somewhat intelligent stragey,
+        it generates the k fold (cross validation) the following scores:
+        * precision scores,  
+        * recall scores
+        * f1 scores
+        if any of the k folds score less than the center - (spread * tolerance),
+        then False is returned.
+        
+        Parameters:
+        * tolerance - the tolerance modifier for how far below the 
+        center the score can be before a false is returned
+        * method - see describe for more details.
+          * mean - the center is the mean, the spread is standard
+                   deviation.
+          * median - the center is the median, the spread is
+                     the interquartile range.
+          * trimean - the center is the trimean, the spread is
+                      trimean absolute deviation.
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the folds of the precision, recall, f1 scores 
+        are greater than the center - (spread * tolerance)
+        False if the folds for the precision, recall, f1 scores
+        are less than the center - (spread * tolerance)
+        """
         average = self.reset_average(average)
-        precision_test = self.auto_cross_val_precision_lower_boundary(
-            precision_lower_boundary, cv=cv, average=average)
-        recall_test = self.auto_cross_val_recall_lower_boundary(
-            recall_lower_boundary, cv=cv, average=average)
-        f1_test = self.auto_cross_val_f1_lower_boundary(
-            f1_lower_boundary, cv=cv, average=average)
+        precision_test = self.spread_cross_val_precision_anomaly_detection(
+            precision_tolerance, method=method, cv=cv, average=average)
+        recall_test = self.spread_cross_val_recall_anomaly_detection(
+            recall_tolerance, method=method, cv=cv, average=average)
+        f1_test = self.spread_cross_val_f1_anomaly_detection(
+            f1_tolerance, method=method, cv=cv, average=average)
         if precision_test and recall_test and f1_test:
             return True
         else:
             return False
 
-    # potentially include hyper parameters from the model
-    # algorithm could be stored in metadata
-    # Todo: determine if still relevant ^
-    def precision_lower_boundary_per_class(self, lower_boundary: dict, average='binary'):
+    def precision_lower_boundary_per_class(self,
+                                           lower_boundary: dict,
+                                           average='binary'):
+        """
+        This is a slightly less naive stragey,
+        it checks the precision score, 
+        if any of the classes are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * lower_boundary - the lower boundary for each class' 
+        precision score
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the classes of the precision scores are 
+        greater than the lower_boundary
+        False if the classes for the precision scores are 
+        less than the lower_boundary
+        """
         average = self.reset_average(average)
         precision_score = partial(self.precision_score, average=average)
         y_pred = self.clf.predict(self.X)
         return self._per_class(y_pred, self.precision_score, lower_boundary)
 
-    def recall_lower_boundary_per_class(self, lower_boundary: dict, average='binary'):
+    def recall_lower_boundary_per_class(self,
+                                        lower_boundary: dict,
+                                        average='binary'):
+        """
+        This is a slightly less naive stragey,
+        it checks the recall score, 
+        if any of the classes are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * lower_boundary - the lower boundary for each class' 
+        recall score
+        * average - how to calculate the recall
+        
+        Returns:
+        True if all the classes of the recall scores are 
+        greater than the lower_boundary
+        False if the classes for the recall scores are 
+        less than the lower_boundary
+        """
         average = self.reset_average(average)
         recall_score = partial(self.recall_score, average=average)
         y_pred = self.clf.predict(self.X)
         return self._per_class(y_pred, recall_score, lower_boundary)
     
-    def f1_lower_boundary_per_class(self, lower_boundary: dict, average='binary'):
+    def f1_lower_boundary_per_class(self,
+                                    lower_boundary: dict,
+                                    average='binary'):
+        """
+        This is a slightly less naive stragey,
+        it checks the f1 score, 
+        if any of the classes are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * lower_boundary - the lower boundary for each class' 
+        f1 score
+        * average - how to calculate the f1
+        
+        Returns:
+        True if all the classes of the f1 scores are 
+        greater than the lower_boundary
+        False if the classes for the f1 scores are 
+        less than the lower_boundary
+        """
         average = self.reset_average(average)
         f1_score = partial(self.f1_score, average=average)
         y_pred = self.clf.predict(self.X)
         return self._per_class(y_pred, f1_score, lower_boundary)
 
-    def roc_auc_lower_boundary_per_class(self, lower_boundary: dict, average='micro'):
+    def roc_auc_lower_boundary_per_class(self,
+                                         lower_boundary: dict,
+                                         average='micro'):
+        """
+        This is a slightly less naive stragey,
+        it checks the roc auc score, 
+        if any of the classes are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * lower_boundary - the lower boundary for each class' 
+        roc auc score
+        * average - how to calculate the roc auc
+        
+        Returns:
+        True if all the classes of the roc auc scores are 
+        greater than the lower_boundary
+        False if the classes for the roc auc scores are 
+        less than the lower_boundary
+        """
         self.roc_auc_exception()
         roc_auc_score = partial(self.roc_auc_score, average=average)
         y_pred = self.clf.predict(self.X)
         return self._per_class(y_pred, roc_auc_score, lower_boundary)
 
-    def classifier_testing(self,
-                           precision_lower_boundary: dict,
-                           recall_lower_boundary: dict,
-                           f1_lower_boundary: dict,
-                           average='binary'):
-        precision_test = self.precision_lower_boundary_per_class(precision_lower_boundary)
-        recall_test = self.recall_lower_boundary_per_class(recall_lower_boundary)
-        f1_test = self.f1_lower_boundary_per_class(f1_lower_boundary)
+    def classifier_testing_per_class(self,
+                                     precision_lower_boundary: float,
+                                     recall_lower_boundary: float,
+                                     f1_lower_boundary: float,
+                                     average='binary'):
+        """
+        This is a slightly less naive stragey,
+        it checks the:
+        * precision score, 
+        * recall score,
+        * f1 score
+        if any of the classes are less than the lower boundary,
+        then False is returned.
+        
+        Parameters:
+        * precision_lower_boundary - the lower boundary 
+        for each class' precision score
+        * recall_lower_boundary - the lower boundary 
+        for each class' recall score
+        * f1_lower_boundary - the lower boundary 
+        for each class' f1 score
+        * average - how to calculate the precision
+        
+        Returns:
+        True if all the classes of the precision scores are 
+        greater than the lower_boundary
+        False if the classes for the precision scores are 
+        less than the lower_boundary
+        """
+        precision_test = self.precision_lower_boundary_per_class(
+            precision_lower_boundary
+        )
+        recall_test = self.recall_lower_boundary_per_class(
+            recall_lower_boundary
+        )
+        f1_test = self.f1_lower_boundary_per_class(
+            f1_lower_boundary
+        )
         if precision_test and recall_test and f1_test:
             return True
         else:
             return False
 
-    def run_time_stress_test(self, performance_boundary: dict):
-        for performance_info in performance_boundary:
-            n = int(performance_info["sample_size"])
-            max_run_time = float(performance_info["max_run_time"])
-            data = self.X.sample(n, replace=True)
+    def run_time_stress_test(self,
+                             sample_sizes: list,
+                             max_run_times: list):
+        """
+        This is a performance test to ensure that the model
+        runs fast enough.
+        
+        Paramters:
+        * sample_sizes - the size of each sample to test for 
+        doing a prediction, each sample size is an integer
+        * max_run_times - the maximum time in seconds that
+        each sample should take to predict, at a maximum.
+        
+        Returns:
+        True if all samples predict within the maximum allowed
+        time.
+        False otherwise.
+        """
+        for index, sample_size in enumerate(sample_sizes):
+            data = self.X.sample(sample_size, replace=True)
             start_time = time.time()
             self.clf.predict(data)
             model_run_time = time.time() - start_time
-            if model_run_time > max_run_time:
+            if model_run_time > max_run_times[index]:
                 return False
         return True
 
