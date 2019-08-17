@@ -41,40 +41,40 @@ class FixedClassificationMetrics():
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-          'weighted']
+        average : string, 
+          [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
           
-          'binary' :
+          'binary' : string
              Only report results for the class specified by pos_label.  This is
              applicable only if targets (y_{true, pred}) are binary.
-          'micro' :
+          'micro' : string
              Calculate metrics globally by counting the total true positives, 
              false negatives and false positives.
-          'macro' :
+          'macro' : string
              Calculate metrics for each label, and find their unweighted mean. 
              This does not take label imbalance into account.
-           'weighted' :
+           'weighted' : string
              Calculate metrics for each label, and find their average weighted by
              support (the number of true instances for each label).  This alters 
              'macro' to account for label imbalance; it can result in an F-score 
              that isnot between precision and recall.
-           'samples' :
+           'samples' : string
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        sample_weight: 
+        sample_weight: array-like
           array-like of shape = [n_samples], optional
              Sample weights.
 
         Returns
         -------
-         precision: float (if average is not None) or array of float, shape =
-           [n_unique_labels]
-             Precision of the positive class in binary classification or weighted
-             average of the precision of each class for the multiclass task.        
+         precision: float 
+           (if average is not None) or array of float, shape = [n_unique_labels]
+           Precision of the positive class in binary classification or weighted
+           average of the precision of each class for the multiclass task.        
         """
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
@@ -117,8 +117,8 @@ class FixedClassificationMetrics():
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-          'weighted']
+        average : string, 
+          [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -141,15 +141,16 @@ class FixedClassificationMetrics():
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        sample_weight : array-like of shape = [n_samples], optional
-             Sample weights.
+        sample_weight : array-like
+           array-like of shape = [n_samples], optional
+           Sample weights.
 
         Returns
         -------
-        recall : float (if average is not None) or array of float, shape =
-           [n_unique_labels]
-             Recall of the positive class in binary classification or weighted
-             average of the recall of each class for the multiclass task.        
+        recall : float 
+           (if average is not None) or array of float, shape = [n_unique_labels]
+           Recall of the positive class in binary classification or weighted
+           average of the recall of each class for the multiclass task.        
         """
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
@@ -192,8 +193,8 @@ class FixedClassificationMetrics():
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        * average : string, 
+          [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -216,13 +217,15 @@ class FixedClassificationMetrics():
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        * sample_weight: array-like of shape = [n_samples], optional
-             Sample weights.
-        Returns:
-         * f1: float (if average is not None) or array of float, shape =
-           [n_unique_labels]
-             F1 score of the positive class in binary classification or weighted
-             average of the f1 scores of each class for the multiclass task.        
+        * sample_weight : array-like
+           array-like of shape = [n_samples], optional. Sample weights.
+
+        Returns
+        -------
+         * f1: float 
+           (if average is not None) or array of float, shape = [n_unique_labels]
+           F1 score of the positive class in binary classification or weighted
+           average of the f1 scores of each class for the multiclass task.        
         """
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
@@ -276,8 +279,8 @@ class FixedClassificationMetrics():
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        * average : string
+          string, [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -300,14 +303,14 @@ class FixedClassificationMetrics():
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        * sample_weight: array-like of shape = [n_samples], optional
-             Sample weights.
+        * sample_weight: array-like
+          array-like of shape = [n_samples], optional Sample weights.
         Returns
         -------
-         * roc_auc: float (if average is not None) or array of float, shape =
-           [n_unique_labels]
-             Roc_auc score of the positive class in binary classification or weighted
-             average of the roc_auc scores of each class for the multiclass task.        
+         * roc_auc: float 
+           (if average is not None) or array of float, shape = [n_unique_labels]
+           Roc_auc score of the positive class in binary classification or weighted
+           average of the roc_auc scores of each class for the multiclass task.        
         """
         y_true = np.array(y_true)
         y_pred = np.array(y_pred)
@@ -348,8 +351,8 @@ class ClassificationTests(FixedClassificationMetrics):
         ----------
         * cv : integer
           The number of cross validation folds to perform
-        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        * average : string, 
+          [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -392,8 +395,8 @@ class ClassificationTests(FixedClassificationMetrics):
         ----------
         * cv : integer
           The number of cross validation folds to perform
-        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        * average : string, 
+          [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -436,8 +439,8 @@ class ClassificationTests(FixedClassificationMetrics):
         ----------
         * cv : integer
           The number of cross validation folds to perform
-        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        * average : string, 
+          [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -481,8 +484,8 @@ class ClassificationTests(FixedClassificationMetrics):
         ----------
         * cv : integer
           The number of cross validation folds to perform
-        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        * average : string, 
+          [None, 'binary'(default), 'micro', 'macro', 'samples', 'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -612,7 +615,7 @@ class ClassificationTests(FixedClassificationMetrics):
             return 'micro'
         return average
 
-    def cross_val_per_class_precision_anomaly_detection(self, tolerance,
+    def cross_val_per_class_precision_anomaly_detection(self, tolerance: float,
                                                         cv=3, average='binary'):
         """
         This checks the cross validated per class percision score, based on 
@@ -622,9 +625,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average precision
-        * cv : the number of folds to consider
-        * average : how to calculate the precision
+        * tolerance : float
+          the tolerance from the average precision
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -638,7 +644,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return self._cross_val_per_class_anomaly_detection(precision_score,
                                                            tolerance, cv)
 
-    def cross_val_per_class_recall_anomaly_detection(self, tolerance,
+    def cross_val_per_class_recall_anomaly_detection(self, tolerance: float,
                                                      cv=3, average='binary'):
         """
         This checks the cross validated per class recall score, based on 
@@ -648,9 +654,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average recall
-        * cv : the number of folds to consider
-        * average : how to calculate the recall
+        * tolerance : float
+          the tolerance from the average recall
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the recall
         
         Returns
         -------
@@ -664,7 +673,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return self._cross_val_per_class_anomaly_detection(recall_score,
                                                            tolerance, cv)
 
-    def cross_val_per_class_f1_anomaly_detection(self, tolerance,
+    def cross_val_per_class_f1_anomaly_detection(self, tolerance: float,
                                                  cv=3, average='binary'):
         """
         This checks the cross validated per class f1 score, based on 
@@ -674,9 +683,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average f1 score
-        * cv : the number of folds to consider
-        * average : how to calculate the f1 score
+        * tolerance : float
+          the tolerance from the average f1 score
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the f1 score
         
         Returns
         -------
@@ -690,7 +702,7 @@ class ClassificationTests(FixedClassificationMetrics):
         return self._cross_val_per_class_anomaly_detection(f1_score,
                                                            tolerance, cv)
 
-    def cross_val_per_class_roc_auc_anomaly_detection(self, tolerance,
+    def cross_val_per_class_roc_auc_anomaly_detection(self, tolerance: float,
                                                       cv=3, average="micro"):
         """
         This checks the cross validated per class roc auc score, based on 
@@ -700,9 +712,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average roc auc
-        * cv : the number of folds to consider
-        * average : how to calculate the roc auc
+        * tolerance : float
+          the tolerance from the average roc auc
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the roc auc
         
         Returns
         -------
@@ -716,7 +731,8 @@ class ClassificationTests(FixedClassificationMetrics):
         return self._cross_val_per_class_anomaly_detection(roc_auc_score,
                                                            tolerance, cv)
     
-    def cross_val_precision_anomaly_detection(self, tolerance, cv=3, average='binary'):
+    def cross_val_precision_anomaly_detection(self, tolerance: float,
+                                              cv=3, average='binary'):
         """
         This checks the k fold (cross validation) precision score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -725,9 +741,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average precision
-        * cv : the number of folds to consider
-        * average : how to calculate the precision
+        * tolerance : float
+          the tolerance from the average precision
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -740,7 +759,8 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
     
-    def cross_val_recall_anomaly_detection(self, tolerance, cv=3, average='binary'):
+    def cross_val_recall_anomaly_detection(self, tolerance: float,
+                                           cv=3, average='binary'):
         """
         This checks the k fold (cross validation) recall score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -749,9 +769,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average recall
-        * cv : the number of folds to consider
-        * average : how to calculate the recall
+        * tolerance : float
+          the tolerance from the average recall
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the recall
         
         Returns
         -------
@@ -764,7 +787,8 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.recall_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
     
-    def cross_val_f1_anomaly_detection(self, tolerance, cv=3, average='binary'):
+    def cross_val_f1_anomaly_detection(self, tolerance: float,
+                                       cv=3, average='binary'):
         """
         This checks the k fold (cross validation) f1 score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -773,9 +797,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average f1 score
-        * cv : the number of folds to consider
-        * average : how to calculate the f1 score
+        * tolerance : float
+          the tolerance from the average f1 score
+        * cv : int 
+          the number of folds to consider
+        * average : string
+          how to calculate the f1 score
         
         Returns
         -------
@@ -788,7 +815,8 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
 
-    def cross_val_roc_auc_anomaly_detection(self, tolerance, cv=3, average="micro"):
+    def cross_val_roc_auc_anomaly_detection(self, tolerance: float,
+                                            cv=3, average="micro"):
         """
         This checks the k fold (cross validation) roc auc score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -797,9 +825,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance from the average roc auc
-        * cv : the number of folds to consider
-        * average : how to calculate the roc auc
+        * tolerance : float
+          the tolerance from the average roc auc
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the roc auc
         
         Returns
         -------
@@ -823,10 +854,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : the average precision
-        must be greater than this number
-        * cv : the number of folds to consider
-        * average : how to calculate the precision
+        * minimum_center_tolerance : float
+          the average precision must be greater than this number
+        * cv : int
+          the number of folds to consider
+        * average : string 
+          how to calculate the precision
         
         Returns
         -------
@@ -850,10 +883,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : the average recall
-        must be greater than this number
-        * cv : the number of folds to consider
-        * average : how to calculate the recall
+        * minimum_center_tolerance : float
+          the average recall must be greater than this number
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the recall
         
         Returns
         -------
@@ -878,10 +913,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : the average f1 score
-        must be greater than this number
-        * cv : the number of folds to consider
-        * average : how to calculate the f1 score
+        * minimum_center_tolerance : float
+        the average f1 score must be greater than this number
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the f1 score
         
         Returns
         -------
@@ -906,10 +943,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : the average roc auc
-        must be greater than this number
-        * cv : the number of folds to consider
-        * average : how to calculate the roc auc
+        * minimum_center_tolerance : float
+          the average roc auc must be greater than this number
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the roc auc
         
         Returns
         -------
@@ -932,10 +971,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : the lower boundary for a given 
-        precision score
-        * cv : the number of folds to consider
-        * average : how to calculate the precision
+        * lower_boundary : float
+          the lower boundary for a given precision score
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -958,10 +999,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : the lower boundary for a given 
-        recall score
-        * cv : the number of folds to consider
-        * average : how to calculate the recall
+        * lower_boundary : float
+          the lower boundary for a given recall score
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the recall
         
         Returns
         -------
@@ -984,10 +1027,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : the lower boundary for a given 
-        f1 score
-        * cv : the number of folds to consider
-        * average : how to calculate the f1 score
+        * lower_boundary : float
+          the lower boundary for a given f1 score
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the f1 score
         
         Returns
         -------
@@ -1011,10 +1056,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : the lower boundary for a given 
-        roc auc score
-        * cv : the number of folds to consider
-        * average : how to calculate the roc auc
+        * lower_boundary : float
+          the lower boundary for a given roc auc score
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the roc auc
         
         Returns
         -------
@@ -1046,15 +1093,16 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * precision_lower_boundary : the lower boundary 
-        for a given precision score
-        * recall_lower_boundary : the lower boundary
-        for a given recall score
-        * f1_lower_boundary : the lower boundary
-        for a given f1 score
-        * cv : the number of folds to consider
-        * average : how to calculate the metrics 
-        (precision, recall, f1)
+        * precision_lower_boundary : float
+          the lower boundary for a given precision score
+        * recall_lower_boundary : float
+          the lower boundary for a given recall score
+        * f1_lower_boundary : float
+          the lower boundary for a given f1 score
+        * cv : int
+          the number of folds to consider
+        * average : string
+          how to calculate the metrics (precision, recall, f1)
         
         Returns
         -------
@@ -1084,11 +1132,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * data : an iterable, either a list or a numpy array
+        data : array-like
+          an iterable, either a list or a numpy array
 
         Returns
         -------
-        the trimean
+        the trimean: float
         """
         q1 = np.quantile(data, 0.25)
         q3 = np.quantile(data, 0.75)
@@ -1102,11 +1151,12 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * data : an iterable, either a list or a numpy array
+        * data : array-like
+          an iterable, either a list or a numpy array
 
         Returns
         -------
-        the average distance to the trimean
+        the average distance to the trimean: float
         """
         trimean = self.trimean(data)
         numerator = [abs(elem - trimean) for elem in data]
@@ -1118,10 +1168,10 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * scores : the scores from the model, 
-        as a list or numpy array
-        * method : the method to use to calculate 
-        central tendency and spread
+        * scores : array-like
+          the scores from the model, as a list or numpy array
+        * method : string
+          the method to use to calculate central tendency and spread
         
         Returns
         -------
