@@ -1225,19 +1225,21 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the k folds score less than the center - (spread * tolerance),
         then False is returned.
         
-        Parameters:
-        * tolerance : the tolerance modifier for how far below the 
+        Parameters
+        ----------
+        tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method : see describe for more details.
+        method : see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average : how to calculate the f1 score
+        average : how to calculate the f1 score
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the f1 scores are greater than
         the center - (spread * tolerance)
         False if the folds for the f1 scores are less than
@@ -1257,19 +1259,21 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the k folds score less than the center - (spread * tolerance),
         then False is returned.
         
-        Parameters:
-        * tolerance : the tolerance modifier for how far below the 
+        Parameters
+        ----------
+        tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method : see describe for more details.
+        method : see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average : how to calculate the precision
+        average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the roc auc scores are greater than
         the center - (spread * tolerance)
         False if the folds for the roc auc scores are less than
@@ -1294,19 +1298,21 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the k folds score less than the center - (spread * tolerance),
         then False is returned.
         
-        Parameters:
-        * tolerance : the tolerance modifier for how far below the 
+        Parameters
+        ----------
+        tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method : see describe for more details.
+        method : see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average : how to calculate the precision
+        average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the precision, recall, f1 scores 
         are greater than the center - (spread * tolerance)
         False if the folds for the precision, recall, f1 scores
@@ -1335,12 +1341,14 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the classes are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary : the lower boundary for each class' 
+        Parameters
+        ----------
+        lower_boundary : the lower boundary for each class' 
         precision score
-        * average : how to calculate the precision
+        average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the classes of the precision scores are 
         greater than the lower_boundary
         False if the classes for the precision scores are 
@@ -1362,12 +1370,14 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the classes are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary : the lower boundary for each class' 
+        Parameters
+        ----------
+        lower_boundary : the lower boundary for each class' 
         recall score
-        * average : how to calculate the recall
+        average : how to calculate the recall
         
-        Returns:
+        Returns
+        -------
         True if all the classes of the recall scores are 
         greater than the lower_boundary
         False if the classes for the recall scores are 
@@ -1389,12 +1399,14 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the classes are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary : the lower boundary for each class' 
+        Parameters
+        ----------
+        lower_boundary : the lower boundary for each class' 
         f1 score
-        * average : how to calculate the f1
+        average : how to calculate the f1
         
-        Returns:
+        Returns
+        -------
         True if all the classes of the f1 scores are 
         greater than the lower_boundary
         False if the classes for the f1 scores are 
@@ -1416,12 +1428,14 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the classes are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary : the lower boundary for each class' 
+        Parameters
+        ----------
+        lower_boundary : the lower boundary for each class' 
         roc auc score
-        * average : how to calculate the roc auc
+        average : how to calculate the roc auc
         
-        Returns:
+        Returns
+        -------
         True if all the classes of the roc auc scores are 
         greater than the lower_boundary
         False if the classes for the roc auc scores are 
@@ -1448,16 +1462,21 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the classes are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * precision_lower_boundary : the lower boundary 
+        Parameters
+        ----------
+        precision_lower_boundary : the lower boundary 
         for each class' precision score
-        * recall_lower_boundary : the lower boundary 
-        for each class' recall score
-        * f1_lower_boundary : the lower boundary 
-        for each class' f1 score
-        * average : how to calculate the precision
         
-        Returns:
+        recall_lower_boundary : the lower boundary 
+        for each class' recall score
+        
+        f1_lower_boundary : the lower boundary 
+        for each class' f1 score
+        
+        average : how to calculate the precision
+        
+        Returns
+        -------
         True if all the classes of the precision scores are 
         greater than the lower_boundary
         False if the classes for the precision scores are 
@@ -1484,13 +1503,16 @@ class ClassificationTests(FixedClassificationMetrics):
         This is a performance test to ensure that the model
         runs fast enough.
         
-        Paramters:
-        * sample_sizes : the size of each sample to test for 
+        Paramters
+        ---------
+        sample_sizes : the size of each sample to test for 
         doing a prediction, each sample size is an integer
-        * max_run_times : the maximum time in seconds that
+        
+        max_run_times : the maximum time in seconds that
         each sample should take to predict, at a maximum.
         
-        Returns:
+        Returns
+        -------
         True if all samples predict within the maximum allowed
         time.
         False otherwise.
