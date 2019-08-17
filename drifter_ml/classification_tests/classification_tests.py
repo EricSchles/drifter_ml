@@ -1210,16 +1210,19 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance modifier for how far below the 
-        center the score can be before a false is returned
-        * method : see describe for more details.
+        * tolerance : float
+          the tolerance modifier for how far below the 
+          center the score can be before a false is returned
+        * method : string
+          see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average : how to calculate the precision
+        * average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -1244,18 +1247,22 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : the tolerance modifier for how far below the 
+        * tolerance : float
+          the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method : see describe for more details.
+        * method : string
+          see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average : how to calculate the recall
+        * average : string
+          how to calculate the recall
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the recall scores are greater than
         the center - (spread * tolerance)
         False if the folds for the recall scores are less than
@@ -1277,16 +1284,19 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        tolerance : the tolerance modifier for how far below the 
-        center the score can be before a false is returned
-        method : see describe for more details.
+        tolerance : float
+          the tolerance modifier for how far below the 
+          center the score can be before a false is returned
+        method : string
+          see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        average : how to calculate the f1 score
+        average : string
+          how to calculate the f1 score
         
         Returns
         -------
@@ -1311,16 +1321,19 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        tolerance : the tolerance modifier for how far below the 
-        center the score can be before a false is returned
-        method : see describe for more details.
+        tolerance : float
+          the tolerance modifier for how far below the 
+          center the score can be before a false is returned
+        method : string
+          see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        average : how to calculate the precision
+        average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -1350,16 +1363,19 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        tolerance : the tolerance modifier for how far below the 
-        center the score can be before a false is returned
-        method : see describe for more details.
+        tolerance : float
+          the tolerance modifier for how far below the 
+          center the score can be before a false is returned
+        method : string
+          see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
           * median : the center is the median, the spread is
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        average : how to calculate the precision
+        average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -1393,9 +1409,11 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        lower_boundary : the lower boundary for each class' 
-        precision score
-        average : how to calculate the precision
+        lower_boundary : dict
+          the lower boundary for each class' 
+          precision score
+        average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -1422,9 +1440,11 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        lower_boundary : the lower boundary for each class' 
-        recall score
-        average : how to calculate the recall
+        lower_boundary : dict
+          the lower boundary for each class' 
+          recall score
+        average : string
+          how to calculate the recall
         
         Returns
         -------
@@ -1451,9 +1471,10 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        lower_boundary : the lower boundary for each class' 
-        f1 score
-        average : how to calculate the f1
+        lower_boundary : dict
+          the lower boundary for each class' f1 score
+        average : string
+          how to calculate the f1
         
         Returns
         -------
@@ -1480,9 +1501,10 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        lower_boundary : the lower boundary for each class' 
-        roc auc score
-        average : how to calculate the roc auc
+        lower_boundary : dict
+          the lower boundary for each class' roc auc score
+        average : string
+          how to calculate the roc auc
         
         Returns
         -------
@@ -1514,16 +1536,17 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        precision_lower_boundary : the lower boundary 
-        for each class' precision score
+        precision_lower_boundary : dict
+          the lower boundary for each class' precision score
         
-        recall_lower_boundary : the lower boundary 
-        for each class' recall score
+        recall_lower_boundary : dict
+          the lower boundary for each class' recall score
         
-        f1_lower_boundary : the lower boundary 
-        for each class' f1 score
+        f1_lower_boundary : dict
+          the lower boundary for each class' f1 score
         
-        average : how to calculate the precision
+        average : string
+          how to calculate the precision
         
         Returns
         -------
@@ -1555,11 +1578,13 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Paramters
         ---------
-        sample_sizes : the size of each sample to test for 
-        doing a prediction, each sample size is an integer
+        sample_sizes : list
+          the size of each sample to test for 
+          doing a prediction, each sample size is an integer
         
-        max_run_times : the maximum time in seconds that
-        each sample should take to predict, at a maximum.
+        max_run_times : list
+          the maximum time in seconds that
+          each sample should take to predict, at a maximum.
         
         Returns
         -------
