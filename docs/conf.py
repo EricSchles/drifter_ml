@@ -27,7 +27,7 @@ author = 'Eric Schles'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.7'
+release = '0.20'
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,6 +40,9 @@ release = '0.7'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

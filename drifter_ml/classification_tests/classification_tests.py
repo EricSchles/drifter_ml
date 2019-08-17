@@ -23,51 +23,55 @@ class FixedClassificationMetrics():
         y_pred are zero the precision_score returns one. (Which Scikit-learn
         does not do at present).
         
-        Parameters:
-        * y_true - 1d array-like, or label indicator array / sparse matrix
+        Parameters
+        ----------
+        y_true : 1d array-like, or label indicator array / sparse matrix
           Ground truth (correct) target values.
-        * y_pred - 1d array-like, or label indicator array / sparse matrix
+        y_pred : 1d array-like, or label indicator array / sparse matrix
           Estimated targets as returned by a classifier
-        * labels: list, optional
+        labels : list, optional
           The set of labels to include when average != binary, and their order
           if average is None.  Labels present in the data can be excluded, for
           example to calculate a multiclass average ignoring a majority negative
           class, while labels not present in the data will result in 0 components
           in a macro average. For multilabel targets, labels are column indices.
           By default, all labels in y_true and y_pred are used in sorted order.
-        * pos_label - str or int, 1 by default
+        pos_label : str or int, 1 by default
           The class to report if average='binary' and the data is binary.  If
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+          'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
           
-          'binary':
+          'binary' :
              Only report results for the class specified by pos_label.  This is
              applicable only if targets (y_{true, pred}) are binary.
-          'micro':
+          'micro' :
              Calculate metrics globally by counting the total true positives, 
              false negatives and false positives.
-          'macro':
+          'macro' :
              Calculate metrics for each label, and find their unweighted mean. 
              This does not take label imbalance into account.
-           'weighted':
+           'weighted' :
              Calculate metrics for each label, and find their average weighted by
              support (the number of true instances for each label).  This alters 
              'macro' to account for label imbalance; it can result in an F-score 
              that isnot between precision and recall.
-           'samples':
+           'samples' :
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        * sample_weight: array-like of shape = [n_samples], optional
+        sample_weight: 
+          array-like of shape = [n_samples], optional
              Sample weights.
-        Returns:
-         * precision: float (if average is not None) or array of float, shape =
+
+        Returns
+        -------
+         precision: float (if average is not None) or array of float, shape =
            [n_unique_labels]
              Precision of the positive class in binary classification or weighted
              average of the precision of each class for the multiclass task.        
@@ -95,25 +99,26 @@ class FixedClassificationMetrics():
         y_pred are zero the recall_score returns one. (Which Scikit-learn
         does not do at present).
         
-        Parameters:
-        * y_true - 1d array-like, or label indicator array / sparse matrix
+        Parameters
+        ----------
+        y_true : 1d array-like, or label indicator array / sparse matrix
           Ground truth (correct) target values.
-        * y_pred - 1d array-like, or label indicator array / sparse matrix
+        y_pred : 1d array-like, or label indicator array / sparse matrix
           Estimated targets as returned by a classifier
-        * labels: list, optional
+        labels : list, optional
           The set of labels to include when average != binary, and their order
           if average is None.  Labels present in the data can be excluded, for
           example to calculate a multiclass average ignoring a majority negative
           class, while labels not present in the data will result in 0 components
           in a macro average. For multilabel targets, labels are column indices.
           By default, all labels in y_true and y_pred are used in sorted order.
-        * pos_label - str or int, 1 by default
+        pos_label : str or int, 1 by default
           The class to report if average='binary' and the data is binary.  If
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
-        'weighted']
+        average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+          'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
           type of averaging performed on the data.
@@ -136,10 +141,12 @@ class FixedClassificationMetrics():
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        * sample_weight: array-like of shape = [n_samples], optional
+        sample_weight : array-like of shape = [n_samples], optional
              Sample weights.
-        Returns:
-         * recall: float (if average is not None) or array of float, shape =
+
+        Returns
+        -------
+        recall : float (if average is not None) or array of float, shape =
            [n_unique_labels]
              Recall of the positive class in binary classification or weighted
              average of the recall of each class for the multiclass task.        
@@ -167,24 +174,25 @@ class FixedClassificationMetrics():
         y_pred are zero the f1_score returns one. (Which Scikit-learn
         does not do at present).
         
-        Parameters:
-        * y_true - 1d array-like, or label indicator array / sparse matrix
+        Parameters
+        ----------
+        y_true : 1d array-like, or label indicator array / sparse matrix
           Ground truth (correct) target values.
-        * y_pred - 1d array-like, or label indicator array / sparse matrix
+        y_pred : 1d array-like, or label indicator array / sparse matrix
           Estimated targets as returned by a classifier
-        * labels: list, optional
+        labels : list, optional
           The set of labels to include when average != binary, and their order
           if average is None.  Labels present in the data can be excluded, for
           example to calculate a multiclass average ignoring a majority negative
           class, while labels not present in the data will result in 0 components
           in a macro average. For multilabel targets, labels are column indices.
           By default, all labels in y_true and y_pred are used in sorted order.
-        * pos_label - str or int, 1 by default
+        * pos_label : str or int, 1 by default
           The class to report if average='binary' and the data is binary.  If
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
         'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
@@ -250,10 +258,11 @@ class FixedClassificationMetrics():
         y_pred are zero the roc_auc_score returns one. (Which Scikit-learn
         does not do at present).
         
-        Parameters:
-        * y_true - 1d array-like, or label indicator array / sparse matrix
+        Parameters
+        ----------
+        * y_true : 1d array-like, or label indicator array / sparse matrix
           Ground truth (correct) target values.
-        * y_pred - 1d array-like, or label indicator array / sparse matrix
+        * y_pred : 1d array-like, or label indicator array / sparse matrix
           Estimated targets as returned by a classifier
         * labels: list, optional
           The set of labels to include when average != binary, and their order
@@ -262,12 +271,12 @@ class FixedClassificationMetrics():
           class, while labels not present in the data will result in 0 components
           in a macro average. For multilabel targets, labels are column indices.
           By default, all labels in y_true and y_pred are used in sorted order.
-        * pos_label - str or int, 1 by default
+        * pos_label : str or int, 1 by default
           The class to report if average='binary' and the data is binary.  If
           the data are multiclass or multilabel, this will be ignored; setting
           labels=[pos_label] and average != 'binary' will report scores for
           that label only.
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
         'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
@@ -293,7 +302,8 @@ class FixedClassificationMetrics():
              accuracy_score).
         * sample_weight: array-like of shape = [n_samples], optional
              Sample weights.
-        Returns:
+        Returns
+        -------
          * roc_auc: float (if average is not None) or array of float, shape =
            [n_unique_labels]
              Roc_auc score of the positive class in binary classification or weighted
@@ -334,10 +344,11 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This method performs cross-validation over precision.
         
-        Parameters:
-        * cv - integer
+        Parameters
+        ----------
+        * cv : integer
           The number of cross validation folds to perform
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
         'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
@@ -361,7 +372,8 @@ class ClassificationTests(FixedClassificationMetrics):
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        Returns:
+        Returns
+        -------
         Returns a scores of the k-fold precision.
         """
         average = self.reset_average(average)
@@ -376,10 +388,11 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This method performs cross-validation over recall.
         
-        Parameters:
-        * cv - integer
+        Parameters
+        ----------
+        * cv : integer
           The number of cross validation folds to perform
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
         'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
@@ -403,7 +416,8 @@ class ClassificationTests(FixedClassificationMetrics):
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        Returns:
+        Returns
+        -------
         Returns a scores of the k-fold recall.
         """
         average = self.reset_average(average)
@@ -418,10 +432,11 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This method performs cross-validation over f1-score.
         
-        Parameters:
-        * cv - integer
+        Parameters
+        ----------
+        * cv : integer
           The number of cross validation folds to perform
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
         'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
@@ -445,7 +460,9 @@ class ClassificationTests(FixedClassificationMetrics):
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        Returns:
+
+        Returns
+        -------
         Returns a scores of the k-fold f1-score.
         """
         average = self.reset_average(average)
@@ -460,10 +477,11 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         This method performs cross-validation over roc_auc.
         
-        Parameters:
-        * cv - integer
+        Parameters
+        ----------
+        * cv : integer
           The number of cross validation folds to perform
-        * average - string, [None, 'binary'(default), 'micro', 'macro', 'samples',
+        * average : string, [None, 'binary'(default), 'micro', 'macro', 'samples',
         'weighted']
           This parameter is required for multiclass/multilabel targets.  If None,
           the scores for each class are returned.  Otherwise, this determines the
@@ -487,7 +505,9 @@ class ClassificationTests(FixedClassificationMetrics):
              Calculate metrics for each instance, and find their average (only
              meaningful for multilabel classification where this differs from 
              accuracy_score).
-        Returns:
+
+        Returns
+        -------
         Returns a scores of the k-fold roc_auc.
         """
         roc_auc_score = partial(self.roc_auc_score, average=average)
@@ -600,12 +620,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average precision
-        * cv - the number of folds to consider
-        * average - how to calculate the precision
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average precision
+        * cv : the number of folds to consider
+        * average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for precision
         False if any of the deviances from the average for any of 
@@ -624,12 +646,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average recall
-        * cv - the number of folds to consider
-        * average - how to calculate the recall
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average recall
+        * cv : the number of folds to consider
+        * average : how to calculate the recall
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for recall
         False if any of the deviances from the average for any of 
@@ -648,12 +672,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average f1 score
-        * cv - the number of folds to consider
-        * average - how to calculate the f1 score
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average f1 score
+        * cv : the number of folds to consider
+        * average : how to calculate the f1 score
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for f1 score
         False if any of the deviances from the average for any of 
@@ -672,12 +698,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average roc auc
-        * cv - the number of folds to consider
-        * average - how to calculate the roc auc
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average roc auc
+        * cv : the number of folds to consider
+        * average : how to calculate the roc auc
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for roc auc
         False if any of the deviances from the average for any of 
@@ -695,12 +723,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average precision
-        * cv - the number of folds to consider
-        * average - how to calculate the precision
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average precision
+        * cv : the number of folds to consider
+        * average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for precision
         False if any of the deviances from the average for any of 
@@ -717,12 +747,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average recall
-        * cv - the number of folds to consider
-        * average - how to calculate the recall
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average recall
+        * cv : the number of folds to consider
+        * average : how to calculate the recall
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for recall
         False if any of the deviances from the average for any of 
@@ -739,12 +771,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average f1 score
-        * cv - the number of folds to consider
-        * average - how to calculate the f1 score
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average f1 score
+        * cv : the number of folds to consider
+        * average : how to calculate the f1 score
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for f1 score
         False if any of the deviances from the average for any of 
@@ -761,12 +795,14 @@ class ClassificationTests(FixedClassificationMetrics):
         average is calculated and then if the deviance from the average is 
         greater than the set tolerance, then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance from the average roc auc
-        * cv - the number of folds to consider
-        * average - how to calculate the roc auc
+        Parameters
+        ----------
+        * tolerance : the tolerance from the average roc auc
+        * cv : the number of folds to consider
+        * average : how to calculate the roc auc
         
-        Returns:
+        Returns
+        -------
         True if all the deviances from average for all the folds 
         are above tolerance for roc auc
         False if any of the deviances from the average for any of 
@@ -776,7 +812,8 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.roc_auc_cv(cv, average=average)
         return self._cross_val_anomaly_detection(scores, tolerance)
         
-    def cross_val_precision_avg(self, minimum_center_tolerance, cv=3, average='binary'):
+    def cross_val_precision_avg(self, minimum_center_tolerance,
+                                cv=3, average='binary'):
         """
         This generates the k fold (cross validation) precision scores, 
         then based on computes the average of those scores.  
@@ -784,13 +821,15 @@ class ClassificationTests(FixedClassificationMetrics):
         calculated and then if the average is less 
         than the minimum tolerance, then False is returned.
         
-        Parameters:
-        * minimum_center_tolerance - the average precision
+        Parameters
+        ----------
+        * minimum_center_tolerance : the average precision
         must be greater than this number
-        * cv - the number of folds to consider
-        * average - how to calculate the precision
+        * cv : the number of folds to consider
+        * average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the precision are greater than
         the minimum_center_tolerance
         False if the average folds for the precision are less than
@@ -800,7 +839,8 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
-    def cross_val_recall_avg(self, minimum_center_tolerance, cv=3, average='binary'):
+    def cross_val_recall_avg(self, minimum_center_tolerance,
+                             cv=3, average='binary'):
         """
         This generates the k fold (cross validation) recall scores, 
         then based on computes the average of those scores.  
@@ -808,13 +848,15 @@ class ClassificationTests(FixedClassificationMetrics):
         calculated and then if the average is less 
         than the minimum tolerance, then False is returned.
         
-        Parameters:
-        * minimum_center_tolerance - the average recall
+        Parameters
+        ----------
+        * minimum_center_tolerance : the average recall
         must be greater than this number
-        * cv - the number of folds to consider
-        * average - how to calculate the recall
+        * cv : the number of folds to consider
+        * average : how to calculate the recall
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the recall are greater than
         the minimum_center_tolerance
         False if the average folds for the recall are less than
@@ -825,7 +867,8 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.recall_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
-    def cross_val_f1_avg(self, minimum_center_tolerance, cv=3, average='binary'):
+    def cross_val_f1_avg(self, minimum_center_tolerance,
+                         cv=3, average='binary'):
         """
         This generates the k fold (cross validation) f1 scores, 
         then based on computes the average of those scores.  
@@ -833,13 +876,15 @@ class ClassificationTests(FixedClassificationMetrics):
         calculated and then if the average is less 
         than the minimum tolerance, then False is returned.
         
-        Parameters:
-        * minimum_center_tolerance - the average f1 score
+        Parameters
+        ----------
+        * minimum_center_tolerance : the average f1 score
         must be greater than this number
-        * cv - the number of folds to consider
-        * average - how to calculate the f1 score
+        * cv : the number of folds to consider
+        * average : how to calculate the f1 score
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the f1 score are greater than
         the minimum_center_tolerance
         False if the average folds for the f1 score are less than
@@ -850,7 +895,8 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
-    def cross_val_roc_auc_avg(self, minimum_center_tolerance, cv=3, average='micro'):
+    def cross_val_roc_auc_avg(self, minimum_center_tolerance,
+                              cv=3, average='micro'):
         """
         This generates the k fold (cross validation) roc auc scores, 
         then based on computes the average of those scores.  
@@ -858,13 +904,15 @@ class ClassificationTests(FixedClassificationMetrics):
         calculated and then if the average is less 
         than the minimum tolerance, then False is returned.
         
-        Parameters:
-        * minimum_center_tolerance - the average roc auc
+        Parameters
+        ----------
+        * minimum_center_tolerance : the average roc auc
         must be greater than this number
-        * cv - the number of folds to consider
-        * average - how to calculate the roc auc
+        * cv : the number of folds to consider
+        * average : how to calculate the roc auc
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the roc auc are greater than
         the minimum_center_tolerance
         False if the average folds for the roc auc are less than
@@ -874,20 +922,23 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.roc_auc_cv(cv, average=average)
         return self._cross_val_avg(scores, minimum_center_tolerance)
     
-    def cross_val_precision_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+    def cross_val_precision_lower_boundary(self, lower_boundary,
+                                           cv=3, average='binary'):
         """
         This is possibly the most naive stragey,
         it generates the k fold (cross validation) precision scores, 
         if any of the k folds are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary - the lower boundary for a given 
+        Parameters
+        ----------
+        * lower_boundary : the lower boundary for a given 
         precision score
-        * cv - the number of folds to consider
-        * average - how to calculate the precision
+        * cv : the number of folds to consider
+        * average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the precision scores are 
         greater than the lower_boundary
         False if the folds for the precision scores are 
@@ -897,20 +948,23 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.precision_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
         
-    def cross_val_recall_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+    def cross_val_recall_lower_boundary(self, lower_boundary,
+                                        cv=3, average='binary'):
         """
         This is possibly the most naive stragey,
         it generates the k fold (cross validation) recall scores, 
         if any of the k folds are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary - the lower boundary for a given 
+        Parameters
+        ----------
+        * lower_boundary : the lower boundary for a given 
         recall score
-        * cv - the number of folds to consider
-        * average - how to calculate the recall
+        * cv : the number of folds to consider
+        * average : how to calculate the recall
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the recall scores are greater than
         the lower_boundary
         False if the folds for the recall scores are less than
@@ -920,20 +974,23 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.recall_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
         
-    def cross_val_f1_lower_boundary(self, lower_boundary, cv=3, average='binary'):
+    def cross_val_f1_lower_boundary(self, lower_boundary,
+                                    cv=3, average='binary'):
         """
         This is possibly the most naive stragey,
         it generates the k fold (cross validation) f1 scores, 
         if any of the k folds are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary - the lower boundary for a given 
+        Parameters
+        ----------
+        * lower_boundary : the lower boundary for a given 
         f1 score
-        * cv - the number of folds to consider
-        * average - how to calculate the f1 score
+        * cv : the number of folds to consider
+        * average : how to calculate the f1 score
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the f1 scores are greater than
         the lower_boundary
         False if the folds for the f1 scores are less than
@@ -944,20 +1001,23 @@ class ClassificationTests(FixedClassificationMetrics):
         scores = self.f1_cv(cv, average=average)
         return self._cross_val_lower_boundary(scores, lower_boundary)
 
-    def cross_val_roc_auc_lower_boundary(self, lower_boundary, cv=3, average='micro'):
+    def cross_val_roc_auc_lower_boundary(self, lower_boundary,
+                                         cv=3, average='micro'):
         """
         This is possibly the most naive stragey,
         it generates the k fold (cross validation) roc auc scores, 
         if any of the k folds are less than the lower boundary,
         then False is returned.
         
-        Parameters:
-        * lower_boundary - the lower boundary for a given 
+        Parameters
+        ----------
+        * lower_boundary : the lower boundary for a given 
         roc auc score
-        * cv - the number of folds to consider
-        * average - how to calculate the roc auc
+        * cv : the number of folds to consider
+        * average : how to calculate the roc auc
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the roc auc scores are greater than
         the lower_boundary
         False if the folds for the roc auc scores are less than
@@ -984,16 +1044,23 @@ class ClassificationTests(FixedClassificationMetrics):
         We can set the same precision, recall, or f1 score lower boundary
         or specify each depending on necessary criteria.
         
-        Parameters:
-        * precision_lower_boundary - the lower boundary 
+        Parameters
+        ----------
+        * precision_lower_boundary : the lower boundary 
         for a given precision score
-        * recall_lower_boundary - the lower boundary
+        * recall_lower_boundary : the lower boundary
         for a given recall score
-        * f1_lower_boundary - the lower boundary
+        * f1_lower_boundary : the lower boundary
         for a given f1 score
-        * cv - the number of folds to consider
-        * average - how to calculate the metrics 
+        * cv : the number of folds to consider
+        * average : how to calculate the metrics 
         (precision, recall, f1)
+        
+        Returns
+        -------
+        Returns True if precision, recall and f1 tests
+        work.  
+        False otherwise
         """
         average = self.reset_average(average)
         precision_test = self.cross_val_precision_lower_boundary(
@@ -1015,10 +1082,12 @@ class ClassificationTests(FixedClassificationMetrics):
         Formula:
         (25th percentile + 2*50th percentile + 75th percentile)/4
         
-        Parameters:
-        * data - an iterable, either a list or a numpy array
+        Parameters
+        ----------
+        * data : an iterable, either a list or a numpy array
 
-        Returns:
+        Returns
+        -------
         the trimean
         """
         q1 = np.quantile(data, 0.25)
@@ -1031,10 +1100,12 @@ class ClassificationTests(FixedClassificationMetrics):
         The trimean absolute deviation is the
         the average distance from the trimean.
         
-        Parameters:
-        * data - an iterable, either a list or a numpy array
+        Parameters
+        ----------
+        * data : an iterable, either a list or a numpy array
 
-        Returns:
+        Returns
+        -------
         the average distance to the trimean
         """
         trimean = self.trimean(data)
@@ -1043,7 +1114,18 @@ class ClassificationTests(FixedClassificationMetrics):
         
     def describe_scores(self, scores, method):
         """
-        returns the central tendency, and spread
+        Describes scores.
+        
+        Parameters
+        ----------
+        * scores : the scores from the model, 
+        as a list or numpy array
+        * method : the method to use to calculate 
+        central tendency and spread
+        
+        Returns
+        -------
+        Returns the central tendency, and spread
         by method.
         
         Methods:
@@ -1058,12 +1140,6 @@ class ClassificationTests(FixedClassificationMetrics):
         trimean:
         * central tendency: trimean
         * spread: trimean absolute deviation
-        
-        Parameters:
-        * scores - the scores from the model, 
-        as a list or numpy array
-        * method - the method to use to calculate 
-        central tendency and spread
         """
         if method == "mean":
             return np.mean(scores), np.std(scores)
@@ -1082,19 +1158,21 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the k folds score less than the center - (spread * tolerance),
         then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance modifier for how far below the 
+        Parameters
+        ----------
+        * tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method - see describe for more details.
-          * mean - the center is the mean, the spread is standard
+        * method : see describe for more details.
+          * mean : the center is the mean, the spread is standard
                    deviation.
-          * median - the center is the median, the spread is
+          * median : the center is the median, the spread is
                      the interquartile range.
-          * trimean - the center is the trimean, the spread is
+          * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average - how to calculate the precision
+        * average : how to calculate the precision
         
-        Returns:
+        Returns
+        -------
         True if all the folds of the precision scores are greater than
         the center - (spread * tolerance)
         False if the folds for the precision scores are less than
@@ -1114,17 +1192,18 @@ class ClassificationTests(FixedClassificationMetrics):
         if any of the k folds score less than the center - (spread * tolerance),
         then False is returned.
         
-        Parameters:
-        * tolerance - the tolerance modifier for how far below the 
+        Parameters
+        ----------
+        * tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method - see describe for more details.
-          * mean - the center is the mean, the spread is standard
+        * method : see describe for more details.
+          * mean : the center is the mean, the spread is standard
                    deviation.
-          * median - the center is the median, the spread is
+          * median : the center is the median, the spread is
                      the interquartile range.
-          * trimean - the center is the trimean, the spread is
+          * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average - how to calculate the recall
+        * average : how to calculate the recall
         
         Returns:
         True if all the folds of the recall scores are greater than
@@ -1147,16 +1226,16 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * tolerance - the tolerance modifier for how far below the 
+        * tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method - see describe for more details.
-          * mean - the center is the mean, the spread is standard
+        * method : see describe for more details.
+          * mean : the center is the mean, the spread is standard
                    deviation.
-          * median - the center is the median, the spread is
+          * median : the center is the median, the spread is
                      the interquartile range.
-          * trimean - the center is the trimean, the spread is
+          * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average - how to calculate the f1 score
+        * average : how to calculate the f1 score
         
         Returns:
         True if all the folds of the f1 scores are greater than
@@ -1179,16 +1258,16 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * tolerance - the tolerance modifier for how far below the 
+        * tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method - see describe for more details.
-          * mean - the center is the mean, the spread is standard
+        * method : see describe for more details.
+          * mean : the center is the mean, the spread is standard
                    deviation.
-          * median - the center is the median, the spread is
+          * median : the center is the median, the spread is
                      the interquartile range.
-          * trimean - the center is the trimean, the spread is
+          * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average - how to calculate the precision
+        * average : how to calculate the precision
         
         Returns:
         True if all the folds of the roc auc scores are greater than
@@ -1216,16 +1295,16 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * tolerance - the tolerance modifier for how far below the 
+        * tolerance : the tolerance modifier for how far below the 
         center the score can be before a false is returned
-        * method - see describe for more details.
-          * mean - the center is the mean, the spread is standard
+        * method : see describe for more details.
+          * mean : the center is the mean, the spread is standard
                    deviation.
-          * median - the center is the median, the spread is
+          * median : the center is the median, the spread is
                      the interquartile range.
-          * trimean - the center is the trimean, the spread is
+          * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average - how to calculate the precision
+        * average : how to calculate the precision
         
         Returns:
         True if all the folds of the precision, recall, f1 scores 
@@ -1257,9 +1336,9 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * lower_boundary - the lower boundary for each class' 
+        * lower_boundary : the lower boundary for each class' 
         precision score
-        * average - how to calculate the precision
+        * average : how to calculate the precision
         
         Returns:
         True if all the classes of the precision scores are 
@@ -1284,9 +1363,9 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * lower_boundary - the lower boundary for each class' 
+        * lower_boundary : the lower boundary for each class' 
         recall score
-        * average - how to calculate the recall
+        * average : how to calculate the recall
         
         Returns:
         True if all the classes of the recall scores are 
@@ -1311,9 +1390,9 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * lower_boundary - the lower boundary for each class' 
+        * lower_boundary : the lower boundary for each class' 
         f1 score
-        * average - how to calculate the f1
+        * average : how to calculate the f1
         
         Returns:
         True if all the classes of the f1 scores are 
@@ -1338,9 +1417,9 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * lower_boundary - the lower boundary for each class' 
+        * lower_boundary : the lower boundary for each class' 
         roc auc score
-        * average - how to calculate the roc auc
+        * average : how to calculate the roc auc
         
         Returns:
         True if all the classes of the roc auc scores are 
@@ -1370,13 +1449,13 @@ class ClassificationTests(FixedClassificationMetrics):
         then False is returned.
         
         Parameters:
-        * precision_lower_boundary - the lower boundary 
+        * precision_lower_boundary : the lower boundary 
         for each class' precision score
-        * recall_lower_boundary - the lower boundary 
+        * recall_lower_boundary : the lower boundary 
         for each class' recall score
-        * f1_lower_boundary - the lower boundary 
+        * f1_lower_boundary : the lower boundary 
         for each class' f1 score
-        * average - how to calculate the precision
+        * average : how to calculate the precision
         
         Returns:
         True if all the classes of the precision scores are 
@@ -1406,9 +1485,9 @@ class ClassificationTests(FixedClassificationMetrics):
         runs fast enough.
         
         Paramters:
-        * sample_sizes - the size of each sample to test for 
+        * sample_sizes : the size of each sample to test for 
         doing a prediction, each sample size is an integer
-        * max_run_times - the maximum time in seconds that
+        * max_run_times : the maximum time in seconds that
         each sample should take to predict, at a maximum.
         
         Returns:
