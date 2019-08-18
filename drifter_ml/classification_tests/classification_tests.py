@@ -323,9 +323,26 @@ class FixedClassificationMetrics():
                                          average=average,
                                          sample_weight=sample_weight)
 
-    
+# cross_val_avg, per_class_cross_val,
+# cross_val_anomaly_detection, cross_val_per_class_anomaly_detection
+# cross_val_lower_boundary, anomaly_detection, 
 # ToDo: reorganize this class into a bunch of smaller classes that inherit into a main class
 class ClassificationTests(FixedClassificationMetrics):
+    """
+    The general goal of this class it to test classification 
+    algorithms.  
+    The tests in this class move from simple to sophisticated:
+
+    * cross_val_average : the average of all folds must be above some number
+    * cross_val_lower_boundary : each fold must be above the lower boundary
+    * lower_boundary_per_class : each class must be above a given lower boundary
+    The lower boundary per class can be different
+    * cross_val_anomaly_detection : 
+    * cross_val_per_class_anomaly_detection : the score for each class 
+    for each fold must have a deviance from the average below a set tolerance
+    
+    
+    """
     def __init__(self,
                  clf,
                  test_data,
@@ -520,8 +537,8 @@ class ClassificationTests(FixedClassificationMetrics):
                                 scoring=(roc_auc))
         return self.get_test_score(result)
     
-    def _cross_val_avg(self, scores, minimum_center_tolerance):
-        avg = np.mean(scores)
+    def _cross_val_avg(self, scores, minimum_center_tolerance, method='mean'):
+        avg, _ = self.describe_scores(scores, method)
         if avg < minimum_center_tolerance:
             return False
         return True
@@ -548,8 +565,8 @@ class ClassificationTests(FixedClassificationMetrics):
             scores.append(self._get_per_class(y_true, y_pred, metric))
         return scores
 
-    def _cross_val_anomaly_detection(self, scores, tolerance):
-        avg = np.mean(scores)
+    def _cross_val_anomaly_detection(self, scores, tolerance, method='mean'):
+        avg, _ = self.describe_scores(scores, method)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
         for deviance in deviance_from_avg:
@@ -557,12 +574,17 @@ class ClassificationTests(FixedClassificationMetrics):
                 return False
         return True
 
-    def _cross_val_per_class_anomaly_detection(self, metric, tolerance, cv):
+    def _cross_val_per_class_anomaly_detection(self, metric,
+                                               tolerance, cv, method='mean'):
         scores_per_fold = self._per_class_cross_val(metric, cv)
         results = [] 
         for klass in self.classes:
             scores = [score[klass] for score in scores_per_fold]
-            results.append(self._cross_val_anomaly_detection(scores, tolerance))
+            results.append(
+                self._cross_val_anomaly_detection(
+                    scores, tolerance, method=method
+                )
+            )
         return all(results)
 
     def _cross_val_lower_boundary(self, scores, lower_boundary):
@@ -616,7 +638,8 @@ class ClassificationTests(FixedClassificationMetrics):
         return average
 
     def cross_val_per_class_precision_anomaly_detection(self, tolerance: float,
-                                                        cv=3, average='binary'):
+                                                        cv=3, average='binary',
+                                                        method='mean'):
         """
         This checks the cross validated per class percision score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -625,12 +648,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average precision
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the precision
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -641,11 +666,13 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         average = self.reset_average(average)
         precision_score = partial(self.precision_score, average=average)
-        return self._cross_val_per_class_anomaly_detection(precision_score,
-                                                           tolerance, cv)
+        return self._cross_val_per_class_anomaly_detection(
+            precision_score, tolerance, cv, method=method
+        )
 
     def cross_val_per_class_recall_anomaly_detection(self, tolerance: float,
-                                                     cv=3, average='binary'):
+                                                     cv=3, average='binary',
+                                                     method='mean'):
         """
         This checks the cross validated per class recall score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -654,12 +681,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average recall
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the recall
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -670,11 +699,12 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         average = self.reset_average(average)
         recall_score = partial(self.recall_score, average=average)
-        return self._cross_val_per_class_anomaly_detection(recall_score,
-                                                           tolerance, cv)
+        return self._cross_val_per_class_anomaly_detection(
+            recall_score, tolerance, cv, method=method)
 
     def cross_val_per_class_f1_anomaly_detection(self, tolerance: float,
-                                                 cv=3, average='binary'):
+                                                 cv=3, average='binary',
+                                                 method='mean'):
         """
         This checks the cross validated per class f1 score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -683,12 +713,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average f1 score
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the f1 score
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -699,11 +731,13 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         average = self.reset_average(average)
         f1_score = partial(self.f1_score, average=average)
-        return self._cross_val_per_class_anomaly_detection(f1_score,
-                                                           tolerance, cv)
+        return self._cross_val_per_class_anomaly_detection(
+            f1_score, tolerance, cv, method=method
+        )
 
     def cross_val_per_class_roc_auc_anomaly_detection(self, tolerance: float,
-                                                      cv=3, average="micro"):
+                                                      cv=3, average="micro",
+                                                      method='mean'):
         """
         This checks the cross validated per class roc auc score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -712,12 +746,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average roc auc
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the roc auc
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -728,11 +764,13 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         self.roc_auc_exception()
         roc_auc_score = partial(self.roc_auc_score, average=average)
-        return self._cross_val_per_class_anomaly_detection(roc_auc_score,
-                                                           tolerance, cv)
+        return self._cross_val_per_class_anomaly_detection(
+            roc_auc_score, tolerance, cv, method=method
+        )
     
     def cross_val_precision_anomaly_detection(self, tolerance: float,
-                                              cv=3, average='binary'):
+                                              cv=3, average='binary',
+                                              method='mean'):
         """
         This checks the k fold (cross validation) precision score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -741,12 +779,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average precision
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the precision
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -757,10 +797,12 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         average = self.reset_average(average)
         scores = self.precision_cv(cv, average=average)
-        return self._cross_val_anomaly_detection(scores, tolerance)
+        return self._cross_val_anomaly_detection(
+            scores, tolerance, method=method
+        )
     
     def cross_val_recall_anomaly_detection(self, tolerance: float,
-                                           cv=3, average='binary'):
+                                           cv=3, average='binary', method='mean'):
         """
         This checks the k fold (cross validation) recall score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -769,12 +811,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average recall
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the recall
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -785,10 +829,12 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         average = self.reset_average(average)
         scores = self.recall_cv(cv, average=average)
-        return self._cross_val_anomaly_detection(scores, tolerance)
+        return self._cross_val_anomaly_detection(
+            scores, tolerance, method=method
+        )
     
     def cross_val_f1_anomaly_detection(self, tolerance: float,
-                                       cv=3, average='binary'):
+                                       cv=3, average='binary', method='mean'):
         """
         This checks the k fold (cross validation) f1 score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -797,12 +843,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average f1 score
-        * cv : int 
+        cv : int 
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the f1 score
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -813,10 +861,12 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         average = self.reset_average(average)
         scores = self.f1_cv(cv, average=average)
-        return self._cross_val_anomaly_detection(scores, tolerance)
+        return self._cross_val_anomaly_detection(
+            scores, tolerance, method=method
+        )
 
     def cross_val_roc_auc_anomaly_detection(self, tolerance: float,
-                                            cv=3, average="micro"):
+                                            cv=3, average="micro", method='mean'):
         """
         This checks the k fold (cross validation) roc auc score, based on 
         anolamies.  The way the anomaly detection scheme works is, an 
@@ -825,12 +875,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance from the average roc auc
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the roc auc
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -841,10 +893,12 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
-        return self._cross_val_anomaly_detection(scores, tolerance)
+        return self._cross_val_anomaly_detection(
+            scores, tolerance, method=method
+        )
         
     def cross_val_precision_avg(self, minimum_center_tolerance,
-                                cv=3, average='binary'):
+                                cv=3, average='binary', method='mean'):
         """
         This generates the k fold (cross validation) precision scores, 
         then based on computes the average of those scores.  
@@ -854,12 +908,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : float
+        minimum_center_tolerance : float
           the average precision must be greater than this number
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string 
+        average : string 
           how to calculate the precision
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -870,10 +926,11 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         average = self.reset_average(average)
         scores = self.precision_cv(cv, average=average)
-        return self._cross_val_avg(scores, minimum_center_tolerance)
+        return self._cross_val_avg(
+            scores, minimum_center_tolerance, method=method)
 
     def cross_val_recall_avg(self, minimum_center_tolerance,
-                             cv=3, average='binary'):
+                             cv=3, average='binary', method='mean'):
         """
         This generates the k fold (cross validation) recall scores, 
         then based on computes the average of those scores.  
@@ -883,12 +940,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : float
+        minimum_center_tolerance : float
           the average recall must be greater than this number
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the recall
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -900,10 +959,11 @@ class ClassificationTests(FixedClassificationMetrics):
 
         average = self.reset_average(average)
         scores = self.recall_cv(cv, average=average)
-        return self._cross_val_avg(scores, minimum_center_tolerance)
+        return self._cross_val_avg(
+            scores, minimum_center_tolerance, method=method)
 
     def cross_val_f1_avg(self, minimum_center_tolerance,
-                         cv=3, average='binary'):
+                         cv=3, average='binary', method='mean'):
         """
         This generates the k fold (cross validation) f1 scores, 
         then based on computes the average of those scores.  
@@ -913,12 +973,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : float
-        the average f1 score must be greater than this number
-        * cv : int
+        minimum_center_tolerance : float
+          the average f1 score must be greater than this number
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the f1 score
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -930,10 +992,11 @@ class ClassificationTests(FixedClassificationMetrics):
 
         average = self.reset_average(average)
         scores = self.f1_cv(cv, average=average)
-        return self._cross_val_avg(scores, minimum_center_tolerance)
+        return self._cross_val_avg(
+            scores, minimum_center_tolerance, method=method)
 
     def cross_val_roc_auc_avg(self, minimum_center_tolerance,
-                              cv=3, average='micro'):
+                              cv=3, average='micro', method='mean'):
         """
         This generates the k fold (cross validation) roc auc scores, 
         then based on computes the average of those scores.  
@@ -943,12 +1006,14 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * minimum_center_tolerance : float
+        minimum_center_tolerance : float
           the average roc auc must be greater than this number
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the roc auc
+        method: string
+          how to calculate the center
         
         Returns
         -------
@@ -959,7 +1024,8 @@ class ClassificationTests(FixedClassificationMetrics):
         """
         self.roc_auc_exception()
         scores = self.roc_auc_cv(cv, average=average)
-        return self._cross_val_avg(scores, minimum_center_tolerance)
+        return self._cross_val_avg(
+            scores, minimum_center_tolerance, method=method)
     
     def cross_val_precision_lower_boundary(self, lower_boundary,
                                            cv=3, average='binary'):
@@ -971,11 +1037,11 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : float
+        lower_boundary : float
           the lower boundary for a given precision score
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the precision
         
         Returns
@@ -999,11 +1065,11 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : float
+        lower_boundary : float
           the lower boundary for a given recall score
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the recall
         
         Returns
@@ -1027,11 +1093,11 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : float
+        lower_boundary : float
           the lower boundary for a given f1 score
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the f1 score
         
         Returns
@@ -1056,11 +1122,11 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * lower_boundary : float
+        lower_boundary : float
           the lower boundary for a given roc auc score
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the roc auc
         
         Returns
@@ -1081,8 +1147,7 @@ class ClassificationTests(FixedClassificationMetrics):
                                      f1_lower_boundary: float,
                                      cv=3, average='binary'):
         """
-        runs the cross validated lower boundary methods 
-        for:
+        runs the cross validated lower boundary methods for:
         * precision, 
         * recall, 
         * f1 score
@@ -1093,15 +1158,15 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * precision_lower_boundary : float
+        precision_lower_boundary : float
           the lower boundary for a given precision score
-        * recall_lower_boundary : float
+        recall_lower_boundary : float
           the lower boundary for a given recall score
-        * f1_lower_boundary : float
+        f1_lower_boundary : float
           the lower boundary for a given f1 score
-        * cv : int
+        cv : int
           the number of folds to consider
-        * average : string
+        average : string
           how to calculate the metrics (precision, recall, f1)
         
         Returns
@@ -1151,7 +1216,7 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * data : array-like
+        data : array-like
           an iterable, either a list or a numpy array
 
         Returns
@@ -1168,9 +1233,9 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * scores : array-like
+        scores : array-like
           the scores from the model, as a list or numpy array
-        * method : string
+        method : string
           the method to use to calculate central tendency and spread
         
         Returns
@@ -1210,10 +1275,10 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance modifier for how far below the 
           center the score can be before a false is returned
-        * method : string
+        method : string
           see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
@@ -1221,7 +1286,7 @@ class ClassificationTests(FixedClassificationMetrics):
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average : string
+        average : string
           how to calculate the precision
         
         Returns
@@ -1247,10 +1312,10 @@ class ClassificationTests(FixedClassificationMetrics):
         
         Parameters
         ----------
-        * tolerance : float
+        tolerance : float
           the tolerance modifier for how far below the 
-        center the score can be before a false is returned
-        * method : string
+          center the score can be before a false is returned
+        method : string
           see describe for more details.
           * mean : the center is the mean, the spread is standard
                    deviation.
@@ -1258,7 +1323,7 @@ class ClassificationTests(FixedClassificationMetrics):
                      the interquartile range.
           * trimean : the center is the trimean, the spread is
                       trimean absolute deviation.
-        * average : string
+        average : string
           how to calculate the recall
         
         Returns
@@ -1632,10 +1697,9 @@ class ClassifierComparison(FixedClassificationMetrics):
             return 'micro'
         return average
 
-    def two_model_prediction_run_time_stress_test(self, performance_boundary):
-        for performance_info in performance_boundary:
-            n = int(performance_info["sample_size"])
-            data = self.X.sample(n, replace=True)
+    def two_model_prediction_run_time_stress_test(self, sample_sizes):
+        for sample_size in sample_sizes:
+            data = self.X.sample(sample_size, replace=True)
             start_time = time.time()
             self.clf_one.predict(data)
             model_one_run_time = time.time() - start_time
