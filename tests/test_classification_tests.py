@@ -597,13 +597,10 @@ def test_two_model_prediction_run_time_stress_test():
                                                            df,
                                                            target_name,
                                                            column_names)
-    performance_boundary = []
-    for i in range(100, 1000, 100):
-        performance_boundary.append({
-            "sample_size": i,
-            "max_run_time": 100})
+
+    sample_sizes = [i for i in range(100, 1000, 100)]
     try:
-        test_suite.two_model_prediction_run_time_stress_test(performance_boundary)
+        test_suite.two_model_prediction_run_time_stress_test(sample_sizes)
         assert True
     except:
         assert False
