@@ -323,10 +323,6 @@ class FixedClassificationMetrics():
                                          average=average,
                                          sample_weight=sample_weight)
 
-# cross_val_avg, per_class_cross_val,
-# cross_val_anomaly_detection, cross_val_per_class_anomaly_detection
-# cross_val_lower_boundary, anomaly_detection, 
-# ToDo: reorganize this class into a bunch of smaller classes that inherit into a main class
 class ClassificationTests(FixedClassificationMetrics):
     """
     The general goal of this class it to test classification 
@@ -341,7 +337,21 @@ class ClassificationTests(FixedClassificationMetrics):
     * cross_val_per_class_anomaly_detection : the score for each class 
     for each fold must have a deviance from the average below a set tolerance
     
+    As you can see, at each level of sophistication we need more data to get
+    representative sets.  But if more data is available, then we are able
+    to test increasingly more cases.  The more data we have to test against,
+    the more sure we can be about how well our model does.  
     
+    Another lense to view each classes of tests, is with respect to stringency.
+    If we need our model to absolutely work all the time, it might be important
+    to use the most sophisticated class - something with cross validation, per class.
+    It's worth noting, that increased stringency isn't always a good thing.
+    Statistical models, by definition aren't supposed to cover every case perfectly.
+    They are supposed to be flexible.  So you should only use the most strigent
+    checks if you truly have a ton of data.  Otherwise, you will more or less
+    'overfit' your test suite to try and look for errors.  Testing in machine learning
+    like in software engineering is very much an art.  You need to be sure to cover
+    enough cases, without going overboard.
     """
     def __init__(self,
                  clf,
