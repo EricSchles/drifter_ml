@@ -331,8 +331,7 @@ class ClassificationTests(FixedClassificationMetrics):
 
     * cross_val_average : the average of all folds must be above some number
     * cross_val_lower_boundary : each fold must be above the lower boundary
-    * lower_boundary_per_class : each class must be above a given lower boundary
-    The lower boundary per class can be different
+    * lower_boundary_per_class : each class must be above a given lower boundary the lower boundary per class can be different
     * cross_val_anomaly_detection : the score for each fold must
     have a deviance from the average below a set tolerance
     * cross_val_per_class_anomaly_detection : the score for each class 
