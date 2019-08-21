@@ -37,7 +37,7 @@ def test_regression_basic():
     try:
         mse_upper_boundary = 10000
         mae_upper_boundary = 10000
-        test_suite.regression_testing(
+        test_suite.upper_bound_regression_testing(
             mse_upper_boundary,
             mae_upper_boundary
         )
@@ -60,6 +60,21 @@ def test_cross_val_mse_anomaly_detection():
     except:
         assert False
 
+def test_cross_val_tse_anomaly_detection():
+    df, column_names, target_name, reg, _ = generate_regression_data_and_models()
+    test_suite = regression_tests.RegressionTests(reg,
+                                                  df,
+                                                  target_name,
+                                                  column_names)
+    try:
+        tse_tolerance = 10000
+        test_suite.cross_val_tse_anomaly_detection(
+            tse_tolerance
+        )
+        assert True
+    except:
+        assert False
+
 def test_cross_val_mae_anomaly_detection():
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
@@ -71,6 +86,22 @@ def test_cross_val_mae_anomaly_detection():
         mae_tolerance = 10000
         test_suite.cross_val_mae_anomaly_detection(
             mae_tolerance
+        )
+        assert True
+    except:
+        assert False
+
+def test_cross_val_tae_anomaly_detection():
+    df, column_names, target_name, reg, _ = generate_regression_data_and_models()
+    test_suite = regression_tests.RegressionTests(reg,
+                                                  df,
+                                                  target_name,
+                                                  column_names)
+    try:
+        
+        tae_tolerance = 10000
+        test_suite.cross_val_tae_anomaly_detection(
+            tae_tolerance
         )
         assert True
     except:
@@ -90,7 +121,22 @@ def test_cross_val_mse_avg():
         assert True
     except:
         assert False
-        
+
+def test_cross_val_tse_avg():
+    df, column_names, target_name, reg, _ = generate_regression_data_and_models()
+    test_suite = regression_tests.RegressionTests(reg,
+                                                  df,
+                                                  target_name,
+                                                  column_names)
+    try:
+        tse_avg = 100
+        test_suite.cross_val_tse_avg(
+            tse_avg
+        )
+        assert True
+    except:
+        assert False
+
 def test_cross_val_mae_avg():
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
@@ -101,6 +147,21 @@ def test_cross_val_mae_avg():
         mae_avg = 100
         test_suite.cross_val_mae_avg(
             mae_avg
+        )
+        assert True
+    except:
+        assert False
+
+def test_cross_val_tae_avg():
+    df, column_names, target_name, reg, _ = generate_regression_data_and_models()
+    test_suite = regression_tests.RegressionTests(reg,
+                                                  df,
+                                                  target_name,
+                                                  column_names)
+    try:
+        tae_avg = 100
+        test_suite.cross_val_tae_avg(
+            tae_avg
         )
         assert True
     except:
