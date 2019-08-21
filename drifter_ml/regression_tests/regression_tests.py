@@ -318,10 +318,9 @@ class RegressionComparison():
         self.y = test_data[target_name]
         self.X = test_data[column_names]
         
-    def two_model_prediction_run_time_stress_test(self, performance_boundary):
-        for performance_info in performance_boundary:
-            n = int(performance_info["sample_size"])
-            data = self.X.sample(n, replace=True)
+    def two_model_prediction_run_time_stress_test(self, sample_sizes):
+        for sample_size in sample_sizes:
+            data = self.X.sample(sample_size, replace=True)
             start_time = time.time()
             self.reg_one.predict(data)
             model_one_run_time = time.time() - start_time
