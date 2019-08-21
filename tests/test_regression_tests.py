@@ -37,9 +37,13 @@ def test_regression_basic():
     try:
         mse_upper_boundary = 10000
         mae_upper_boundary = 10000
+        tse_upper_boundary = 10000
+        tae_upper_boundary = 10000
         test_suite.upper_bound_regression_testing(
             mse_upper_boundary,
-            mae_upper_boundary
+            mae_upper_boundary,
+            tse_upper_boundary,
+            tae_upper_boundary
         )
         assert True
     except:
@@ -173,13 +177,13 @@ def test_run_time_stress_test():
                                                   df,
                                                   target_name,
                                                   column_names)
-    performance_boundary = []
-    for i in range(100, 1000, 100):
-        performance_boundary.append({
-            "sample_size": i,
-            "max_run_time": 100})
+    
+    sample_sizes = [i for i in range(100, 1000, 100)]
+    max_run_times = [100 for _ in range(len(sample_sizes))]
     try:
-        test_suite.run_time_stress_test(performance_boundary)
+        test_suite.run_time_stress_test(
+            sample_sizes, max_run_times
+        )
         assert True
     except:
         assert False
@@ -191,13 +195,11 @@ def test_two_model_prediction_run_time_stress_test():
                                                        df,
                                                        target_name,
                                                        column_names)
-    performance_boundary = []
-    for i in range(100, 1000, 100):
-        performance_boundary.append({
-            "sample_size": i,
-            "max_run_time": 100})
+    sample_sizes = [i for i in range(100, 1000, 100)]
     try:
-        test_suite.two_model_prediction_run_time_stress_test(performance_boundary)
+        test_suite.two_model_prediction_run_time_stress_test(
+            sample_sizes
+        )
         assert True
     except:
         assert False
