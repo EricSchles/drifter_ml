@@ -116,7 +116,7 @@ Or you could simply write one test for all three::
 	    test_suite = ClassificationTests(clf, 
 	    df, target_name, column_names)
 	    classes = list(df.target.unique())
-	    assert test_suite.classifier_testing(
+	    assert test_suite.classifier_testing_per_class(
 	        {klass: 0.9 for klass in classes},
 	        {klass: 0.9 for klass in classes},
 	        {klass: 0.9 for klass in classes}
@@ -171,14 +171,10 @@ Now we test to ensure the model predicts new labels within our constraints::
 
 	    test_suite = ClassificationTests(clf, 
 	    df, target_name, column_names)
-	    performance_boundary = []
-	    for size in range(1, 100000, 100):
-	    	performance_boundary.append({
-	    		"sample_size": size,
-	    		"max_run_time": 10.0 # seconds
-	    	})
+    	sample_sizes = [i for i in range(100, 1000, 100)]
+    	max_run_times = [100 for _ in range(len(sample_sizes))]
 	    assert test_suite.run_time_stress_test(
-	        performance_boundary
+	        sample_sizes, max_run_times
 	    )
 
 This test ensures that from 1 to 100000 elements, the model never takes longer than 10 seconds.  
@@ -268,8 +264,8 @@ There are a few things to notice here:
 
 2. We aren't specifying percision per class - we will see examples of tests like that below, but because of the added stringency of limiting our training set, as well as training it across several samples of the dataset, sometimes called folds, we now don't need to specify as much granularity.  What we are really testing here is somewhat different - we want to make sure no samples of the dataset form significantly worse than the average.  What we are really looking for is anomalous samples of the data, that the model does much worse on.  Because any training set is just a sample, if a given subsample does much worse than others, then we need to ask the question - is this given subsample representative of a pattern we may see in the future?  Is it truly an anamoly?  If it's not, that's usually a strong indicator that our model needs some work.
 
-Classifier Test Example - Cross Validation Anamoly Detection
-============================================================
+Classifier Test Example - Cross Validation Average
+===================================================
 
 In the above example we test to ensure that none of the folds fall below a precision of 0.9 per fold.  But what if we only care if one of the folds does significantly worse than the others?  But don't actually care if all the folds meet the minimum criteria?  After all, some level of any model measure is defined by how much data you train it on.  It could be the case that we are right on the edge of having enough labeled data to train the model for all the imperative cases, but not enough to really ensure 90% percision, recall or some other meeasure.  If that is the case, then we could simply look to see if any of the folds does significantly worse than some notion of centrality, which could be a red flag on its own.  
 
@@ -303,7 +299,7 @@ Here we can set some deviance from the center for precision, recall or f1 score.
 	df.to_csv("data.csv")
 
 
-Let's see the test::
+Let's see a test::
 
 	from drifter_ml.classification_tests import ClassificationTests
 	import joblib
@@ -319,10 +315,10 @@ Let's see the test::
 	    df, target_name, column_names)
 	    precision_tolerance = 0.2
 	    test_suite.cross_val_precision_anomaly_detection(
-	    	precision_tolerance
+	    	precision_tolerance, method='mean'
 	    )
 
-Here instead of setting an expectation of the precision, we set an expectation of the deviance from average precision.  So if the average is 0.7 and one of the folds scores 0.49 or below then the test fails.  So it's important to have some lower boundary in place as well.  However we can be less stringent if we include this test.  A more complete test suite would likely be something like this::
+Here instead of setting an expectation of the precision, we set an expectation of the deviance from average precision.  So if the average is 0.7 and one of the folds scores is less than 5.0 then the test fails.  So it's important to have some lower boundary in place as well.  However we can be less stringent if we include this test.  A more complete test suite would likely be something like this::
 
 	from drifter_ml.classification_tests import ClassificationTests
 	import joblib
@@ -338,7 +334,7 @@ Here instead of setting an expectation of the precision, we set an expectation o
 	    df, target_name, column_names)
 	    precision_tolerance = 0.2
 	    test_suite.cross_val_precision_anomaly_detection(
-	    	precision_tolerance
+	    	precision_tolerance, method='mean'
 	    )
 
 	def test_cv_precision_lower_boundary():
@@ -351,12 +347,40 @@ Here instead of setting an expectation of the precision, we set an expectation o
 	    df, target_name, column_names)
 	    min_averange = 0.7
 	    test_suite.cross_val_precision_avg(
-	    	min_average
+	    	min_average, method='mean'
 	    )
 
-Now we can say for sure, the precision should be at least 0.7 on average but can fall below up to 0.2 of that before we raise an error.
+Now we can say for sure, the precision should be at least 0.7 on average but can fall below up to 0.2 of that before we raise an error.  So 
 
 Classifier Test Example - Cross Validation Anamoly Detection With Spread
 ========================================================================
 
-In the previous example, we looked for a specific deviance now we'll make use of some properties of statistics to define what exactly we mean by an anamolous fold.  In order to do this, we'll look at deviance with respect to spread.  To make this concrete, let's walk through what that means.  Let's say you had 30 folds in your test.  
+In the previous example, we looked for a specific deviance now we'll make use of some properties of statistics to define what exactly we mean by an anamolous fold.  In order to do this, we'll look at deviance with respect to spread.  To make this concrete, let's walk through what that means::
+
+	from drifter_ml.classification_tests import ClassificationTests
+	import joblib
+	import pandas as pd
+
+	def test_cv_precision_anomaly_detection():
+	    df = pd.read_csv("data.csv")
+	    column_names = ["A", "B", "C"]
+	    target_name = "target"
+	    clf = joblib.load("model.joblib")
+
+	    test_suite = ClassificationTests(clf, 
+	    df, target_name, column_names)
+	    precision_tolerance = 0.2
+	    test_suite.cross_val_precision_anomaly_detection(
+	    	precision_tolerance, method='mean'
+	    )
+
+Before we go through what's happening let's recall what cross validation is. The basic notion of cross validation is random samples are taken, called folds of from the training set, trains the algorithm with that data and tests against all the other folds.  For this reason, it is necessary that you have enough data such that you can learn a pattern from the data.  For more information on k-fold check out this article: https://machinelearningmastery.com/k-fold-cross-validation/.  
+
+As you can see we require a precision tolerance of 0.2 per fold of the cross validation.  To understand how this comes into play, let's look at how cross validation anomaly detection is done generally in the library::
+
+1. decide on the measure of center to use
+2. calculate the average of all the scores (each score comes from a fold)
+3. compute the list of deviances from the average
+4. determine if the deviance from the average is every greater than the tolerance
+
+So basically, this is a test for consistency on different folds of the data.  If the model performances above or below the tolerance bound on any of the folds, then the test fails.  This is really good if you need your model to act in an expected way, a lot of the time.  
