@@ -8,12 +8,19 @@ Welcome to Drifter ML's documentation!
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
+   :caption: Getting Started
    
    introduction
    project-setup
    designing-your-own-tests
    classification-tests
    regression-tests
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: API
    api_docs/drifter_ml.classification_tests
    api_docs/drifter_ml.regression_tests
    api_docs/drifter_ml.columnar_tests
