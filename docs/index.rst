@@ -15,7 +15,6 @@ Welcome to Drifter ML's documentation!
    designing-your-own-tests
    classification-tests
    regression-tests
-
    api_docs/drifter_ml.classification_tests
    api_docs/drifter_ml.regression_tests
    api_docs/drifter_ml.columnar_tests
