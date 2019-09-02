@@ -8,7 +8,6 @@ Welcome to Drifter ML's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Getting Started
    
    introduction
    project-setup
