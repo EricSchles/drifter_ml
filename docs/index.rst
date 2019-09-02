@@ -16,6 +16,7 @@ Welcome to Drifter ML's documentation!
    regression-tests
    columnar-tests
    structural-tests
+   api_docs
    closing-thoughts
 
 Indices and tables
