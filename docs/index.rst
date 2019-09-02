@@ -14,10 +14,10 @@ Welcome to Drifter ML's documentation!
    designing-your-own-tests
    classification-tests
    regression-tests
-   columnar-tests
-   structural-tests
-   api_docs
-   closing-thoughts
+   api_docs/drifter_ml.classification_tests
+   api_docs/drifter_ml.regression_tests
+   api_docs/drifter_ml.columnar_tests
+   api_docs/drifter_ml.structural_tests
 
 Indices and tables
 ==================
