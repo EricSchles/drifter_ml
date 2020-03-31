@@ -39,6 +39,8 @@ You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more
  			* class imbalance tests
  			* probability distribution similarity tests
  			* calibration tests
+ 		* environmental impact tests
+ 			* [energyusage](https://pypi.org/project/energyusage/) upper bound test
  	* Regression Tests
  		* Rule Based Testing:
  		 	* Mean Squared Error upper boundary
