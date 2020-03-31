@@ -363,7 +363,7 @@ class ClassificationTests(FixedClassificationMetrics):
         self.y = test_data[target_name]
         self.X = test_data[column_names]
         self.classes = set(self.y)
-            
+
     def get_test_score(self, cross_val_dict):
         return list(cross_val_dict["test_score"])
     
@@ -1672,6 +1672,50 @@ class ClassificationTests(FixedClassificationMetrics):
             model_run_time = time.time() - start_time
             if model_run_time > max_run_times[index]:
                 return False
+        return True
+
+    def run_energy_stress_test(self,
+                               sample_sizes: list,
+                               max_energy_usages: list,
+                               print_to_screen=False,
+                               print_to_pdf=False):
+        """
+        This is a performance test to ensure that the model
+        is energy efficient.
+        
+        Note: the model must take longer than 5 seconds to run
+        otherwise energyusage cannot accurate estimate the 
+        energy cost.  At this point, the cost is neglible.
+        Therefore, when testing, please try to use reasonable
+        size estimates based on expected throughput.
+        
+        Parameters
+        ----------
+        sample_sizes : list
+          the size of each sample to test for 
+          doing a prediction, each sample size is an integer
+        
+        max_energy_usages : list
+          the maximum time in seconds that
+          each sample should take to predict, at a maximum.
+        Returns
+        -------
+        True if all samples predict within the maximum allowed
+        energy usage.
+        False otherwise.
+        """
+        for index, sample_size in enumerate(sample_sizes):
+            data = self.X.sample(sample_size, replace=True)
+            try:
+                model_energy_usage = energyusage.evaluate(
+                    self.clf.predict, data,
+                    printToScreen=print_to_screen,
+                    pdf=print_to_pdf
+                )
+                if model_energy_usage > max_energy_usages[index]:
+                    return False
+            except:
+                continue
         return True
 
 class ClassifierComparison(FixedClassificationMetrics):
