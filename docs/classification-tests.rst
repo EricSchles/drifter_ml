@@ -205,14 +205,14 @@ This example won't be that different from what you've seen before, except now we
 
 	# Function to create model, required for KerasClassifier
 	def create_model():
-	        # create model
-	        model = Sequential()
-	        model.add(Dense(12, input_dim=3, activation='relu'))
-	        model.add(Dense(8, activation='relu'))
-	        model.add(Dense(1, activation='sigmoid'))
-	        # Compile model
-	        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-	        return model
+	    # create model
+	    model = Sequential()
+	    model.add(Dense(12, input_dim=3, activation='relu'))
+	    model.add(Dense(8, activation='relu'))
+	    model.add(Dense(1, activation='sigmoid'))
+	    # Compile model
+	    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+	    return model
 
 	# fix random seed for reproducibility
 	df = pd.DataFrame()
