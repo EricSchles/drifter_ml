@@ -135,14 +135,14 @@ Let's assume everything met our minimum criteria for going to production. Now we
 	from drifter_ml import classification_tests
 
 	def generate_model_from_production_data():
-		new_data = pd.read_csv("new_data.csv")
-		prod_clf = joblib.load("model.joblib")
-		test_data = pd.read_csv("test_data.csv")
-		return test_data, new_data, prod_clf
+	    new_data = pd.read_csv("new_data.csv")
+	    prod_clf = joblib.load("model.joblib")
+	    test_data = pd.read_csv("test_data.csv")
+	    return test_data, new_data, prod_clf
 
 	def test_precision():
-		test_data, new_data, prod_clf = generate_model_from_production_data()
-		column_names = ["A", "B", "C"]
+	    test_data, new_data, prod_clf = generate_model_from_production_data()
+	    column_names = ["A", "B", "C"]
 	    target_name = "target"
 	    test_clf = tree.DecisionTreeClassifier()
 	    test_clf.set_params(**prod_clf.get_params())
