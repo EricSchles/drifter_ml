@@ -63,7 +63,7 @@ You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more
 
 ## Possible Issues
 
-Some known issues with this, any machine learning tests are going to require human interaction because of type 1 and type 2 error for statistical tests.  Additionally, one simply needs to interrogate models from a lot of angles.  It can't be from just one angle.  So I'm not even sure if the overall notion of adding ML testing into a CI pipeline is really feasible.
+Some known issues with this, any machine learning tests are going to require human interaction because of type 1 and type 2 error for statistical tests.  Additionally, one simply needs to interrogate models from a lot of angles.  It can't be from just one angle.  So please use with care!
 
 ## Future Features
 
