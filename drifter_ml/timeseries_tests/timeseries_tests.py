@@ -31,9 +31,200 @@ We can think of this through the following questions,
 * how do various feature selection algorithms change on the data over time? aka which features are statistically significant over time?
 * how much of the data is missing over time?
 '''
+from backtester import metrics as bt_metrics
+import pandas as pd
+import datetime
 
-class TimeSeriesTests:
-    def __init__(self):
-        pass
+class TimeSeriesClassificationTests:
+    """
+    The general goal of this class is to test 
+    classification algorithms over time.
+    The class expects the following parameters:
+    
+    * descriptors : arraylike
+      A set of descriptions of a model.  This ought to
+      be a classification metric like precision, recall, or
+      f1-score or a loss like log loss.
 
-                 
+    * timestamps : arraylike
+      A set of timestamps associated with the descriptors.
+      this will be important for some of the metrics used.
+      Each element should be of time datetime.datetime.
+    
+    The way in which classification algorithms is assessed via
+    hypothesis tests and time series metrics. The time series
+    metrics come to us from backtester, another framework I developed.
+    Each timeseries metric is standard where the expectation is
+    that data is compared against a forecast.  
+    A simple moving average is used for the forecast model to make
+    sure the only thing we are trying to capture is how much the model
+    has changed recently.
+    
+    For this reason, the number of lag periods is very important. If you
+    set this number too low, you may think everything is fine, when in fact
+    things are actually changing quiet rapidly.  If you set the number of lags
+    too long, then you may capture bugs from the last anomaly, and thus won't
+    capture the next.
+    
+    A good rule of thumb is to set the number of lags for a week, assuming everything
+    has been fine.  And set it for 5 periods after the last bug, to assess normality.
+    
+    It may make sense to initialize multiple instances of the class, if
+    you want to capture things at different levels of granularity.
+    """
+    def __init__(self, descriptors, timestamps, lags=10):
+        self.descriptors = discriptors
+        self.timestamps = timestamps
+        self.lags = lags
+        self.series = self._generate_series()
+        
+    def _generate_series(self):
+        return pd.Series(
+            data = self.descriptors,
+            index = self.timestamps
+        )
+
+    def _apply_metric(self, metric, forecast_start, max_error):
+        y_true = series[forecast_start:]
+        y_pred = self.series.rolling(window=self.lags).mean()
+        y_pred = y_pred[forecast_start:]
+        error = metric(
+            y_true, y_pred
+        )
+        return error < max_error
+
+    def root_mean_squared_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        The root mean squared error is a standard metric for 
+        assessing error in a regression problem.  It lends itself
+        naturally to the forecast context because of its application
+        of a euclidean metric as well as taking of the average.
+        
+        An average is especially advantegous due to its sensitivity
+        to outliers.
+        
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the root mean squared error of 
+        the forecast and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.root_mean_squared_error,
+            forecast_start, max_error
+        )
+        
+    def normalized_root_mean_squared_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        The normalized root mean squared error takes into account scale.
+        It is not recommended that the normalized root mean squared error
+        be used if your descriptor is a score, since those are already bounded
+        between (0.0, 1.0).  If you are dealing with a loss function, then
+        the normalized root mean squared error may be advantegous as sense of
+        scale is removed.
+        
+        Since there is no standard convention for how to normalize the choice
+        of max - min of the observations is used as a choice for normalization.
+        
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the normalized root mean squared error of 
+        the forecast and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.normalized_root_mean_squared_error,
+            forecast_start, max_error
+        )
+
+    def mean_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        Perhaps the most naive metric I could think of, mean error
+        is simply the average error of the forecast against the
+        observations.
+        
+        As a result, this measure will be sensitive to outliers, which may
+        be advantegous for assessing deviance quickly and obviously.
+
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the mean error of the forecast 
+        and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.mean_error,
+            forecast_start, max_error
+        )
+
+    def mean_absolute_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        Perhaps one of the most naive metrics out there, mean absolute error
+        is simply the average of the absolute value of the error of the forecast against the
+        observations.
+        
+        It ought to be the same as mean error, because score functions are bounded to the
+        range (0.0, 1.0) and loss functions should never be negative.  That said
+        it is always possible something went wrong.  It therefore might be useful
+        to run mean absolute error and mean error with the same parameters.  If
+        one passes and the other fails, this will be a good signal that something is
+        wrong with your set up.
+        
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the mean absolute error of the forecast 
+        and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.mean_absolute_error,
+            forecast_start, max_error
+        )
