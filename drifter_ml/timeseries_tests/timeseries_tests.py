@@ -228,3 +228,190 @@ class TimeSeriesClassificationTests:
             bt_metric.mean_absolute_error,
             forecast_start, max_error
         )
+
+    def median_absolute_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        The median absolute error is an interesting metric to look at.  It ignores outliers,
+        so it may be used as an expectation of normalcy without the outliers.  Comparing
+        median absolute error and mean absolute error might give a sense of how much outliers
+        are effecting centrality.
+        
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the median absolute error of the forecast 
+        and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.median_absolute_error,
+            forecast_start, max_error
+        )
+
+    def variance_absolute_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        The variance absolute error gives us a sense of the variance in our error.  This way
+        we can directly interrogate variability in our absolute error.  And we can set boundaries
+        for the maximum boundary on deviances from our forecast.
+
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the variance absolute error of the forecast 
+        and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.median_absolute_error,
+            forecast_start, max_error
+        )
+    
+    def mean_squared_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        The mean squared error is a canonical measure of error.  It overstates large deviations
+        of individual examples while marginalizing the effect size of any deviances of deviations
+        smaller than one.  Because the mean is used, large values are overstated, thus individual
+        large deviations will tend to become apparent.  For the mean squared error to be small,
+        therefore no extreme deviances must exist.  However relatively small deviances across
+        many or even all samples will be understated.
+        
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the mean squared error of the forecast 
+        and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.mean_squared_error,
+            forecast_start, max_error
+        )
+
+    def mean_squared_log_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        The mean squared log error is a variant on mean squared error.  Mean squared log error
+        measures the relative difference between the true and predicted values.
+        It over penalizes underestimates, cases where the predicted value is less than
+        the true value, more than it penalizes overestimates, cases where the predicted
+        value is more than the true value.  This is because it's a MSLE is a ratio of the two.
+        
+        This measure is especially useful if you want to check if your prediction is smaller
+        than your actual timeseries.  Therefore it is very useful for accuracy and less
+        useful for error metrics.
+        
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the mean squared error of the forecast 
+        and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.mean_squared_log_error,
+            forecast_start, max_error
+        )
+
+    def root_mean_squared_log_error(self, forecast_start: datetime.datetime, max_error: float) -> bool:
+        """
+        The root mean squared log error is a variant on mean squared error.  
+        Root mean squared log error measures the relative difference between 
+        the true and predicted values. It over penalizes underestimates, cases 
+        where the predicted value is less than the true value, more than it 
+        penalizes overestimates, cases where the predicted value is more than the true value.  
+        This is because it's a RMSLE is a ratio of the two.  However unlike the MSLE
+        by taking the root the penalization is diminished making this closer in measure
+        to something like the mean squared error in terms of direction.
+                
+        Parameters
+        ----------
+        * forecast_start : datetime.datetime
+          The starting timestamp to begin the forecast.
+          Observations of the descriptor after the start time will be checked.
+          Special care should be given when choosing the start forecast.
+        
+        * max_error: float
+          The maximum allowed error or tolerance of the forecast.
+          If we are dealing with a score function like f1-score
+          it is imperative that we set max_error below 1.0.
+        
+        Return
+        ------
+        True if the mean squared error of the forecast 
+        and actual error is below the max_error.
+        False otherwise
+        """
+        return self._apply_metric(
+            bt_metric.root_mean_squared_log_error,
+            forecast_start, max_error
+        )
+
+
+# iqr_absolute_error
+# geometric_mean_absolute_error
+# mean_percentage_error
+# mean_absolute_percentage_error
+# median_absolute_percentage_error
+# symmetric_mean_absolute_percentage_error
+# symmetric_median_absolute_percentage_error
+# mean_arctangent_absolute_percentage_error
+# mean_absolute_scaled_error
+# normalized_absolute_error
+# normalized_absolute_percentage_error
+# root_mean_squared_percentage_error
+# root_median_squared_percentage_error
+# root_mean_squared_scaled_error
+# integral_normalized_root_squared_error
+# root_relative_squared_error
+# mean_relative_error
+# relative_absolute_error
+# mean_relative_absolute_error
+# median_relative_absolute_error
+# geometric_mean_relative_absolute_error
+# mean_bounded_relative_absolute_error
+# unscaled_mean_bounded_relative_absolute_error
+# mean_directional_accuracy
+ 
