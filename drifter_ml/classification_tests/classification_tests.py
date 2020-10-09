@@ -1,5 +1,6 @@
 from sklearn import metrics
 import numpy as np
+from mlxtend.evaluate import paired_ttest_5x2cv
 import time
 from sklearn import neighbors
 from scipy import stats

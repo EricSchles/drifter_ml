@@ -1,4 +1,4 @@
-__version__ = '0.24'
+__version__ = '0.25'
 
 from .classification_tests import classification_tests
 from .columnar_tests import columnar_tests
