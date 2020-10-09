@@ -29,5 +29,5 @@ setup(
     include_package_data=True,
     install_requires=["sklearn", "scipy", "numpy",
                       "statsmodels", "mlxtend", "pytest",
-                      "energyusage"],
+                      "energyusage", "backtester"],
 )
