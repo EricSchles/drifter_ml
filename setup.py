@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="drifter_ml",
-    version="0.22",
+    version="0.24",
     description="Testing for models confirming to the scikit-learn api",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -27,5 +27,7 @@ setup(
     packages=["drifter_ml", 'drifter_ml.classification_tests', 'drifter_ml.columnar_tests',
               'drifter_ml.regression_tests', 'drifter_ml.structural_tests'],
     include_package_data=True,
-    install_requires=["sklearn", "scipy", "numpy", "statsmodels", "mlxtend", "pytest"],
+    install_requires=["sklearn", "scipy", "numpy",
+                      "statsmodels", "mlxtend", "pytest",
+                      "energyusage"],
 )
