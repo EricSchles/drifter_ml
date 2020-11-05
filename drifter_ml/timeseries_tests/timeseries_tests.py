@@ -73,18 +73,42 @@ class TimeSeriesClassificationTests:
     you want to capture things at different levels of granularity.
     """
     def __init__(self, descriptors, timestamps, lags=10):
+        """
+        Initialize the series.
+
+        Args:
+            self: (todo): write your description
+            descriptors: (todo): write your description
+            timestamps: (int): write your description
+            lags: (int): write your description
+        """
         self.descriptors = discriptors
         self.timestamps = timestamps
         self.lags = lags
         self.series = self._generate_series()
         
     def _generate_series(self):
+        """
+        Generate a pandas. series. series.
+
+        Args:
+            self: (todo): write your description
+        """
         return pd.Series(
             data = self.descriptors,
             index = self.timestamps
         )
 
     def _apply_metric(self, metric, forecast_start, max_error):
+        """
+        Perform the prediction.
+
+        Args:
+            self: (todo): write your description
+            metric: (str): write your description
+            forecast_start: (todo): write your description
+            max_error: (int): write your description
+        """
         y_true = series[forecast_start:]
         y_pred = self.series.rolling(window=self.lags).mean()
         y_pred = y_pred[forecast_start:]

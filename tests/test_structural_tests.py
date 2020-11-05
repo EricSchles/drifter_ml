@@ -3,6 +3,11 @@ import numpy as np
 import pandas as pd
 
 def generate_classification_data_and_models():
+    """
+    Generate classification classification classification classification.
+
+    Args:
+    """
     new_data = pd.DataFrame()
     for _ in range(1000):
         a = np.random.normal(0, 1)
@@ -40,6 +45,11 @@ def generate_classification_data_and_models():
     return new_data, historical_data, column_names, target_name
 
 def generate_regression_data_and_models():
+    """
+    Generate regression model.
+
+    Args:
+    """
     new_data = pd.DataFrame()
     for _ in range(1000):
         a = np.random.normal(0, 1)
@@ -71,6 +81,11 @@ def generate_regression_data_and_models():
     return new_data, historical_data, column_names, target_name
 
 def generate_unsupervised_data():
+    """
+    Randomly generate data set of the data.
+
+    Args:
+    """
     new_data = pd.DataFrame()
     historical_data = pd.DataFrame()
     new_data["similar_normal"] = np.random.normal(0, 10, size=1000)
@@ -86,6 +101,11 @@ def generate_unsupervised_data():
     return new_data, historical_data
 
 def test_mutual_info_kmeans_scorer():
+    """
+    Calculate the kmeans statistics.
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -102,6 +122,11 @@ def test_mutual_info_kmeans_scorer():
         assert False
 
 def test_adjusted_rand_kmeans_scorer():
+    """
+    Generate kmeans scores.
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -118,6 +143,11 @@ def test_adjusted_rand_kmeans_scorer():
         assert False
 
 def test_completeness_kmeans_scorer():
+    """
+    Test the kmeans scores.
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -134,6 +164,11 @@ def test_completeness_kmeans_scorer():
         assert False
 
 def test_fowlkes_mallows_kmeans_scorer():
+    """
+    Computes the kmeans
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -150,6 +185,11 @@ def test_fowlkes_mallows_kmeans_scorer():
         assert False
 
 def test_homogeneity_kmeans_scorer():
+    """
+    Generate kmeans scores.
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -166,6 +206,11 @@ def test_homogeneity_kmeans_scorer():
         assert False
 
 def test_v_measure_kmeans_scorer():
+    """
+    Calculate kmeans scores.
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -182,6 +227,11 @@ def test_v_measure_kmeans_scorer():
         assert False
 
 def test_mutual_info_dbscan_scorer():
+    """
+    Produce a dataframe of a single features
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -198,6 +248,11 @@ def test_mutual_info_dbscan_scorer():
         assert False
 
 def test_adjusted_rand_dbscan_scorer():
+    """
+    Makes sure that the dbscan db
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -214,6 +269,11 @@ def test_adjusted_rand_dbscan_scorer():
         assert False
 
 def test_completeness_dbscan_scorer():
+    """
+    Makes sure that the dbscan_completeness.
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -230,6 +290,11 @@ def test_completeness_dbscan_scorer():
         assert False
 
 def test_fowlkes_mallows_dbscan_scorer():
+    """
+    Mallows_datascan_scorer
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -246,6 +311,11 @@ def test_fowlkes_mallows_dbscan_scorer():
         assert False
 
 def test_homogeneity_dbscan_scorer():
+    """
+    Makes a dataframescan db
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -262,6 +332,11 @@ def test_homogeneity_dbscan_scorer():
         assert False
 
 def test_v_measure_dbscan_scorer():
+    """
+    Makes a dataframe and returns ithite database.
+
+    Args:
+    """
     new_data, historical_data = generate_unsupervised_data()
     columns = ["similar_normal", "different_normal",
                "similar_gamma", "different_gamma"]
@@ -278,6 +353,11 @@ def test_v_measure_dbscan_scorer():
         assert False
 
 def test_reg_supervised_similar_clustering():
+    """
+    Computes the precision - recall and predictions.
+
+    Args:
+    """
     new_data, historical_data, column_names, target_name = generate_regression_data_and_models()
 
     test_suite = structural_tests.StructuralData(new_data,
@@ -292,6 +372,11 @@ def test_reg_supervised_similar_clustering():
         assert False
 
 def test_reg_supervised_similar_clustering():
+    """
+    Compute the precision - recall and recall and predictions.
+
+    Args:
+    """
     new_data, historical_data, column_names, target_name = generate_classification_data_and_models()
     test_suite = structural_tests.StructuralData(new_data,
                                                  historical_data,

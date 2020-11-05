@@ -7,6 +7,11 @@ import joblib
 
 # Function to create model, required for KerasClassifier
 def create_model():
+    """
+    Create a model
+
+    Args:
+    """
         # create model
         model = Sequential()
         model.add(Dense(12, input_dim=3, activation='relu'))

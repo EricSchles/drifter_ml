@@ -10,6 +10,16 @@ class RegressionTests():
                  test_data,
                  target_name,
                  column_names):
+        """
+        Initialize the target.
+
+        Args:
+            self: (todo): write your description
+            reg: (str): write your description
+            test_data: (todo): write your description
+            target_name: (str): write your description
+            column_names: (str): write your description
+        """
         self.reg = reg
         self.column_names = column_names
         self.target_name = target_name
@@ -18,6 +28,13 @@ class RegressionTests():
         self.X = test_data[column_names]
 
     def get_test_score(self, cross_val_dict):
+        """
+        Gets the test score.
+
+        Args:
+            self: (todo): write your description
+            cross_val_dict: (todo): write your description
+        """
         return list(cross_val_dict["test_score"])
 
     def trimean(self, data):
@@ -138,12 +155,32 @@ class RegressionTests():
     def trimean_squared_error(self, y_true, y_pred,
                               sample_weight=None,
                               multioutput='uniform_average'):
+        """
+        Trime error.
+
+        Args:
+            self: (todo): write your description
+            y_true: (array): write your description
+            y_pred: (array): write your description
+            sample_weight: (array): write your description
+            multioutput: (str): write your description
+        """
         output_errors = self.trimean((y_true - y_pred) ** 2)
         return self.trimean(output_errors)
 
     def trimean_absolute_error(self, y_true, y_pred,
                                sample_weight=None,
                                multioutput='uniform_average'):
+        """
+        Trime absolute error.
+
+        Args:
+            self: (todo): write your description
+            y_true: (array): write your description
+            y_pred: (array): write your description
+            sample_weight: (array): write your description
+            multioutput: (bool): write your description
+        """
         output_errors = self.trimean(abs(y_true - y_pred))
         return self.trimean(output_errors)
 
@@ -186,6 +223,15 @@ class RegressionTests():
         return self.get_test_score(result)
 
     def _cross_val_anomaly_detection(self, scores, tolerance, method='mean'):
+        """
+        R calculate the mean scores.
+
+        Args:
+            self: (todo): write your description
+            scores: (todo): write your description
+            tolerance: (float): write your description
+            method: (str): write your description
+        """
         avg, _ = self.describe_scores(scores, method)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
@@ -195,84 +241,233 @@ class RegressionTests():
         return True
 
     def _cross_val_avg(self, scores, maximum_center_tolerance, method='mean'):
+        """
+        Returns true if the cross - scores.
+
+        Args:
+            self: (todo): write your description
+            scores: (todo): write your description
+            maximum_center_tolerance: (float): write your description
+            method: (str): write your description
+        """
         avg, _ = self.describe_scores(scores, method)
         if avg > maximum_center_tolerance:
             return False
         return True
 
     def _cross_val_upper_boundary(self, scores, upper_boundary):
+        """
+        Returns true if the scores in the scores.
+
+        Args:
+            self: (todo): write your description
+            scores: (todo): write your description
+            upper_boundary: (todo): write your description
+        """
         for score in scores:
             if score > upper_boundary:
                 return False
         return True
 
     def cross_val_tse_anomaly_detection(self, tolerance, cv=3, method='mean'):
+        """
+        Compute cross validation scores
+
+        Args:
+            self: (todo): write your description
+            tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores = self.tse_cv(cv)
         return self._cross_val_anomaly_detection(scores, tolerance, method=method)
 
     def cross_val_tse_avg(self, minimum_center_tolerance, cv=3, method='mean'):
+        """
+        Compute cross validation of the cross - validation
+
+        Args:
+            self: (todo): write your description
+            minimum_center_tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores = self.tse_cv(cv)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
     def cross_val_tse_upper_boundary(self, upper_boundary, cv=3):
+        """
+        Evaluates the cross - validation
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+            cv: (todo): write your description
+        """
         scores = self.tse_cv(cv)
         return self._cross_val_upper_boundary(scores, upper_boundary)
         
     def tse_upper_boundary(self, upper_boundary):
+        """
+        R compute the upper bound of the time series.
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+        """
         y_pred = self.reg.predict(self.X)
         if self.trimean_squared_error(self.y, y_pred) > upper_boundary:
             return False
         return True
 
     def cross_val_tae_anomaly_detection(self, tolerance, cv=3, method='mean'):
+        """
+        R calculate the cross validation scores.
+
+        Args:
+            self: (todo): write your description
+            tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores = self.tae_cv(cv)
         return self._cross_val_anomaly_detection(scores, tolerance, method=method)
 
     def cross_val_tae_avg(self, minimum_center_tolerance, cv=3, method='mean'):
+        """
+        Returns the cross validation scores
+
+        Args:
+            self: (todo): write your description
+            minimum_center_tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores = self.tae_cv(cv)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
     def cross_val_tae_upper_boundary(self, upper_boundary, cv=3):
+        """
+        Returns the cross validation cross validation
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+            cv: (todo): write your description
+        """
         scores = self.tae_cv(cv)
         return self._cross_val_upper_boundary(scores, upper_boundary)
         
     def tae_upper_boundary(self, upper_boundary):
+        """
+        R compute the upper bound of the upper and lower bound.
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+        """
         y_pred = self.reg.predict(self.X)
         if self.trimean_absolute_error(self.y, y_pred) > upper_boundary:
             return False
         return True
 
     def cross_val_mse_anomaly_detection(self, tolerance, cv=3, method='mean'):
+        """
+        Compute cross validation scores.
+
+        Args:
+            self: (todo): write your description
+            tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores = self.mse_cv(cv)
         return self._cross_val_anomaly_detection(scores, tolerance, method=method)
 
     def cross_val_mse_avg(self, minimum_center_tolerance, cv=3, method='mean'):
+        """
+        Compute cross cross cross - validation scores.
+
+        Args:
+            self: (todo): write your description
+            minimum_center_tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores = self.mse_cv(cv)
         return self._cross_val_avg(scores, minimum_center_tolerance)
 
     def cross_val_mse_upper_boundary(self, upper_boundary, cv=3):
+        """
+        Returns the cross - cross - validation cross - validation.
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+            cv: (todo): write your description
+        """
         scores = self.mse_cv(cv)
         return self._cross_val_upper_boundary(scores, upper_boundary)
         
     def mse_upper_boundary(self, upper_boundary):
+        """
+        Evaluate the upper bound on the model
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+        """
         y_pred = self.reg.predict(self.X)
         if metrics.mean_squared_error(self.y, y_pred) > upper_boundary:
             return False
         return True
     
     def cross_val_mae_anomaly_detection(self, tolerance, cv=3, method='mean'):
+        """
+        Compute cross validation scores.
+
+        Args:
+            self: (todo): write your description
+            tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores = self.mae_cv(cv)
         return self._cross_val_anomaly_detection(scores, tolerance, method=method)
 
     def cross_val_mae_avg(self, minimum_center_tolerance, cv=3, method='mean'):
+        """
+        Returns the cross - validation of the cross validation
+
+        Args:
+            self: (todo): write your description
+            minimum_center_tolerance: (float): write your description
+            cv: (array): write your description
+            method: (str): write your description
+        """
         scores = self.mae_cv(cv)
         return self._cross_val_avg(scores, minimum_center_tolerance, method=method)
 
     def cross_val_mae_upper_boundary(self, upper_boundary, cv=3):
+        """
+        Returns the cross cross cross validation
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+            cv: (todo): write your description
+        """
         scores = self.mae_cv(cv)
         return self._cross_val_upper_boundary(scores, upper_boundary)
     
     def mae_upper_boundary(self, upper_boundary):
+        """
+        R compute the upper bound on the upper bound
+
+        Args:
+            self: (todo): write your description
+            upper_boundary: (todo): write your description
+        """
         y_pred = self.reg.predict(self.X)
         if metrics.median_absolute_error(self.y, y_pred) > upper_boundary:
             return False
@@ -283,6 +478,16 @@ class RegressionTests():
                                        mae_upper_boundary,
                                        tse_upper_boundary,
                                        tae_upper_boundary):
+        """
+        Compute the upper bounds of the upper and upper bounds.
+
+        Args:
+            self: (todo): write your description
+            mse_upper_boundary: (todo): write your description
+            mae_upper_boundary: (todo): write your description
+            tse_upper_boundary: (todo): write your description
+            tae_upper_boundary: (todo): write your description
+        """
         mse_test = self.mse_upper_boundary(mse_upper_boundary)
         mae_test = self.mae_upper_boundary(mae_upper_boundary)
         tse_test = self.tse_upper_boundary(tse_upper_boundary)
@@ -293,6 +498,14 @@ class RegressionTests():
             return False
 
     def run_time_stress_test(self, sample_sizes, max_run_times):
+        """
+        Runs a single sample of the given sample test.
+
+        Args:
+            self: (todo): write your description
+            sample_sizes: (int): write your description
+            max_run_times: (int): write your description
+        """
         for index, sample_size in enumerate(sample_sizes):
             max_run_time = max_run_times[index]
             data = self.X.sample(sample_size, replace=True)
@@ -310,6 +523,17 @@ class RegressionComparison():
                  test_data,
                  target_name,
                  column_names):
+        """
+        Initialize the target.
+
+        Args:
+            self: (todo): write your description
+            reg_one: (str): write your description
+            reg_two: (todo): write your description
+            test_data: (todo): write your description
+            target_name: (str): write your description
+            column_names: (str): write your description
+        """
         self.reg_one = reg_one
         self.reg_two = reg_two
         self.column_names = column_names
@@ -319,6 +543,13 @@ class RegressionComparison():
         self.X = test_data[column_names]
         
     def two_model_prediction_run_time_stress_test(self, sample_sizes):
+        """
+        Predict of the prediction.
+
+        Args:
+            self: (todo): write your description
+            sample_sizes: (int): write your description
+        """
         for sample_size in sample_sizes:
             data = self.X.sample(sample_size, replace=True)
             start_time = time.time()
@@ -333,22 +564,59 @@ class RegressionComparison():
         return True
 
     def cross_val_mse_result(self, reg, cv=3):
+        """
+        Cross - validation
+
+        Args:
+            self: (todo): write your description
+            reg: (todo): write your description
+            cv: (todo): write your description
+        """
         y_pred = cross_val_predict(reg, self.X, self.y)
         return metrics.mean_squared_error(self.y, y_pred)
         
     def cross_val_mae_result(self, reg, cv=3):
+        """
+        Cross - validation
+
+        Args:
+            self: (todo): write your description
+            reg: (todo): write your description
+            cv: (array): write your description
+        """
         y_pred = cross_val_predict(reg, self.X, self.y)
         return metrics.median_absolute_error(self.y, y_pred)
 
     def mse_result(self, reg):
+        """
+        Compute the squared error.
+
+        Args:
+            self: (todo): write your description
+            reg: (todo): write your description
+        """
         y_pred = reg.predict(self.X)
         return metrics.mean_squared_error(self.y, y_pred)
 
     def mae_result(self, reg):
+        """
+        Mae_result
+
+        Args:
+            self: (todo): write your description
+            reg: (todo): write your description
+        """
         y_pred = reg.predict(self.X)
         return metrics.median_absolute_error(self.y, y_pred)
 
     def cv_two_model_regression_testing(self, cv=3):
+        """
+        * test cross validation *
+
+        Args:
+            self: (todo): write your description
+            cv: (todo): write your description
+        """
         mse_one_test = self.cross_val_mse_result(self.reg_one, cv=cv)
         mae_one_test = self.cross_val_mae_result(self.reg_one, cv=cv)
         mse_two_test = self.cross_val_mse_result(self.reg_two, cv=cv)
@@ -359,6 +627,12 @@ class RegressionComparison():
             return False
 
     def two_model_regression_testing(self):
+        """
+        Determine if two regression are equal.
+
+        Args:
+            self: (todo): write your description
+        """
         mse_one_test = self.mse_result(self.reg_one)
         mae_one_test = self.mae_result(self.reg_one)
         mse_two_test = self.mse_result(self.reg_two)
