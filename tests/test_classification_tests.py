@@ -7,6 +7,11 @@ import pandas as pd
 import random
 
 def generate_binary_classification_data_and_models():
+    """
+    Generate binary classifier.
+
+    Args:
+    """
     df = pd.DataFrame()
     for _ in range(1000):
         a = np.random.normal(0, 1)
@@ -30,6 +35,11 @@ def generate_binary_classification_data_and_models():
     return df, column_names, target_name, clf1, clf2
 
 def generate_multiclass_classification_data_and_models():
+    """
+    Generate classification classifier.
+
+    Args:
+    """
     df = pd.DataFrame()
     for _ in range(1000):
         a = np.random.normal(0, 1)
@@ -53,6 +63,11 @@ def generate_multiclass_classification_data_and_models():
     return df, column_names, target_name, clf1, clf2
 
 def test_precision_recall_f1_binary():
+    """
+    Compute precision - recall between precision and recall.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -70,6 +85,11 @@ def test_precision_recall_f1_binary():
         assert False
 
 def test_precision_recall_f1_multiclass():
+    """
+    Calculate precision - recall.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -88,6 +108,11 @@ def test_precision_recall_f1_multiclass():
         assert False
 
 def test_roc_auc_cv_binary():
+    """
+    Computes roc curve ( roc scores of roc ).
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -102,6 +127,11 @@ def test_roc_auc_cv_binary():
         assert True
         
 def test_f1_cv_binary():
+    """
+    Evaluate f1 test test suite.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -113,6 +143,11 @@ def test_f1_cv_binary():
     assert len(f1_scores) == 3
 
 def test_f1_cv_multiclass():
+    """
+    R computes the cross - validation curves.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -124,6 +159,11 @@ def test_f1_cv_multiclass():
     assert len(f1_scores) == 3
 
 def test_recall_cv_binary():
+    """
+    Evaluate binary scores for a test.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -135,6 +175,11 @@ def test_recall_cv_binary():
     assert len(recall_scores) == 3
 
 def test_recall_cv_multiclass():
+    """
+    Compute the recall of the recall.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -146,6 +191,11 @@ def test_recall_cv_multiclass():
     assert len(recall_scores) == 3
 
 def test_precision_cv_binary():
+    """
+    Test for precision precision precision.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -157,6 +207,11 @@ def test_precision_cv_binary():
     assert len(precision_scores) == 3
 
 def test_precision_cv_multiclass():
+    """
+    Computes the precision of a multi - column.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -168,18 +223,38 @@ def test_precision_cv_multiclass():
     assert len(precision_scores) == 3
 
 def test_precision_metric():
+    """
+    Test the precision.
+
+    Args:
+    """
     fixed_metrics = classification_tests.FixedClassificationMetrics()
     assert 1.0 == fixed_metrics.precision_score([0,0,0], [0,0,0])
 
 def test_recall_metric():
+    """
+    Calculate the test metric.
+
+    Args:
+    """
     fixed_metrics = classification_tests.FixedClassificationMetrics()
     assert 1.0 == fixed_metrics.recall_score([0,0,0], [0,0,0])
 
 def test_f1_metric():
+    """
+    Compute the f1 metric.
+
+    Args:
+    """
     fixed_metrics = classification_tests.FixedClassificationMetrics()
     assert 1.0 == fixed_metrics.f1_score([0,0,0], [0,0,0])
 
 def test_cross_val_per_class_percision_anomaly_detection_binary():
+    """
+    Test if the cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -193,6 +268,11 @@ def test_cross_val_per_class_percision_anomaly_detection_binary():
         assert False
 
 def test_cross_val_per_class_percision_anomaly_detection_multiclass():
+    """
+    Parameters ---------- test_cross_detection : np.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -206,6 +286,11 @@ def test_cross_val_per_class_percision_anomaly_detection_multiclass():
         assert False
 
 def test_cross_val_per_class_recall_anomaly_detection_binary():
+    """
+    Evaluates cross - recall scores.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -219,6 +304,11 @@ def test_cross_val_per_class_recall_anomaly_detection_binary():
         assert False
 
 def test_cross_val_per_class_recall_anomaly_detection_multiclass():
+    """
+    Parameters ---------- all the cross_detection.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -232,6 +322,11 @@ def test_cross_val_per_class_recall_anomaly_detection_multiclass():
         assert False
 
 def test_cross_val_per_class_f1_anomaly_detection_binary():
+    """
+    Evaluate cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -245,6 +340,11 @@ def test_cross_val_per_class_f1_anomaly_detection_binary():
         assert False
 
 def test_cross_val_per_class_f1_anomaly_detection_multiclass():
+    """
+    Evaluate cross - validation cross - 1.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -258,6 +358,11 @@ def test_cross_val_per_class_f1_anomaly_detection_multiclass():
         assert False
 
 def test_cross_val_per_class_roc_auc_anomaly_detection_binary():
+    """
+    Test if the roc curve.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -272,6 +377,11 @@ def test_cross_val_per_class_roc_auc_anomaly_detection_binary():
         assert False
 
 def test_cross_val_precision_anomaly_detection_binary():
+    """
+    Generate cross cross - recall.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -285,6 +395,11 @@ def test_cross_val_precision_anomaly_detection_binary():
         assert False
 
 def test_cross_val_precision_anomaly_detection_multiclass():
+    """
+    Parameters ---------- test cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -298,6 +413,11 @@ def test_cross_val_precision_anomaly_detection_multiclass():
         assert False
 
 def test_cross_val_recall_anomaly_detection_binary():
+    """
+    Generate cross - recall scores.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -311,6 +431,11 @@ def test_cross_val_recall_anomaly_detection_binary():
         assert False
 
 def test_cross_val_recall_anomaly_detection_multiclass():
+    """
+    Evaluate all recall_detection_detection.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -324,6 +449,11 @@ def test_cross_val_recall_anomaly_detection_multiclass():
         assert False
 
 def test_cross_val_f1_anomaly_detection_binary():
+    """
+    Evaluate cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -337,6 +467,11 @@ def test_cross_val_f1_anomaly_detection_binary():
         assert False
 
 def test_cross_val_f1_anomaly_detection_mutliclass():
+    """
+    Evaluate cross - validation cross - validation cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -350,6 +485,11 @@ def test_cross_val_f1_anomaly_detection_mutliclass():
         assert False
 
 def test_cross_val_roc_auc_anomaly_detection_binary():
+    """
+    Test if roc curve is the roc curve.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -363,6 +503,11 @@ def test_cross_val_roc_auc_anomaly_detection_binary():
         assert False
 
 def test_cross_val_precision_avg_binary():
+    """
+    Computes the cross - wise cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -376,6 +521,11 @@ def test_cross_val_precision_avg_binary():
         assert False
 
 def test_cross_val_precision_avg_mutliclass():
+    """
+    The cross - wise cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -389,6 +539,11 @@ def test_cross_val_precision_avg_mutliclass():
         assert False
 
 def test_cross_val_recall_avg_binary():
+    """
+    Evaluate cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -402,6 +557,11 @@ def test_cross_val_recall_avg_binary():
         assert False
 
 def test_cross_val_recall_avg_multiclass():
+    """
+    Compute all predictions of all predictions.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -415,6 +575,11 @@ def test_cross_val_recall_avg_multiclass():
         assert False
 
 def test_cross_val_f1_avg_binary():
+    """
+    Compute cross - f1 cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -428,6 +593,11 @@ def test_cross_val_f1_avg_binary():
         assert False
 
 def test_cross_val_f1_avg_multiclass():
+    """
+    R compute cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -441,6 +611,11 @@ def test_cross_val_f1_avg_multiclass():
         assert False
 
 def test_cross_val_roc_auc_avg_binary():
+    """
+    Test the roc curve.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -454,6 +629,11 @@ def test_cross_val_roc_auc_avg_binary():
         assert False
         
 def test_spread_cross_val_precision_anomaly_detection_binary():
+    """
+    Precision cross cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -469,6 +649,11 @@ def test_spread_cross_val_precision_anomaly_detection_binary():
         assert False
 
 def test_spread_cross_val_precision_anomaly_detection_multiclass():
+    """
+    R computes precision cross - recall.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -490,6 +675,11 @@ def test_spread_cross_val_precision_anomaly_detection_multiclass():
         assert False
 
 def test_spread_cross_val_recall_anomaly_detection_binary():
+    """
+    Compute cross - recall.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -505,6 +695,11 @@ def test_spread_cross_val_recall_anomaly_detection_binary():
         assert False
         
 def test_spread_cross_val_recall_anomaly_detection_multiclass():
+    """
+    R computes recall cross validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -526,6 +721,11 @@ def test_spread_cross_val_recall_anomaly_detection_multiclass():
         assert False
 
 def test_spread_cross_val_f1_anomaly_detection_binary():
+    """
+    Evaluates cross - validation cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -541,6 +741,11 @@ def test_spread_cross_val_f1_anomaly_detection_binary():
         assert False
 
 def test_spread_cross_val_f1_anomaly_detection_multiclass():
+    """
+    R computes cross - validation cross - validation coefficient.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -562,6 +767,11 @@ def test_spread_cross_val_f1_anomaly_detection_multiclass():
         assert False
 
 def test_spread_cross_val_roc_auc_anomaly_detection_binary():
+    """
+    Test if roc curve ( rocov curve
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -577,6 +787,11 @@ def test_spread_cross_val_roc_auc_anomaly_detection_binary():
         assert False
 
 def test_run_time_stress_test():
+    """
+    Generate test test test test test test test for a test.
+
+    Args:
+    """
     df, column_names, target_name, clf, _ = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassificationTests(clf,
                                                           df,
@@ -591,6 +806,11 @@ def test_run_time_stress_test():
         assert False
 
 def test_two_model_prediction_run_time_stress_test():
+    """
+    Test if the training model classifier model.
+
+    Args:
+    """
     df, column_names, target_name, clf1, clf2 = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassifierComparison(clf1,
                                                            clf2,
@@ -606,6 +826,11 @@ def test_two_model_prediction_run_time_stress_test():
         assert False
 
 def test_two_model_classifier_testing_binary():
+    """
+    Test if two clf1 model.
+
+    Args:
+    """
     df, column_names, target_name, clf1, clf2 = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassifierComparison(clf1,
                                                            clf2,
@@ -619,6 +844,11 @@ def test_two_model_classifier_testing_binary():
         assert False
 
 def test_two_model_classifier_testing_multiclass():
+    """
+    Generate_two classifier_classifier classifier.
+
+    Args:
+    """
     df, column_names, target_name, clf1, clf2 = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassifierComparison(clf1,
                                                            clf2,
@@ -632,6 +862,11 @@ def test_two_model_classifier_testing_multiclass():
         assert False
 
 def test_cross_val_two_model_classifier_testing_binary():
+    """
+    Test for cross - validation test cross - validation test test test.
+
+    Args:
+    """
     df, column_names, target_name, clf1, clf2 = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassifierComparison(clf1,
                                                            clf2,
@@ -645,6 +880,11 @@ def test_cross_val_two_model_classifier_testing_binary():
         assert False
 
 def test_cross_val_two_model_classifier_testing_multiclass():
+    """
+    The cross - validation cross - test.
+
+    Args:
+    """
     df, column_names, target_name, clf1, clf2 = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassifierComparison(clf1,
                                                            clf2,
@@ -658,6 +898,11 @@ def test_cross_val_two_model_classifier_testing_multiclass():
         assert False
 
 def test_cross_val_two_model_classifier_testing_binary():
+    """
+    Test for cross - validation test cross - validation test test test.
+
+    Args:
+    """
     df, column_names, target_name, clf1, clf2 = generate_binary_classification_data_and_models()
     test_suite = classification_tests.ClassifierComparison(clf1,
                                                            clf2,
@@ -671,6 +916,11 @@ def test_cross_val_two_model_classifier_testing_binary():
         assert False
 
 def test_cross_val_two_model_classifier_testing_multiclass():
+    """
+    The cross - validation cross - validation test.
+
+    Args:
+    """
     df, column_names, target_name, clf1, clf2 = generate_multiclass_classification_data_and_models()
     test_suite = classification_tests.ClassifierComparison(clf1,
                                                            clf2,

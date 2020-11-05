@@ -11,6 +11,12 @@ from sklearn.base import clone
 
 class FixedClassificationMetrics():
     def __init__(self):
+        """
+        Initialize the object
+
+        Args:
+            self: (todo): write your description
+        """
         pass
     
     def precision_score(self, y_true, y_pred,
@@ -241,6 +247,14 @@ class FixedClassificationMetrics():
                                     sample_weight=sample_weight)
 
     def _prepare_for_per_class_comparison(self, y_true, y_pred):
+        """
+        Prepare class labels.
+
+        Args:
+            self: (todo): write your description
+            y_true: (array): write your description
+            y_pred: (array): write your description
+        """
         # this means the per class roc curve can never be zero
         # but allows us to do per class classification
         if (np.unique(y_true) == 0).all():
@@ -357,6 +371,16 @@ class ClassificationTests(FixedClassificationMetrics):
                  test_data,
                  target_name,
                  column_names):
+        """
+        Initialize the target class
+
+        Args:
+            self: (todo): write your description
+            clf: (int): write your description
+            test_data: (todo): write your description
+            target_name: (str): write your description
+            column_names: (str): write your description
+        """
         self.clf = clf
         self.test_data = test_data
         self.column_names = column_names
@@ -366,6 +390,13 @@ class ClassificationTests(FixedClassificationMetrics):
         self.classes = set(self.y)
 
     def get_test_score(self, cross_val_dict):
+        """
+        Gets the test score.
+
+        Args:
+            self: (todo): write your description
+            cross_val_dict: (todo): write your description
+        """
         return list(cross_val_dict["test_score"])
     
     # add cross validation per class tests
@@ -547,12 +578,30 @@ class ClassificationTests(FixedClassificationMetrics):
         return self.get_test_score(result)
     
     def _cross_val_avg(self, scores, minimum_center_tolerance, method='mean'):
+        """
+        Returns the cross scores for the scores.
+
+        Args:
+            self: (todo): write your description
+            scores: (todo): write your description
+            minimum_center_tolerance: (float): write your description
+            method: (str): write your description
+        """
         avg, _ = self.describe_scores(scores, method)
         if avg < minimum_center_tolerance:
             return False
         return True
 
     def _get_per_class(self, y_true, y_pred, metric):
+        """
+        Get the class for class labels.
+
+        Args:
+            self: (todo): write your description
+            y_true: (str): write your description
+            y_pred: (str): write your description
+            metric: (str): write your description
+        """
         class_measures = {klass: None for klass in self.classes}
         for klass in self.classes:
             y_pred_class = np.take(y_pred, y_true[y_true == klass].index, axis=0)
@@ -561,6 +610,15 @@ class ClassificationTests(FixedClassificationMetrics):
         return class_measures
 
     def _per_class_cross_val(self, metric, cv, random_state=42):
+        """
+        Perform a cross validation
+
+        Args:
+            self: (todo): write your description
+            metric: (str): write your description
+            cv: (array): write your description
+            random_state: (int): write your description
+        """
         kfold = KFold(n_splits=cv, shuffle=True, random_state=random_state)
         clf = clone(self.clf)
         scores = []
@@ -575,6 +633,15 @@ class ClassificationTests(FixedClassificationMetrics):
         return scores
 
     def _cross_val_anomaly_detection(self, scores, tolerance, method='mean'):
+        """
+        R calculate the mean scores.
+
+        Args:
+            self: (todo): write your description
+            scores: (todo): write your description
+            tolerance: (float): write your description
+            method: (str): write your description
+        """
         avg, _ = self.describe_scores(scores, method)
         deviance_from_avg = [abs(score - avg)
                              for score in scores]
@@ -585,6 +652,16 @@ class ClassificationTests(FixedClassificationMetrics):
 
     def _cross_val_per_class_anomaly_detection(self, metric,
                                                tolerance, cv, method='mean'):
+        """
+        Computes the cross validation.
+
+        Args:
+            self: (todo): write your description
+            metric: (str): write your description
+            tolerance: (float): write your description
+            cv: (todo): write your description
+            method: (str): write your description
+        """
         scores_per_fold = self._per_class_cross_val(metric, cv)
         results = [] 
         for klass in self.classes:
@@ -597,12 +674,29 @@ class ClassificationTests(FixedClassificationMetrics):
         return all(results)
 
     def _cross_val_lower_boundary(self, scores, lower_boundary):
+        """
+        Returns true if all scores in the same.
+
+        Args:
+            self: (todo): write your description
+            scores: (todo): write your description
+            lower_boundary: (todo): write your description
+        """
         for score in scores:
             if score < lower_boundary:
                 return False
         return True
 
     def _anomaly_detection(self, scores, tolerance, method):
+        """
+        Computes the scores of the scores.
+
+        Args:
+            self: (todo): write your description
+            scores: (todo): write your description
+            tolerance: (float): write your description
+            method: (str): write your description
+        """
         center, spread = self.describe_scores(scores, method)
         for score in scores:
             if score < center - (spread * tolerance):
@@ -610,6 +704,15 @@ class ClassificationTests(FixedClassificationMetrics):
         return True
 
     def _per_class(self, y_pred, metric, lower_boundary):
+        """
+        Return true if the class is a vector and false.
+
+        Args:
+            self: (todo): write your description
+            y_pred: (array): write your description
+            metric: (str): write your description
+            lower_boundary: (todo): write your description
+        """
         for klass in self.classes:
             y_pred_class = np.take(y_pred, self.y[self.y == klass].index, axis=0)
             y_class = self.y[self.y == klass]
@@ -1726,6 +1829,17 @@ class ClassifierComparison(FixedClassificationMetrics):
                  test_data,
                  target_name,
                  column_names):
+        """
+        Initialize the target class
+
+        Args:
+            self: (todo): write your description
+            clf_one: (todo): write your description
+            clf_two: (todo): write your description
+            test_data: (todo): write your description
+            target_name: (str): write your description
+            column_names: (str): write your description
+        """
         self.clf_one = clf_one
         self.clf_two = clf_two
         self.column_names = column_names
@@ -1736,21 +1850,47 @@ class ClassifierComparison(FixedClassificationMetrics):
         self.classes = set(self.y)
 
     def is_binary(self):
+        """
+        Returns true if the class.
+
+        Args:
+            self: (todo): write your description
+        """
         num_classes = len(set(self.classes))
         if num_classes == 2:
             return True
         return False
     
     def roc_auc_exception(self):
+        """
+        Check if rpc_ex_ex.
+
+        Args:
+            self: (todo): write your description
+        """
         if not self.is_binary():
             raise Exception("roc_auc is only defined for binary classifiers")
 
     def reset_average(self, average):
+        """
+        Reset the average.
+
+        Args:
+            self: (todo): write your description
+            average: (str): write your description
+        """
         if not self.is_binary() and average == 'binary':
             return 'micro'
         return average
 
     def two_model_prediction_run_time_stress_test(self, sample_sizes):
+        """
+        Predict a prediction.
+
+        Args:
+            self: (todo): write your description
+            sample_sizes: (int): write your description
+        """
         for sample_size in sample_sizes:
             data = self.X.sample(sample_size, replace=True)
             start_time = time.time()
@@ -1765,6 +1905,14 @@ class ClassifierComparison(FixedClassificationMetrics):
         return True
     
     def precision_per_class(self, clf, average="binary"):
+        """
+        Precision class
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            average: (bool): write your description
+        """
         average = self.reset_average(average)
         precision_score = partial(self.precision_score, average=average)
         y_pred = clf.predict(self.X)
@@ -1776,6 +1924,14 @@ class ClassifierComparison(FixedClassificationMetrics):
         return precision
 
     def recall_per_class(self, clf, average="binary"):
+        """
+        Recall_per_class
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            average: (str): write your description
+        """
         average = self.reset_average(average)
         recall_score = partial(self.recall_score, average=average)
         y_pred = clf.predict(self.X)
@@ -1787,6 +1943,14 @@ class ClassifierComparison(FixedClassificationMetrics):
         return recall
 
     def f1_per_class(self, clf, average="binary"):
+        """
+        F1 score
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            average: (bool): write your description
+        """
         average = self.reset_average(average)
         f1_score = partial(self.f1_score, average=average)
         y_pred = clf.predict(self.X)
@@ -1798,6 +1962,14 @@ class ClassifierComparison(FixedClassificationMetrics):
         return f1
 
     def roc_auc_per_class(self, clf, average="micro"):
+        """
+        Predict roc curve
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            average: (bool): write your description
+        """
         self.roc_auc_exception()
         roc_auc_score = partial(self.roc_auc_score, average=average)
         y_pred = clf.predict(self.X)
@@ -1815,6 +1987,18 @@ class ClassifierComparison(FixedClassificationMetrics):
                                     recall_two_test,
                                     f1_one_test,
                                     f1_two_test):
+        """
+        Computes the precision is the precision
+
+        Args:
+            self: (todo): write your description
+            precision_one_test: (todo): write your description
+            precision_two_test: (todo): write your description
+            recall_one_test: (bool): write your description
+            recall_two_test: (todo): write your description
+            f1_one_test: (todo): write your description
+            f1_two_test: (todo): write your description
+        """
         for klass in precision_one_test:
             precision_result =  precision_one_test[klass] < precision_two_test[klass]
             recall_result = recall_one_test[klass] < recall_two_test[klass]
@@ -1832,6 +2016,20 @@ class ClassifierComparison(FixedClassificationMetrics):
                                             f1_two_test,
                                             roc_auc_one_test,
                                             roc_auc_two_test):
+        """
+        Computes roc curve.
+
+        Args:
+            self: (todo): write your description
+            precision_one_test: (todo): write your description
+            precision_two_test: (todo): write your description
+            recall_one_test: (bool): write your description
+            recall_two_test: (todo): write your description
+            f1_one_test: (todo): write your description
+            f1_two_test: (todo): write your description
+            roc_auc_one_test: (todo): write your description
+            roc_auc_two_test: (todo): write your description
+        """
         for klass in precision_one_test:
             precision_result =  precision_one_test[klass] < precision_two_test[klass]
             recall_result = recall_one_test[klass] < recall_two_test[klass]
@@ -1842,6 +2040,13 @@ class ClassifierComparison(FixedClassificationMetrics):
         return True
 
     def two_model_classifier_testing(self, average="binary"):
+        """
+        Computes the precision
+
+        Args:
+            self: (todo): write your description
+            average: (str): write your description
+        """
         average = self.reset_average(average)
         precision_one_test = self.precision_per_class(self.clf_one, average=average)
         recall_one_test = self.recall_per_class(self.clf_one, average=average)
@@ -1871,6 +2076,15 @@ class ClassifierComparison(FixedClassificationMetrics):
                                              f1_two_test)
         
     def cross_val_precision_per_class(self, clf, cv=3, average="binary"):
+        """
+        Cross class labels
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            cv: (todo): write your description
+            average: (bool): write your description
+        """
         average = self.reset_average(average)
         precision_score = partial(self.precision_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
@@ -1882,6 +2096,15 @@ class ClassifierComparison(FixedClassificationMetrics):
         return precision
 
     def cross_val_recall_per_class(self, clf, cv=3, average="binary"):
+        """
+        Cross - recall recall
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            cv: (todo): write your description
+            average: (str): write your description
+        """
         average = self.reset_average(average)
         recall_score = partial(self.recall_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
@@ -1893,6 +2116,15 @@ class ClassifierComparison(FixedClassificationMetrics):
         return recall
 
     def cross_val_f1_per_class(self, clf, cv=3, average="binary"):
+        """
+        Cross - recall scores
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            cv: (todo): write your description
+            average: (str): write your description
+        """
         average = self.reset_average(average)
         f1_score = partial(self.f1_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
@@ -1904,6 +2136,15 @@ class ClassifierComparison(FixedClassificationMetrics):
         return f1
 
     def cross_val_roc_auc_per_class(self, clf, cv=3, average="micro"):
+        """
+        Cross - recall curve
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            cv: (todo): write your description
+            average: (bool): write your description
+        """
         self.roc_auc_exception()
         roc_auc_score = partial(self.roc_auc_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
@@ -1915,6 +2156,14 @@ class ClassifierComparison(FixedClassificationMetrics):
         return roc_auc
 
     def cross_val_per_class_two_model_classifier_testing(self, cv=3, average="binary"):
+        """
+        Cross - recall cross - validation
+
+        Args:
+            self: (todo): write your description
+            cv: (todo): write your description
+            average: (bool): write your description
+        """
         average = self.reset_average(average)
         precision_one_test = self.cross_val_precision_per_class(self.clf_one,
                                                                 cv=cv, average=average)
@@ -1950,30 +2199,74 @@ class ClassifierComparison(FixedClassificationMetrics):
                                              f1_two_test)
 
     def cross_val_precision(self, clf, cv=3, average="binary"):
+        """
+        Cross - recall
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            cv: (array): write your description
+            average: (bool): write your description
+        """
         average = self.reset_average(average)
         precision_score = partial(self.precision_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
         return precision_score(self.y, y_pred) 
 
     def cross_val_recall(self, clf, cv=3, average="binary"):
+        """
+        Cross - recall recall
+
+        Args:
+            self: (todo): write your description
+            clf: (array): write your description
+            cv: (array): write your description
+            average: (bool): write your description
+        """
         average = self.reset_average(average)
         recall_score = partial(self.recall_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
         return recall_score(self.y, y_pred)
 
     def cross_val_f1(self, clf, cv=3, average="binary"):
+        """
+        Cross - recall score
+
+        Args:
+            self: (todo): write your description
+            clf: (array): write your description
+            cv: (array): write your description
+            average: (bool): write your description
+        """
         average = self.reset_average(average)
         f1_score = partial(self.f1_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
         return f1_score(self.y, y_pred)
 
     def cross_val_roc_auc(self, clf, cv=3, average="micro"):
+        """
+        Cross - recall curve
+
+        Args:
+            self: (todo): write your description
+            clf: (todo): write your description
+            cv: (array): write your description
+            average: (bool): write your description
+        """
         self.roc_auc_exception()
         roc_auc_score = partial(self.roc_auc_score, average=average)
         y_pred = cross_val_predict(clf, self.X, self.y, cv=cv)
         return roc_auc_score(self.y, y_pred)
 
     def cross_val_two_model_classifier_testing(self, cv=3, average="binary"):
+        """
+        Cross - recall cross - validation
+
+        Args:
+            self: (todo): write your description
+            cv: (todo): write your description
+            average: (str): write your description
+        """
         average = self.reset_average(average)
         precision_one_test = self.cross_val_precision(self.clf_one,
                                                       cv=cv, average=average)

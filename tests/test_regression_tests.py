@@ -6,6 +6,11 @@ import numpy as np
 import pandas as pd
 
 def generate_regression_data_and_models():
+    """
+    Generate regression dataframe.
+
+    Args:
+    """
     df = pd.DataFrame()
     for _ in range(1000):
         a = np.random.normal(0, 1)
@@ -29,6 +34,11 @@ def generate_regression_data_and_models():
     return df, column_names, target_name, reg1, reg2
 
 def test_regression_basic():
+    """
+    Basic regression regression.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -50,6 +60,11 @@ def test_regression_basic():
         assert False
 
 def test_cross_val_mse_anomaly_detection():
+    """
+    Evaluate cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -65,6 +80,11 @@ def test_cross_val_mse_anomaly_detection():
         assert False
 
 def test_cross_val_tse_anomaly_detection():
+    """
+    Evaluate the cross validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -80,6 +100,11 @@ def test_cross_val_tse_anomaly_detection():
         assert False
 
 def test_cross_val_mae_anomaly_detection():
+    """
+    Evaluate cross validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -96,6 +121,11 @@ def test_cross_val_mae_anomaly_detection():
         assert False
 
 def test_cross_val_tae_anomaly_detection():
+    """
+    Test the cross validation cross validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -112,6 +142,11 @@ def test_cross_val_tae_anomaly_detection():
         assert False
 
 def test_cross_val_mse_avg():
+    """
+    Evaluate the cross - validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -127,6 +162,11 @@ def test_cross_val_mse_avg():
         assert False
 
 def test_cross_val_tse_avg():
+    """
+    R test cross validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -142,6 +182,11 @@ def test_cross_val_tse_avg():
         assert False
 
 def test_cross_val_mae_avg():
+    """
+    Compute the cross validation of - validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -157,6 +202,11 @@ def test_cross_val_mae_avg():
         assert False
 
 def test_cross_val_tae_avg():
+    """
+    R test cross validation.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -172,6 +222,11 @@ def test_cross_val_tae_avg():
         assert False
 
 def test_run_time_stress_test():
+    """
+    Runs a test test time - test test for each sample is a list of a list of - place.
+
+    Args:
+    """
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
@@ -189,6 +244,11 @@ def test_run_time_stress_test():
         assert False
 
 def test_two_model_prediction_run_time_stress_test():
+    """
+    Test if a list of two train - test.
+
+    Args:
+    """
     df, column_names, target_name, reg1, reg2 = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionComparison(reg1,
                                                        reg2,
@@ -205,6 +265,11 @@ def test_two_model_prediction_run_time_stress_test():
         assert False
 
 def test_cv_two_model_regression_testing():
+    """
+    Determine whether two - regression test.
+
+    Args:
+    """
     df, column_names, target_name, reg1, reg2 = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionComparison(reg1,
                                                        reg2,
@@ -218,6 +283,11 @@ def test_cv_two_model_regression_testing():
         assert False
 
 def test_two_model_regression_testing():
+    """
+    Determine the optimal regression regression regression models.
+
+    Args:
+    """
     df, column_names, target_name, reg1, reg2 = generate_regression_data_and_models()
     test_suite = regression_tests.RegressionComparison(reg1,
                                                        reg2,
