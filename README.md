@@ -6,6 +6,8 @@ The tests will be readable enough that anyone can extend them to other framework
 
 You can [read the docs](https://drifter-ml.readthedocs.io/en/latest/) for a more detailed explaination.
 
+[A video explaining the idea behind the framework](https://www.youtube.com/watch?v=bZtdnFVAfbs&t=3s)
+
 [![Documentation Status](https://readthedocs.org/projects/drifter-ml/badge/?version=latest)](https://drifter-ml.readthedocs.io/en/latest/?badge=latest)
 [![CircleCI](https://circleci.com/gh/EricSchles/drifter_ml.svg?style=svg)](https://circleci.com/gh/EricSchles/drifter_ml)
 [![Version Number](https://img.shields.io/pypi/v/drifter-ml.svg)](https://pypi.org/project/drifter-ml/)
