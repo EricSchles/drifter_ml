@@ -28,8 +28,54 @@ def generate_regression_data_and_models():
     reg2.fit(X, df[target_name])
     return df, column_names, target_name, reg1, reg2
 
+def generate_regression_data_and_models_with_large_data():
+    df = pd.DataFrame()
+    for _ in range(1000):
+        a = np.random.normal(0, 1)
+        b = np.random.normal(0, 3)
+        c = np.random.normal(12, 4)
+        d = np.random.normal(1500, 27000)
+        target = (a + b + c) * d
+        df = df.append({
+            "A": a,
+            "B": b,
+            "C": c,
+            "D": d,
+            "target": target
+        }, ignore_index=True)
+
+    reg1 = tree.DecisionTreeRegressor()
+    reg2 = ensemble.RandomForestRegressor()
+    column_names = ["A", "B", "C", "D"]
+    target_name = "target"
+    X = df[column_names]
+    reg1.fit(X, df[target_name])
+    reg2.fit(X, df[target_name])
+    return df, column_names, target_name, reg1, reg2
+
 def test_regression_basic():
     df, column_names, target_name, reg, _ = generate_regression_data_and_models()
+    test_suite = regression_tests.RegressionTests(reg,
+                                                  df,
+                                                  target_name,
+                                                  column_names)
+    try:
+        mse_upper_boundary = 10000
+        mae_upper_boundary = 10000
+        tse_upper_boundary = 10000
+        tae_upper_boundary = 10000
+        test_suite.upper_bound_regression_testing(
+            mse_upper_boundary,
+            mae_upper_boundary,
+            tse_upper_boundary,
+            tae_upper_boundary
+        )
+        assert True
+    except:
+        assert False
+
+def test_regression_basic_with_large_data():
+    df, column_names, target_name, reg, _ = generate_regression_data_and_models_with_large_data()
     test_suite = regression_tests.RegressionTests(reg,
                                                   df,
                                                   target_name,
