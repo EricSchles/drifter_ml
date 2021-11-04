@@ -35,18 +35,20 @@ def generate_regression_data_and_models_with_large_data():
         b = np.random.normal(0, 3)
         c = np.random.normal(12, 4)
         d = np.random.normal(1500, 27000)
-        target = (a + b + c) * d
+        e = np.random.normal(1, 2)
+        target = ((a + b + c) * d)/e
         df = df.append({
             "A": a,
             "B": b,
             "C": c,
             "D": d,
+            "E": e,
             "target": target
         }, ignore_index=True)
 
     reg1 = tree.DecisionTreeRegressor()
     reg2 = ensemble.RandomForestRegressor()
-    column_names = ["A", "B", "C", "D"]
+    column_names = ["A", "B", "C", "D", "E"]
     target_name = "target"
     X = df[column_names]
     reg1.fit(X, df[target_name])
